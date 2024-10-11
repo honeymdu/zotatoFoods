@@ -29,7 +29,11 @@ public class OrderItem {
 
     private Double totalPrice;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    // @ManyToOne(fetch = FetchType.LAZY)
+    // private Order order;
+
+    @ManyToOne
+    @JoinColumn(name = "order_id")
     private Order order;
 
 }

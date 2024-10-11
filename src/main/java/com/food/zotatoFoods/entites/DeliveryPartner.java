@@ -1,5 +1,7 @@
 package com.food.zotatoFoods.entites;
 
+import java.util.List;
+
 import org.locationtech.jts.geom.Point;
 
 import jakarta.persistence.Column;
@@ -38,7 +40,9 @@ public class DeliveryPartner {
     @Column(columnDefinition = "Geometry(Point,4326)")
     private Point currentLocation;
 
-    @OneToMany(mappedBy = "deliveryPartner")
-    private Order order;
+    private List<Order> order;
+    
+    @OneToMany
+    private Order orders;
 
 }

@@ -40,8 +40,11 @@ public class Order {
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
-    @OneToMany
-    @JoinColumn(name = "order_item_id", nullable = false)
+    // @OneToMany
+    // @JoinColumn(name = "order_item_id", nullable = false)
+    // private List<OrderItem> orderItems;
+
+    @OneToMany(mappedBy = "order")
     private List<OrderItem> orderItems;
 
     private Double totalPrice;
@@ -61,7 +64,7 @@ public class Order {
     @CreationTimestamp
     private LocalDateTime OrderCreationTime;
 
-    @ManyToOne
+    @OneToOne
     private DeliveryPartner deliveryPartner;
 
     private LocalDateTime DeliveryTime;
