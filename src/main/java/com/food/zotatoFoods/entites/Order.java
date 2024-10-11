@@ -1,5 +1,6 @@
 package com.food.zotatoFoods.entites;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.hibernate.annotations.CreationTimestamp;
@@ -9,6 +10,7 @@ import java.time.LocalDateTime;
 
 import com.food.zotatoFoods.entites.enums.OrderStatus;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -40,12 +42,9 @@ public class Order {
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
-    // @OneToMany
-    // @JoinColumn(name = "order_item_id", nullable = false)
-    // private List<OrderItem> orderItems;
-
-    @OneToMany(mappedBy = "order")
-    private List<OrderItem> orderItems;
+    
+    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<OrderItem> orderItems = new ArrayList<>();
 
     private Double totalPrice;
 

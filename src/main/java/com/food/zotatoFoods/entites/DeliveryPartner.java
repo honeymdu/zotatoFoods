@@ -1,9 +1,11 @@
 package com.food.zotatoFoods.entites;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.locationtech.jts.geom.Point;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -40,9 +42,9 @@ public class DeliveryPartner {
     @Column(columnDefinition = "Geometry(Point,4326)")
     private Point currentLocation;
 
-    private List<Order> order;
     
-    @OneToMany
-    private Order orders;
+    @OneToMany(mappedBy = "deliveryPartner", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<DeliveryItem> deliveryItems = new ArrayList<>();
+    
 
 }
