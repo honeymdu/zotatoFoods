@@ -3,11 +3,13 @@ package com.food.zotatoFoods.entites;
 import java.util.List;
 
 import org.hibernate.annotations.CreationTimestamp;
+import org.locationtech.jts.geom.Point;
 
 import java.time.LocalDateTime;
 
-import com.food.zotatoFoods.entites.enums.PaymentMethod;
+import com.food.zotatoFoods.entites.enums.OrderStatus;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
@@ -44,13 +46,24 @@ public class Order {
 
     private Double totalPrice;
 
-    @Enumerated(EnumType.STRING)
-    private PaymentMethod paymentMethod;
+    @Column(columnDefinition = "Geometry(Point,4326)")
+    private Point pickupLocation;
+
+    @Column(columnDefinition = "Geometry(Point,4326)")
+    private Point dropoffLocation;
 
     @OneToOne
     private Payment payment;
 
+    @Enumerated(EnumType.STRING)
+    private OrderStatus orderStatus;
+
     @CreationTimestamp
     private LocalDateTime OrderCreationTime;
+
+    @ManyToOne
+    private DeliveryPartner deliveryPartner;
+
+    private LocalDateTime DeliveryTime;
 
 }
