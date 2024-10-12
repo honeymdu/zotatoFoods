@@ -2,38 +2,33 @@ package com.food.zotatoFoods.entites;
 
 import java.time.LocalDateTime;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToOne;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import com.food.zotatoFoods.entites.enums.OrderStatus;
+import jakarta.persistence.*;
+import lombok.*;
 
 @Entity
+@Table(name = "DeliveryItem", indexes = {
+        @Index(name = "idx_deliveryitem", columnList = "deliveryPartner_id")
+})
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
+@Getter
+@Setter
 public class DeliveryItem {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
-    private String deliveryStatus;
+    @Enumerated(EnumType.STRING)
+    private OrderStatus orderStatus;
     private String deliveryAddress;
     private LocalDateTime deliveryTime;
-
     @ManyToOne
     @JoinColumn(name = "order_id")
     private Order order;
-
     @OneToOne
     @JoinColumn(name = "order_item_id")
     private OrderItem orderItem;
-
     @ManyToOne
     private DeliveryPartner deliveryPartner; 
 

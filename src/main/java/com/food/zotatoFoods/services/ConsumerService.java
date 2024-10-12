@@ -1,12 +1,21 @@
 package com.food.zotatoFoods.services;
 
-import com.food.zotatoFoods.entites.Order;
+import org.springframework.data.domain.jaxb.SpringDataJaxb.OrderDto;
+
+import com.food.zotatoFoods.entites.Consumer;
 import com.food.zotatoFoods.entites.Restaurant;
+import com.food.zotatoFoods.entites.User;
 
 public interface ConsumerService {
 
-    public Order placeOrder(Long CartId);
+    public OrderDto createOrderRequest(Long CartId);
 
     public Restaurant rateRestaurant(Long RestaurantId, Integer rating);
+
+    public Consumer createNewConsumer(User user);
+
+    public Consumer getConsumerById(Long consumerId);
+
+    
 
 }

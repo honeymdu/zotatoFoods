@@ -1,22 +1,25 @@
 package com.food.zotatoFoods.services;
 
-import java.util.List;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 
+import com.food.zotatoFoods.dto.DeliveryPartnerDto;
+import com.food.zotatoFoods.dto.RestaurantDto;
+import com.food.zotatoFoods.entites.DeliveryPartner;
 import com.food.zotatoFoods.entites.Restaurant;
-import com.food.zotatoFoods.entites.User;
 
 public interface AdminService {
 
-    public void onBoardNewRestaurant(Restaurant restaurant);
+    public Restaurant onBoardNewRestaurant(Long UserId, RestaurantDto restaurantDto);
 
-    public User onBoardDeliveryPartner(User user, String VehicleId);
+    public DeliveryPartner onBoardDeliveryPartner(Long UserId, DeliveryPartnerDto deliveryPartnerDto);
 
-    List<Restaurant> getAllRestaurant();
+    Page<Restaurant> getAllRestaurant(PageRequest pageRequest);
 
-    List<User> getAllDeliveryPartner();
+    Page<DeliveryPartner> getAllDeliveryPartner(PageRequest pageRequest);
 
-    public void removeDeliveryPartner(User user, String VehicleId);
+    public Boolean removeDeliveryPartner(Long UserId);
 
-    public void removeRestaurant(Restaurant restaurant);
+    public Boolean removeRestaurant(Restaurant restaurant);
 
 }

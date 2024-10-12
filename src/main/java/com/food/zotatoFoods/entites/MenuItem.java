@@ -1,21 +1,24 @@
 package com.food.zotatoFoods.entites;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import com.food.zotatoFoods.entites.enums.FoodCategory;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
+import jakarta.persistence.*;
 import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
+@Getter
+@Setter
 @Data
 @Entity
+@Table(name = "MenuItem", indexes = {
+        @Index(name = "idx_menuitem_restaurant_id", columnList = "restaurant_id"),
+        @Index(name = "idx_menuitem_name", columnList = "name"),
+        @Index(name = "idx_menuitem_foodcategory", columnList = "foodCategory")
+})
 public class MenuItem {
 
     @Id
@@ -27,10 +30,9 @@ public class MenuItem {
     private Double price;
     @Enumerated(EnumType.STRING)
     private FoodCategory foodCategory;
-    private List<String> ingredients;
+    private List<String> ingredients = new ArrayList<>();
     private Double rating;
     private Boolean isAvailable;
-
     @ManyToOne
     @JoinColumn(name = "restaurant_id", nullable = false)
     private Restaurant restaurant;
