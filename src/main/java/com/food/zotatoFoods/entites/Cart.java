@@ -24,8 +24,8 @@ public class Cart {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @ManyToOne
-    @JoinColumn(name = "consumer_id", nullable = false)
-    private Consumer consumer;
+    @JoinColumn(name = "user_id", nullable = false)
+    private Consumer user;
     @OneToOne
     private Restaurant restaurant;
     @OneToMany(mappedBy = "cart")

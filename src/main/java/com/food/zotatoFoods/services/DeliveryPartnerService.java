@@ -2,6 +2,7 @@ package com.food.zotatoFoods.services;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 
+import com.food.zotatoFoods.dto.DeliveryPartnerDto;
 import com.food.zotatoFoods.entites.DeliveryPartner;
 import com.food.zotatoFoods.entites.User;
 
@@ -19,7 +20,7 @@ public interface DeliveryPartnerService {
 
     public void endOrderRide(Long orderId, String otp);
 
-    public DeliveryPartner AddNewDeliveryPartner(DeliveryPartner deliveryPartner);
+    public DeliveryPartnerDto AddNewDeliveryPartner(DeliveryPartner deliveryPartner);
 
     public Page<DeliveryPartner> getAllDeliveryPartner(PageRequest pageRequest);
 

@@ -1,5 +1,6 @@
 package com.food.zotatoFoods.dto;
 
+import com.food.zotatoFoods.entites.Menu;
 import com.food.zotatoFoods.entites.enums.FoodCategory;
 
 import lombok.AllArgsConstructor;
@@ -23,6 +24,6 @@ public class MenuItemDto {
     private List<String> ingredients = new ArrayList<>();
     private Double rating;
     private Boolean isAvailable;
-    private RestaurantDto restaurantdDto;
+    private Menu menu;
 
 }

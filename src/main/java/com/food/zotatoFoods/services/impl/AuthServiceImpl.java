@@ -9,14 +9,14 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import com.food.zotatoFoods.Security.JWTService;
-import com.food.zotatoFoods.dto.RestaurantOwnerSignUpDto;
+import com.food.zotatoFoods.dto.RestaurantPartnerDto;
 import com.food.zotatoFoods.dto.SignUpDto;
 import com.food.zotatoFoods.dto.UserDto;
 import com.food.zotatoFoods.entites.User;
 import com.food.zotatoFoods.entites.enums.Role;
 import com.food.zotatoFoods.exceptions.RuntimeConfilictException;
 import com.food.zotatoFoods.repositories.UserRepository;
+import com.food.zotatoFoods.security.JWTService;
 import com.food.zotatoFoods.services.AuthService;
 import com.food.zotatoFoods.services.ConsumerService;
 import com.food.zotatoFoods.services.WalletService;
@@ -75,17 +75,17 @@ public class AuthServiceImpl implements AuthService {
     }
 
     @Override
-    public UserDto RestaurantOwnerSignUp(RestaurantOwnerSignUpDto restaurantOwnerSignUpDto) {
-        User user = userRepository.findByEmail(restaurantOwnerSignUpDto.getEmail())
-                .orElseThrow(() -> new RuntimeConfilictException("User not Found With Email " + restaurantOwnerSignUpDto.getEmail()));
+    public UserDto RestaurantOwnerSignUp(RestaurantPartnerDto restaurantOwnerSignUpDto) {
+        User user = userRepository.findByEmail(restaurantOwnerSignUpDto.getUser().getEmail())
+                .orElseThrow(() -> new RuntimeConfilictException("User not Found With Email " + restaurantOwnerSignUpDto.getUser().getEmail()));
 
         if (user != null)
             throw new RuntimeConfilictException(
-                    "Cannot signup, User already exists with email " + restaurantOwnerSignUpDto.getEmail());
+                    "Cannot signup, User already exists with email " + restaurantOwnerSignUpDto.getUser().getEmail());
 
         User mappedUser = modelMapper.map(restaurantOwnerSignUpDto, User.class);
-        mappedUser.setRole(Role.RESTAURENT_OWNER);
-        mappedUser.setPassword(passwordEncoder.encode(restaurantOwnerSignUpDto.getPassword()));
+        mappedUser.setRole(Role.RESTAURENT_PARTNER);
+        mappedUser.setPassword(passwordEncoder.encode(restaurantOwnerSignUpDto.getUser().getPassword()));
         User savedUser = userRepository.save(mappedUser);
         consumerService.createNewConsumer(savedUser);
         walletService.createNewWallet(savedUser);

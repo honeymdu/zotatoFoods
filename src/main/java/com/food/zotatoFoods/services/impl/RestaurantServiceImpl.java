@@ -1,6 +1,8 @@
 package com.food.zotatoFoods.services.impl;
 
+import java.sql.Driver;
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -9,6 +11,7 @@ import org.springframework.stereotype.Service;
 import com.food.zotatoFoods.entites.MenuItem;
 import com.food.zotatoFoods.entites.Order;
 import com.food.zotatoFoods.entites.Restaurant;
+import com.food.zotatoFoods.entites.RestaurantPartner;
 import com.food.zotatoFoods.entites.User;
 import com.food.zotatoFoods.entites.WalletTransaction;
 import com.food.zotatoFoods.repositories.RestaurantRepository;
@@ -93,12 +96,12 @@ public class RestaurantServiceImpl implements RestaurantService {
     }
 
     @Override
-    public Restaurant getRestaurantByUser(User user) {
-        return restaurantRepository.findByUser(user);
+    public List<Restaurant> getRestaurantByRestaurantPartner(RestaurantPartner restaurantPartner) {
+        return restaurantRepository.findByRestaurantPartner(restaurantPartner);
     }
 
     @Override
-    public Boolean removeRestaurant(Restaurant restaurant) {
+    public Boolean removeRestaurant(Long RestaurantId) {
         // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'removeRestaurant'");
     }

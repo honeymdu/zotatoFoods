@@ -1,21 +1,18 @@
 package com.food.zotatoFoods.entites;
 
+import jakarta.persistence.*;
+import lombok.*;
 import org.locationtech.jts.geom.Point;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-
 @Entity
+@Table(name = "Address", indexes = {
+        @Index(name = "idx_address_user_id", columnList = "user_id")
+})
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
+@Getter
+@Setter
 public class Address {
 
     @Id

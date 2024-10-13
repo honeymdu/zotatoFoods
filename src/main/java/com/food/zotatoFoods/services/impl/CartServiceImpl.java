@@ -35,7 +35,7 @@ public class CartServiceImpl implements CartService {
         Cart cart = Cart.builder()
                 .foodAmount(0.0)
                 .restaurant(restaurant)
-                .consumer(consumer)
+                .user(consumer)
                 .deliveryFee(0.0)
                 .totalPrice(0.0)
                 .ValidCart(true)

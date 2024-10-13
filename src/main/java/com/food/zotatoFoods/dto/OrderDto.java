@@ -9,19 +9,25 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.food.zotatoFoods.entites.enums.OrderStatus;
+
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 public class OrderDto {
   
     private Long id;
-    private UserDto userDto;
+    private UserDto user;
     private List<OrderItemDto> orderItems = new ArrayList<>();
     private Double totalPrice;
     private PointDto pickupLocation;
     private PointDto dropoffLocation;
+    private PaymentDto payment;
+    private OrderStatus orderStatus;
     private LocalDateTime OrderCreationTime;
-    private DeliveryPartnerDto deliveryPartnerDto;
+    private RestaurantDto restaurant;
+    private DeliveryPartnerDto deliveryPartner;
     private LocalDateTime DeliveryTime;
+    private String otp;
 
 }

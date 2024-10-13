@@ -10,7 +10,8 @@ import com.food.zotatoFoods.entites.enums.PaymentStatus;
 
 @Entity
 @Table(name = "Payment", indexes = {
-        @Index(name = "idx_payment_paymentstatus", columnList = "paymentStatus")
+        @Index(name = "idx_payment_paymentstatus", columnList = "paymentStatus"),
+        @Index(name = "idx_payment_order_id", columnList = "order_id")
 })
 @Data
 @AllArgsConstructor
@@ -25,7 +26,7 @@ public class Payment {
     private Long id;
     @Enumerated(EnumType.STRING)
     private PaymentMethod paymentMethod;
-    @OneToOne(fetch = FetchType.LAZY, mappedBy = "payment")
+    @OneToOne
     private Order order;
     private Double amount;
     @Enumerated(EnumType.STRING)

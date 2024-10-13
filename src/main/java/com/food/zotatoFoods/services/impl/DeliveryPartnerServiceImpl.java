@@ -3,6 +3,8 @@ package com.food.zotatoFoods.services.impl;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
+
+import com.food.zotatoFoods.dto.DeliveryPartnerDto;
 import com.food.zotatoFoods.entites.DeliveryPartner;
 import com.food.zotatoFoods.entites.User;
 import com.food.zotatoFoods.repositories.DeliveryPartnerRepository;
@@ -53,12 +55,6 @@ public class DeliveryPartnerServiceImpl implements DeliveryPartnerService {
     }
 
     @Override
-    public DeliveryPartner AddNewDeliveryPartner(DeliveryPartner deliveryPartner) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'AddNewDeliveryPartner'");
-    }
-
-    @Override
     public Page<DeliveryPartner> getAllDeliveryPartner(PageRequest pageRequest) {
         return deliveryPartnerRepository.findAll(pageRequest);
     }
@@ -67,6 +63,12 @@ public class DeliveryPartnerServiceImpl implements DeliveryPartnerService {
     public Boolean removeDeliveryPartner(Long userId) {
         // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'removeDeliveryPartner'");
+    }
+
+    @Override
+    public DeliveryPartnerDto AddNewDeliveryPartner(DeliveryPartner deliveryPartner) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'AddNewDeliveryPartner'");
     }
 
 }

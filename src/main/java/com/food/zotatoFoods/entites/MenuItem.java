@@ -15,7 +15,6 @@ import lombok.Setter;
 @Data
 @Entity
 @Table(name = "MenuItem", indexes = {
-        @Index(name = "idx_menuitem_restaurant_id", columnList = "restaurant_id"),
         @Index(name = "idx_menuitem_name", columnList = "name"),
         @Index(name = "idx_menuitem_foodcategory", columnList = "foodCategory")
 })
@@ -34,7 +33,7 @@ public class MenuItem {
     private Double rating;
     private Boolean isAvailable;
     @ManyToOne
-    @JoinColumn(name = "restaurant_id", nullable = false)
-    private Restaurant restaurant;
+    @JoinColumn(name = "menu_id", nullable = false)
+    private Menu menu;
 
 }

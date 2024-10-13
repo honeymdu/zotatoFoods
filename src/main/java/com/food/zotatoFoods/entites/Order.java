@@ -22,7 +22,9 @@ import com.food.zotatoFoods.entites.enums.OrderStatus;
         @Index(name = "idx_order_user_id", columnList = "user_id"),
         @Index(name = "idx_order_deliverypartner_id", columnList = "deliveryPartner_id"),
         @Index(name = "idx_order_orderstatus", columnList = "orderStatus"),
-        @Index(name = "idx_order_payment_id", columnList = "payment_id")
+        @Index(name = "idx_order_payment_id", columnList = "payment_id"),
+        @Index(name = "idx_order_restaurant_id", columnList = "restaurant_id"),
+        @Index(name = "idx_order_ordercreationtime", columnList = "OrderCreationTime")
 })
 public class Order {
 
@@ -51,5 +53,6 @@ public class Order {
     @OneToOne
     private DeliveryPartner deliveryPartner;
     private LocalDateTime DeliveryTime;
+    private String otp;
 
 }

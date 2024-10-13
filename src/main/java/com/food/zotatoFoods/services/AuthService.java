@@ -1,6 +1,6 @@
 package com.food.zotatoFoods.services;
 
-import com.food.zotatoFoods.dto.RestaurantOwnerSignUpDto;
+import com.food.zotatoFoods.dto.RestaurantPartnerDto;
 import com.food.zotatoFoods.dto.SignUpDto;
 import com.food.zotatoFoods.dto.UserDto;
 
@@ -10,7 +10,7 @@ public interface AuthService {
 
     UserDto consumerSignUp(SignUpDto signupDto);
 
-    UserDto RestaurantOwnerSignUp(RestaurantOwnerSignUpDto restaurantOwnerSignUpDto);
+    UserDto RestaurantOwnerSignUp(RestaurantPartnerDto restaurantOwnerSignUpDto);
 
     String refreshToken(String refreshToken);
 

@@ -1,6 +1,8 @@
 package com.food.zotatoFoods.services;
 
+import java.sql.Driver;
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -8,6 +10,7 @@ import org.springframework.data.domain.Pageable;
 import com.food.zotatoFoods.entites.MenuItem;
 import com.food.zotatoFoods.entites.Order;
 import com.food.zotatoFoods.entites.Restaurant;
+import com.food.zotatoFoods.entites.RestaurantPartner;
 import com.food.zotatoFoods.entites.User;
 import com.food.zotatoFoods.entites.WalletTransaction;
 
@@ -37,8 +40,8 @@ public interface RestaurantService {
 
     public Page<Restaurant> findAllRestaurant(Pageable pageRequest);
 
-    Restaurant getRestaurantByUser(User user);
+    public List<Restaurant> getRestaurantByRestaurantPartner(RestaurantPartner restaurantPartner);
 
-    Boolean removeRestaurant(Restaurant restaurant);
+    Boolean removeRestaurant(Long RestaurantId);
 
 }

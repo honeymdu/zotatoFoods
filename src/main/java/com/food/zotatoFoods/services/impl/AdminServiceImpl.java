@@ -2,8 +2,10 @@ package com.food.zotatoFoods.services.impl;
 
 import com.food.zotatoFoods.dto.DeliveryPartnerDto;
 import com.food.zotatoFoods.dto.RestaurantDto;
+import com.food.zotatoFoods.dto.RestaurantPartnerDto;
 import com.food.zotatoFoods.entites.DeliveryPartner;
 import com.food.zotatoFoods.entites.Restaurant;
+import com.food.zotatoFoods.entites.RestaurantPartner;
 import com.food.zotatoFoods.entites.User;
 import com.food.zotatoFoods.entites.enums.Role;
 import com.food.zotatoFoods.exceptions.RuntimeConfilictException;
@@ -32,39 +34,32 @@ public class AdminServiceImpl implements AdminService {
     @SuppressWarnings("unlikely-arg-type")
     @Override
     @Transactional
-    public Restaurant onBoardNewRestaurant(Long UserId, RestaurantDto restaurantDto) {
+    public RestaurantPartnerDto onBoardNewRestaurantPartner(Long UserId , RestaurantPartnerDto RestaurantPartnerDto) {
         // Check User Already Exist.
         User user = userService.getUserFromId(UserId);
         // Check User role is RESTRORENT OWNER
-        if (!user.getRole().equals(Role.RESTAURENT_OWNER)) {
-            throw new RuntimeException("User Role is Not RESTAURENT_OWNER with userID +" + UserId);
+        if (!user.getRole().equals(Role.RESTAURENT_PARTNER)) {
+            throw new RuntimeConfilictException("User is Already a RESTAURENT_PARTNER with userID +" + UserId);
         }
-        // Check Restaurant already Exists with same name Corresponding to User
-        Restaurant IsrestaurantExist = restaurantService.getRestaurantByUser(user);
-        if (IsrestaurantExist.getName().equals(restaurantDto.getName())) {
-            throw new RuntimeConfilictException("Restaurant Already Exist with User id" + UserId
-                    + " and with Restaurant Name " + restaurantDto.getName());
-        }
-        Restaurant restaurant = modelMapper.map(restaurantDto, Restaurant.class);
-        restaurant.setRestaurantOwner(user);
-        // Add New Restaurant
-        return restaurantService.save(restaurant);
+        return RestaurantPartnerDto;
     }
 
     @Override
-    public Page<Restaurant> getAllRestaurant(PageRequest pageRequest) {
-        return restaurantService.findAllRestaurant(pageRequest);
+    public Page<RestaurantDto> getAllRestaurant(PageRequest pageRequest) {
+        return restaurantService.findAllRestaurant(pageRequest)
+                .map(Restaurant -> modelMapper.map(Restaurant, RestaurantDto.class));
     }
 
     @Override
-    public Page<DeliveryPartner> getAllDeliveryPartner(PageRequest pageRequest) {
-        return deliveryPartnerService.getAllDeliveryPartner(pageRequest);
+    public Page<DeliveryPartnerDto> getAllDeliveryPartner(PageRequest pageRequest) {
+        return deliveryPartnerService.getAllDeliveryPartner(pageRequest)
+                .map(DeliveryPartner -> modelMapper.map(DeliveryPartner, DeliveryPartnerDto.class));
     }
 
     @SuppressWarnings("unlikely-arg-type")
     @Override
     @Transactional
-    public DeliveryPartner onBoardDeliveryPartner(Long UserId, DeliveryPartnerDto deliveryPartnerDto) {
+    public DeliveryPartnerDto onBoardDeliveryPartner(Long UserId, DeliveryPartnerDto deliveryPartnerDto) {
         // Check User Already Exist.
         User user = userService.getUserFromId(UserId);
         // Check User role is RESTRORENT OWNER
@@ -86,7 +81,8 @@ public class AdminServiceImpl implements AdminService {
     }
 
     @Override
-    public Boolean removeRestaurant(Restaurant restaurant) {
-        return restaurantService.removeRestaurant(restaurant);
+    public Boolean removeRestaurant(Long RestaurantId) {
+        return restaurantService.removeRestaurant(RestaurantId);
     }
+
 }

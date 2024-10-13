@@ -10,6 +10,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Index;
+import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
@@ -23,7 +24,7 @@ import jakarta.persistence.Table;
 @Table(name = "Restaurant", indexes = {
         @Index(name = "idx_restaurant_name", columnList = "name"),
         @Index(name = "idx_restaurant_isavailable", columnList = "isAvailable"),
-        @Index(name = "idx_restaurant", columnList = "restaurantOwner_id")
+        @Index(name = "idx_restaurant", columnList = "user_id")
 })
 public class Restaurant {
 
@@ -32,12 +33,13 @@ public class Restaurant {
     private Long id;
     private String name;
     private Point restaurantLocation;
-    private Double rating=0.0;
-    private Boolean isAvailable=true;
+    private Double rating = 0.0;
+    private Boolean isAvailable = true;
     @OneToMany(mappedBy = "restaurant")
-    private List<MenuItem> menuItems;
+    private List<Menu> menu;
     @ManyToOne
-    private User restaurantOwner;
+    @JoinColumn(name = "user_id", referencedColumnName = "id")
+    private RestaurantPartner restaurantPartner;
     @OneToMany(mappedBy = "restaurant")
     private List<Order> Orders;
 
