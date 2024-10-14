@@ -19,7 +19,7 @@ import com.food.zotatoFoods.entites.enums.OrderStatus;
 @Getter
 @Setter
 @Table(name = "user_order", indexes = {
-        @Index(name = "idx_order_user_id", columnList = "user_id"),
+        @Index(name = "idx_order_user_id", columnList = "consumer_id"),
         @Index(name = "idx_order_deliverypartner_id", columnList = "deliveryPartner_id"),
         @Index(name = "idx_order_orderstatus", columnList = "orderStatus"),
         @Index(name = "idx_order_payment_id", columnList = "payment_id"),
@@ -32,10 +32,12 @@ public class Order {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @ManyToOne
-    @JoinColumn(name = "user_id", nullable = false)
-    private User user;
+    @JoinColumn(name = "consumer_id", nullable = false)
+    private Consumer consumer;
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<OrderItem> orderItems = new ArrayList<>();
+    private Double foodAmount;
+    private Double platformFee;
     private Double totalPrice;
     @Column(columnDefinition = "Geometry(Point,4326)")
     private Point pickupLocation;
@@ -54,5 +56,6 @@ public class Order {
     private DeliveryPartner deliveryPartner;
     private LocalDateTime DeliveryTime;
     private String otp;
+
 
 }

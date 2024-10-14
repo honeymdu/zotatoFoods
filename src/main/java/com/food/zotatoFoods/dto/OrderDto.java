@@ -20,6 +20,8 @@ public class OrderDto {
     private UserDto user;
     private List<OrderItemDto> orderItems = new ArrayList<>();
     private Double totalPrice;
+    private Double foodAmount;
+    private Double platformFee;
     private PointDto pickupLocation;
     private PointDto dropoffLocation;
     private PaymentDto payment;
@@ -29,5 +31,6 @@ public class OrderDto {
     private DeliveryPartnerDto deliveryPartner;
     private LocalDateTime DeliveryTime;
     private String otp;
+
 
 }
