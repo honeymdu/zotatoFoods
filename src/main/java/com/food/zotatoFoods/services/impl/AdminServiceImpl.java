@@ -4,8 +4,6 @@ import com.food.zotatoFoods.dto.DeliveryPartnerDto;
 import com.food.zotatoFoods.dto.RestaurantDto;
 import com.food.zotatoFoods.dto.RestaurantPartnerDto;
 import com.food.zotatoFoods.entites.DeliveryPartner;
-import com.food.zotatoFoods.entites.Restaurant;
-import com.food.zotatoFoods.entites.RestaurantPartner;
 import com.food.zotatoFoods.entites.User;
 import com.food.zotatoFoods.entites.enums.Role;
 import com.food.zotatoFoods.exceptions.RuntimeConfilictException;
@@ -16,6 +14,9 @@ import com.food.zotatoFoods.services.WalletService;
 
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+
+import java.util.Set;
+
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -67,7 +68,7 @@ public class AdminServiceImpl implements AdminService {
             throw new RuntimeConfilictException("User Role is Already DELIVERY_PARTNER with userID +" + UserId);
         }
         // Set User Role
-        user.setRole(Role.DELIVERY_PARTNER);
+        user.setRole(Set.of(Role.DELIVERY_PARTNER));
         User savedUser = userService.save(user);
         DeliveryPartner deliveryPartner = modelMapper.map(deliveryPartnerDto, DeliveryPartner.class);
         deliveryPartner.setUser(savedUser);

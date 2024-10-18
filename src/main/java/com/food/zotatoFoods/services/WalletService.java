@@ -1,5 +1,6 @@
 package com.food.zotatoFoods.services;
 
+import com.food.zotatoFoods.dto.WalletDto;
 import com.food.zotatoFoods.entites.Order;
 import com.food.zotatoFoods.entites.User;
 import com.food.zotatoFoods.entites.Wallet;
@@ -17,7 +18,7 @@ public interface WalletService {
 
     Wallet findWalletById(Long WalletId);
 
-    Wallet createNewWallet(User user);
+    WalletDto createNewWallet(User user);
 
     Wallet findWalletByUser(User user);
 

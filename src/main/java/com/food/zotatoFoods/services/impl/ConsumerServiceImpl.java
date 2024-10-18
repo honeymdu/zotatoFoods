@@ -1,25 +1,20 @@
 package com.food.zotatoFoods.services.impl;
-
-import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.jaxb.SpringDataJaxb.OrderDto;
 import org.springframework.stereotype.Service;
 
 import com.food.zotatoFoods.entites.Consumer;
-import com.food.zotatoFoods.entites.Order;
 import com.food.zotatoFoods.entites.Restaurant;
 import com.food.zotatoFoods.entites.User;
-import com.food.zotatoFoods.services.CartService;
+import com.food.zotatoFoods.repositories.ConsumerRepository;
 import com.food.zotatoFoods.services.ConsumerService;
-import com.food.zotatoFoods.services.OrderService;
+
 import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor
 public class ConsumerServiceImpl implements ConsumerService {
 
-    private final CartService cartService;
-    private final OrderService orderService;
-    private final ModelMapper modelMapper;
+    private final ConsumerRepository consumerRepository;
 
     @Override
     public OrderDto createOrderRequest(Long CartId) {
@@ -34,8 +29,8 @@ public class ConsumerServiceImpl implements ConsumerService {
 
     @Override
     public Consumer createNewConsumer(User user) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'createNewConsumer'");
+        Consumer consumer = Consumer.builder().user(user).rating(0.0).build();
+        return consumerRepository.save(consumer);
     }
 
     @Override

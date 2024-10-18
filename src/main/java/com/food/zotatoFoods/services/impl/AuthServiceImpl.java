@@ -15,7 +15,6 @@ import com.food.zotatoFoods.dto.UserDto;
 import com.food.zotatoFoods.entites.User;
 import com.food.zotatoFoods.entites.enums.Role;
 import com.food.zotatoFoods.exceptions.RuntimeConfilictException;
-import com.food.zotatoFoods.repositories.UserRepository;
 import com.food.zotatoFoods.security.JWTService;
 import com.food.zotatoFoods.services.AuthService;
 import com.food.zotatoFoods.services.ConsumerService;
@@ -28,7 +27,6 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class AuthServiceImpl implements AuthService {
 
-    private final UserRepository userRepository;
     private final ModelMapper modelMapper;
     private final PasswordEncoder passwordEncoder;
     private final ConsumerService consumerService;
@@ -50,17 +48,15 @@ public class AuthServiceImpl implements AuthService {
     @Override
     @Transactional
     public UserDto consumerSignUp(SignUpDto signupDto) {
-        User user = userRepository.findByEmail(signupDto.getEmail())
-                .orElseThrow(() -> new RuntimeConfilictException("User not Found With Email " + signupDto.getEmail()));
-
+        User user = userService.findUserByEmail(signupDto.getEmail());
         if (user != null)
             throw new RuntimeConfilictException(
                     "Cannot signup, User already exists with email " + signupDto.getEmail());
 
         User mappedUser = modelMapper.map(signupDto, User.class);
-        mappedUser.setRole(Role.CONSUMER);
+        mappedUser.setRole(Set.of(Role.CONSUMER));
         mappedUser.setPassword(passwordEncoder.encode(signupDto.getPassword()));
-        User savedUser = userRepository.save(mappedUser);
+        User savedUser = userService.save(mappedUser);
         consumerService.createNewConsumer(savedUser);
         walletService.createNewWallet(savedUser);
         return modelMapper.map(savedUser, UserDto.class);
@@ -76,20 +72,7 @@ public class AuthServiceImpl implements AuthService {
 
     @Override
     public UserDto RestaurantOwnerSignUp(RestaurantPartnerDto restaurantOwnerSignUpDto) {
-        User user = userRepository.findByEmail(restaurantOwnerSignUpDto.getUser().getEmail())
-                .orElseThrow(() -> new RuntimeConfilictException("User not Found With Email " + restaurantOwnerSignUpDto.getUser().getEmail()));
-
-        if (user != null)
-            throw new RuntimeConfilictException(
-                    "Cannot signup, User already exists with email " + restaurantOwnerSignUpDto.getUser().getEmail());
-
-        User mappedUser = modelMapper.map(restaurantOwnerSignUpDto, User.class);
-        mappedUser.setRole(Role.RESTAURENT_PARTNER);
-        mappedUser.setPassword(passwordEncoder.encode(restaurantOwnerSignUpDto.getUser().getPassword()));
-        User savedUser = userRepository.save(mappedUser);
-        consumerService.createNewConsumer(savedUser);
-        walletService.createNewWallet(savedUser);
-        return modelMapper.map(savedUser, UserDto.class);
+       return null;
     }
 
 }

@@ -3,6 +3,7 @@ package com.food.zotatoFoods.entites;
 import java.util.Collection;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import com.food.zotatoFoods.entites.enums.Role;
 
@@ -19,7 +20,9 @@ import jakarta.persistence.Index;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import lombok.*;
+
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 @Entity
@@ -32,7 +35,7 @@ import org.springframework.security.core.userdetails.UserDetails;
         @Index(name = "idx_user_email", columnList = "email"),
         @Index(name = "idx_user_name", columnList = "name")
 })
-public class User implements UserDetails {
+public class User implements UserDetails  {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -51,37 +54,33 @@ public class User implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return List.of();
+        return role.stream().map(role -> new SimpleGrantedAuthority("ROLE_" + role.name().toString()))
+                .collect(Collectors.toSet());
     }
 
     @Override
     public String getUsername() {
-        return "";
+        return this.email;
     }
 
     @Override
     public boolean isAccountNonExpired() {
-        return false;
+        return true;
     }
 
     @Override
     public boolean isAccountNonLocked() {
-        return false;
+        return true;
     }
 
     @Override
     public boolean isCredentialsNonExpired() {
-        return false;
+        return true;
     }
 
     @Override
     public boolean isEnabled() {
-        return false;
-    }
-
-    public void setRole(Role deliveryPartner) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'setRole'");
+        return true;
     }
 
 }

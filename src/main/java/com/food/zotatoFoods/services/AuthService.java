@@ -1,5 +1,6 @@
 package com.food.zotatoFoods.services;
 
+import com.food.zotatoFoods.dto.ConsumerDto;
 import com.food.zotatoFoods.dto.RestaurantPartnerDto;
 import com.food.zotatoFoods.dto.SignUpDto;
 import com.food.zotatoFoods.dto.UserDto;
