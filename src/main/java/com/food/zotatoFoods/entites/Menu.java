@@ -27,7 +27,7 @@ public class Menu {
     @OneToMany(mappedBy = "menu")
     private List<MenuItem> menuItems;
     private Boolean isActive;
-    @ManyToOne(fetch = FetchType.LAZY)
+    @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "restaurant_id")
     private Restaurant restaurant;
 }

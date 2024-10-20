@@ -70,9 +70,4 @@ public class AuthServiceImpl implements AuthService {
         return jwtService.GenerateAccessToken(user);
     }
 
-    @Override
-    public UserDto RestaurantOwnerSignUp(RestaurantPartnerDto restaurantOwnerSignUpDto) {
-       return null;
-    }
-
 }

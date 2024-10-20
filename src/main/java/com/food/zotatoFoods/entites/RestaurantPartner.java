@@ -1,5 +1,7 @@
 package com.food.zotatoFoods.entites;
 
+import java.util.List;
+
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -25,6 +27,6 @@ public class RestaurantPartner {
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     private User user;
-    @OneToOne(mappedBy = "restaurantPartner")
-    private Restaurant restaurant;
+    @OneToMany(mappedBy = "restaurantPartner")
+    private List<Restaurant> restaurant;
 }

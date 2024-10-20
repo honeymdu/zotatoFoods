@@ -1,5 +1,6 @@
 package com.food.zotatoFoods.services.impl;
 
+import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
@@ -17,6 +18,7 @@ import lombok.RequiredArgsConstructor;
 public class DeliveryPartnerServiceImpl implements DeliveryPartnerService {
 
     private final DeliveryPartnerRepository deliveryPartnerRepository;
+    private final ModelMapper modelMapper;
 
     @Override
     public User rateDeliveryPartner(Long UserId, Integer rating) {
@@ -67,8 +69,7 @@ public class DeliveryPartnerServiceImpl implements DeliveryPartnerService {
 
     @Override
     public DeliveryPartnerDto AddNewDeliveryPartner(DeliveryPartner deliveryPartner) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'AddNewDeliveryPartner'");
+       return modelMapper.map(deliveryPartnerRepository.save(deliveryPartner),DeliveryPartnerDto.class);
     }
 
 }

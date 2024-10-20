@@ -31,8 +31,6 @@ public class Cart {
     @OneToMany(mappedBy = "cart")
     private List<CartItem> cartItems = new ArrayList<>();
     private Double totalPrice;
-    private Double deliveryFee;
-    private Double foodAmount;
     private Boolean ValidCart;
 
 }

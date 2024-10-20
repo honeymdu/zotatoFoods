@@ -19,7 +19,7 @@ public class DeliveryPartnerDto {
     private UserDto user;
     private Boolean available=true;
     private String vehicleId;
-    private Point currentLocation;
+    private PointDto currentLocation;
     private List<DeliveryItemDto> deliveryItems;
 
 }

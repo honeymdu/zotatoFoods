@@ -16,7 +16,6 @@ public class UserDto {
     private String email;
     private Set<Role> role;
     private String contact;
-    private String GstNumber;
     private List<AddressDto> addresses;
 
 }

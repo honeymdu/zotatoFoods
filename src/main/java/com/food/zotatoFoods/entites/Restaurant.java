@@ -13,6 +13,7 @@ import jakarta.persistence.Index;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
+import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 
 @Entity
@@ -24,7 +25,6 @@ import jakarta.persistence.Table;
 @Table(name = "Restaurant", indexes = {
         @Index(name = "idx_restaurant_name", columnList = "name"),
         @Index(name = "idx_restaurant_isavailable", columnList = "isAvailable"),
-        @Index(name = "idx_restaurant", columnList = "user_id")
 })
 public class Restaurant {
 
@@ -34,13 +34,15 @@ public class Restaurant {
     private String name;
     private Point restaurantLocation;
     private Double rating = 0.0;
+    private String GstNumber;
     private Boolean isAvailable = true;
-    @OneToMany(mappedBy = "restaurant")
-    private List<Menu> menu;
+    @OneToOne(mappedBy = "restaurant")
+    private Menu menu;
     @ManyToOne
-    @JoinColumn(name = "user_id", referencedColumnName = "id")
     private RestaurantPartner restaurantPartner;
     @OneToMany(mappedBy = "restaurant")
     private List<Order> Orders;
+    @OneToMany(mappedBy = "restaurant")
+    private List<OrderRequests> orderRequests;
 
 }

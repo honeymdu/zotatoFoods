@@ -15,8 +15,6 @@ public class CartDto {
     private RestaurantDto restaurantDto;
     private List<CartItemDto> cartItemsDto = new ArrayList<>();
     private Double totalPrice;
-    private Double deliveryFee;
-    private Double foodAmount;
     private Boolean ValidCart;
 
 }

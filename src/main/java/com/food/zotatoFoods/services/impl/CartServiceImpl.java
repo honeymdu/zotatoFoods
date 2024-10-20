@@ -33,10 +33,8 @@ public class CartServiceImpl implements CartService {
         Restaurant restaurant = restaurantService.getRestaurantById(restaurantId);
         Consumer consumer = consumerService.getConsumerById(ConsumerId);
         Cart cart = Cart.builder()
-                .foodAmount(0.0)
                 .restaurant(restaurant)
                 .user(consumer)
-                .deliveryFee(0.0)
                 .totalPrice(0.0)
                 .ValidCart(true)
                 .cartItems(new ArrayList<>())

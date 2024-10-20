@@ -48,7 +48,6 @@ public class User implements UserDetails  {
     @Enumerated(EnumType.STRING)
     private Set<Role> role;
     private String contact;
-    private String GstNumber;
     @OneToMany(mappedBy = "user")
     private List<Address> addresses;
 

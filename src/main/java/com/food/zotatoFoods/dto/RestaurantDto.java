@@ -15,8 +15,9 @@ public class RestaurantDto {
     private String name;
     private PointDto restaurantLocation;
     private Double rating = 0.0;
+    private String GstNumber;
     private Boolean isAvailable = true;
-    private List<MenuDto> menu;
+    private MenuDto menu;
     private RestaurantPartnerDto RestaurantOwner;
     private List<OrderDto> Orders;
 

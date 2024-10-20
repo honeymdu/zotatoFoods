@@ -28,14 +28,9 @@ public class AuthController {
 
     private final AuthService authService;
 
-    @PostMapping("/consumerSignUp")
+    @PostMapping("/SignUp")
     public ResponseEntity<UserDto> signUp(@RequestBody SignUpDto signupDto) {
         return new ResponseEntity<>(authService.consumerSignUp(signupDto), HttpStatus.CREATED);
-    }
-
-    @PostMapping("/PartnerSignUp")
-    public ResponseEntity<UserDto> signUp(@RequestBody RestaurantPartnerDto restaurantOwnerSignUpDto) {
-        return new ResponseEntity<>(authService.RestaurantOwnerSignUp(restaurantOwnerSignUpDto), HttpStatus.CREATED);
     }
 
     @PostMapping("/login")

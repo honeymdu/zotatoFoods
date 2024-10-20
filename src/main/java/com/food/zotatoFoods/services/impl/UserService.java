@@ -35,6 +35,11 @@ public class UserService implements UserDetailsService {
                 .orElse(null);
     }
 
+    public User findUserById(Long userId) {
+        return userRepository.findById(userId)
+                .orElse(null);
+    }
+
     public User save(User user) {
         return userRepository.save(user);
     }
