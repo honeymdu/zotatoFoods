@@ -2,7 +2,6 @@ package com.food.zotatoFoods.controllers;
 
 import com.food.zotatoFoods.dto.LoginRequestDto;
 import com.food.zotatoFoods.dto.LoginResponceDto;
-import com.food.zotatoFoods.dto.RestaurantPartnerDto;
 import com.food.zotatoFoods.dto.SignUpDto;
 import com.food.zotatoFoods.dto.UserDto;
 import com.food.zotatoFoods.services.AuthService;

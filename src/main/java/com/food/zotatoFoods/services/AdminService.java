@@ -21,4 +21,7 @@ public interface AdminService {
 
     public Boolean removeRestaurant(Long RestaurantId);
 
+    public Boolean varifyRestaurant(Long restaurantId);
+
+
 }

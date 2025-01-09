@@ -1,7 +1,10 @@
 package com.food.zotatoFoods.services.impl;
 
 import java.util.List;
+import java.util.Optional;
+
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
@@ -10,6 +13,7 @@ import com.food.zotatoFoods.entites.Order;
 import com.food.zotatoFoods.entites.Restaurant;
 import com.food.zotatoFoods.entites.RestaurantPartner;
 import com.food.zotatoFoods.entites.WalletTransaction;
+import com.food.zotatoFoods.exceptions.ResourceNotFoundException;
 import com.food.zotatoFoods.repositories.RestaurantRepository;
 import com.food.zotatoFoods.services.RestaurantService;
 
@@ -23,20 +27,14 @@ public class RestaurantServiceImpl implements RestaurantService {
 
     @Override
     public Restaurant getRestaurantById(Long restaurantId) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getRestaurantById'");
+        return restaurantRepository.findById(restaurantId).orElseThrow(
+                () -> new ResourceNotFoundException("Restaurant Not Found with Restaurant ID =" + restaurantId));
     }
 
     @Override
     public Page<MenuItem> getMenuFromRestaurant(Long restaurantId, Pageable pageable, String sortBy) {
         // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'getMenuFromRestaurant'");
-    }
-
-    @Override
-    public Restaurant getRestaurant(Long restaurantId) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getRestaurant'");
     }
 
     @Override
@@ -82,11 +80,6 @@ public class RestaurantServiceImpl implements RestaurantService {
     }
 
     @Override
-    public Restaurant save(Restaurant restaurant) {
-        return restaurantRepository.save(restaurant);
-    }
-
-    @Override
     public Page<Restaurant> findAllRestaurant(Pageable pageRequest) {
         return restaurantRepository.findAll(pageRequest);
     }
@@ -100,6 +93,40 @@ public class RestaurantServiceImpl implements RestaurantService {
     public Boolean removeRestaurant(Long RestaurantId) {
         // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'removeRestaurant'");
+    }
+
+    @Override
+    public Boolean AddNewRestaurant(Restaurant restaurant) {
+        Restaurant savedRestaurant = restaurantRepository.save(restaurant);
+        if (!savedRestaurant.equals(null)) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    @Override
+    public Restaurant getRestaurantByIdAndRestaurantPartner(Long restaurantId, RestaurantPartner restaurantPartner) {
+        return restaurantRepository.findByIdAndRestaurantPartner(restaurantId, restaurantPartner)
+                .orElseThrow(() -> new ResourceNotFoundException("Restaurant Not found"));
+    }
+
+    @Override
+    public Boolean IsRestaurentAlreadyExist(Restaurant newRestaurant) {
+        Optional<Restaurant> restaurant = restaurantRepository.findByNameAndRestaurantPartner(newRestaurant.getName(),
+                newRestaurant.getRestaurantPartner());
+        return restaurant.isPresent();
+    }
+
+    @Override
+    public Boolean save(Restaurant restaurant) {
+        restaurantRepository.save(restaurant);
+        return true;
+    }
+
+    @Override
+    public Page<Restaurant> getAllVarifiedRestaurant(PageRequest pageRequest) {
+        return restaurantRepository.findByIsAvailableAndIsVarified(pageRequest, true, true);
     }
 
 }

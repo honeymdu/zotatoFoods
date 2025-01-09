@@ -1,9 +1,5 @@
 package com.food.zotatoFoods.dto;
 import java.util.List;
-
-import org.locationtech.jts.geom.Point;
-
-
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;

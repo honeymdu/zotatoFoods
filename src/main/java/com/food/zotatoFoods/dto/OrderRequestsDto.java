@@ -16,7 +16,6 @@ import lombok.Setter;
 @Setter
 public class OrderRequestsDto {
 
-    private Long id;
     private CartDto cart;
     private Double foodAmount;
     private Double platformFee;
@@ -28,4 +27,3 @@ public class OrderRequestsDto {
     private PaymentMethod paymentMethod;
 
 }
-

@@ -52,12 +52,12 @@ public class CartItemServiceImpl implements CartItemService {
 
     @Override
     public CartItemDto decrementCartItemQuantity(Integer quantity, CartItem cartItem) {
-        if (quantity == 0){
+        if (quantity == 0) {
             throw new RuntimeException("Quantity has to be greater than zero");
-        }else if(cartItem.getQuantity() == 0){
+        } else if (cartItem.getQuantity() == 0) {
             throw new RuntimeException("Quantity already set to low");
-        } else if (cartItem.getQuantity()-quantity<0) {
-            throw new RuntimeException("Quantity must be less than or equal to "+cartItem.getQuantity());
+        } else if (cartItem.getQuantity() - quantity < 0) {
+            throw new RuntimeException("Quantity must be less than or equal to " + cartItem.getQuantity());
         }
         cartItem.setQuantity(cartItem.getQuantity() - quantity);
         Cart cart = cartItem.getCart();
@@ -70,5 +70,21 @@ public class CartItemServiceImpl implements CartItemService {
     public void removeCartItemFromCart(CartItem cartItem) {
         cartItemRepository.deleteById(cartItem.getId());
     }
+
+    @Override
+    public Boolean isCartItemExist(MenuItem menuItem, Cart cart) {
+        CartItem cartItem = cartItemRepository.findByMenuItemAndCartId(menuItem, cart.getId());
+        if (!cartItem.equals(null)) {
+            return true;
+        }
+        return false;
+    }
+
+    @Override
+    public CartItem getCartItemByMenuItemAndCart(MenuItem menuItem, Cart cart) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'getCartItemByMenuItemAndCart'");
+    }
+
 
 }

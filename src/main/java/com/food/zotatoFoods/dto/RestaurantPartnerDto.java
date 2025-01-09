@@ -13,7 +13,6 @@ import lombok.Setter;
 @NoArgsConstructor
 public class RestaurantPartnerDto {
 
-    private Long id;
     private Long aadharNo;
     private UserDto user;
    

@@ -8,14 +8,12 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-
-import com.food.zotatoFoods.dto.RestaurantPartnerDto;
 import com.food.zotatoFoods.dto.SignUpDto;
 import com.food.zotatoFoods.dto.UserDto;
 import com.food.zotatoFoods.entites.User;
 import com.food.zotatoFoods.entites.enums.Role;
 import com.food.zotatoFoods.exceptions.RuntimeConfilictException;
-import com.food.zotatoFoods.security.JWTService;
+import com.food.zotatoFoods.Security.JWTService;
 import com.food.zotatoFoods.services.AuthService;
 import com.food.zotatoFoods.services.ConsumerService;
 import com.food.zotatoFoods.services.WalletService;

@@ -1,6 +1,5 @@
 package com.food.zotatoFoods.entites;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import jakarta.persistence.*;
@@ -25,11 +24,11 @@ public class Cart {
     private Long id;
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
-    private Consumer user;
+    private Consumer consumer;
     @OneToOne
     private Restaurant restaurant;
     @OneToMany(mappedBy = "cart")
-    private List<CartItem> cartItems = new ArrayList<>();
+    private List<CartItem> cartItems;
     private Double totalPrice;
     private Boolean ValidCart;
 

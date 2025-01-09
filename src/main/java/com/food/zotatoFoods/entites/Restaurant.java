@@ -2,7 +2,6 @@ package com.food.zotatoFoods.entites;
 
 import java.util.List;
 
-import lombok.*;
 import org.locationtech.jts.geom.Point;
 
 import jakarta.persistence.Entity;
@@ -10,11 +9,15 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Index;
-import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Entity
 @Data
@@ -33,9 +36,10 @@ public class Restaurant {
     private Long id;
     private String name;
     private Point restaurantLocation;
-    private Double rating = 0.0;
-    private String GstNumber;
-    private Boolean isAvailable = true;
+    private String gstNumber;
+    private Double rating;
+    private Boolean isAvailable;
+    private Boolean isVarified; 
     @OneToOne(mappedBy = "restaurant")
     private Menu menu;
     @ManyToOne

@@ -14,6 +14,10 @@ public interface CartItemService {
     CartItemDto incrementCartItemQuantity(Integer quantity, CartItem cartItem);
 
     CartItemDto decrementCartItemQuantity(Integer quantity, CartItem cartItem);
-    
+
     void removeCartItemFromCart(CartItem cartItem);
+
+    Boolean isCartItemExist(MenuItem menuItem, Cart cart);
+    
+    CartItem getCartItemByMenuItemAndCart(MenuItem menuItem, Cart cart);
 }

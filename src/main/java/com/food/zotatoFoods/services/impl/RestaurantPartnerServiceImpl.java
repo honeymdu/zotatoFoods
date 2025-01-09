@@ -1,5 +1,6 @@
 package com.food.zotatoFoods.services.impl;
 
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import com.food.zotatoFoods.dto.MenuItemDto;
@@ -7,6 +8,8 @@ import com.food.zotatoFoods.dto.OrderDto;
 import com.food.zotatoFoods.dto.OrderRequestsDto;
 import com.food.zotatoFoods.dto.RestaurantDto;
 import com.food.zotatoFoods.entites.RestaurantPartner;
+import com.food.zotatoFoods.entites.User;
+import com.food.zotatoFoods.exceptions.ResourceNotFoundException;
 import com.food.zotatoFoods.repositories.RestaurantPartnerRepository;
 import com.food.zotatoFoods.services.RestaurantPartnerService;
 
@@ -50,8 +53,10 @@ public class RestaurantPartnerServiceImpl implements RestaurantPartnerService {
 
     @Override
     public RestaurantPartner getCurrentRestaurantPartner() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getCurrentRestaurantPartner'");
+       User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        return restaurantPartnerRepository.findByUser(user)
+                .orElseThrow(() -> new ResourceNotFoundException(
+                        "Driver Not Found assosiated with user with userId =" + user.getId()));
     }
 
     @Override

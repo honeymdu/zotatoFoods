@@ -6,10 +6,12 @@ import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.food.zotatoFoods.dto.DeliveryPartnerDto;
@@ -18,8 +20,6 @@ import com.food.zotatoFoods.dto.RestaurantPartnerDto;
 import com.food.zotatoFoods.services.AdminService;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 
 @RestController
 @RequestMapping("/admin")
@@ -42,7 +42,7 @@ public class AdminController {
                 HttpStatus.CREATED);
     }
 
-    @DeleteMapping("remove-delivery-partner/{UserId}")
+    @DeleteMapping("/remove-delivery-partner/{UserId}")
     public ResponseEntity<Boolean> removeDeliveryPartner(@PathVariable Long UserId) {
         Boolean gotDeleted = adminService.removeDeliveryPartner(UserId);
         if (gotDeleted)
@@ -50,7 +50,7 @@ public class AdminController {
         return ResponseEntity.notFound().build();
     }
 
-    @DeleteMapping("/{RestaurantId}")
+    @DeleteMapping("/remove-Restaurant-Partner/{RestaurantId}")
     public ResponseEntity<Boolean> removeRestayarant(@PathVariable Long RestaurantId) {
         Boolean gotDeleted = adminService.removeRestaurant(RestaurantId);
         if (gotDeleted)
@@ -58,7 +58,7 @@ public class AdminController {
         return ResponseEntity.notFound().build();
     }
 
-    @GetMapping("/get-all-restaurant")
+    @GetMapping("/list/get-all-restaurant")
     public ResponseEntity<Page<RestaurantDto>> getAllRestaurant(@RequestParam(defaultValue = "0") Integer PageOffset,
             @RequestParam(defaultValue = "10", required = false) Integer PageSize) {
         PageRequest pageRequest = PageRequest.of(PageOffset, PageSize,
@@ -66,13 +66,20 @@ public class AdminController {
         return ResponseEntity.ok(adminService.getAllRestaurant(pageRequest));
     }
 
-    @GetMapping("/get-all-Delivery-Partner")
+    @GetMapping("/list/get-all-Delivery-Partner")
     public ResponseEntity<Page<DeliveryPartnerDto>> getAllDeliveryPartner(
             @RequestParam(defaultValue = "0") Integer PageOffset,
             @RequestParam(defaultValue = "10", required = false) Integer PageSize) {
         PageRequest pageRequest = PageRequest.of(PageOffset, PageSize,
                 Sort.by(Sort.Direction.DESC, "id"));
         return ResponseEntity.ok(adminService.getAllDeliveryPartner(pageRequest));
+    }
+
+    @PostMapping("/varify-Restaurant/{RestaurantId}")
+    public ResponseEntity<Boolean> VarifyRestaurant(@PathVariable Long RestaurantId) {
+        Boolean IsVarified = adminService.varifyRestaurant(RestaurantId);
+        return ResponseEntity.ok(IsVarified);
+
     }
 
 }

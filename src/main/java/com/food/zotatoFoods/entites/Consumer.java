@@ -21,5 +21,4 @@ public class Consumer {
     @OneToOne(fetch = FetchType.EAGER)
     private User user;
     private Double rating;
-
 }

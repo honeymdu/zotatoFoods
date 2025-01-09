@@ -3,7 +3,6 @@ package com.food.zotatoFoods.services.impl;
 import com.food.zotatoFoods.dto.DeliveryPartnerDto;
 import com.food.zotatoFoods.dto.RestaurantDto;
 import com.food.zotatoFoods.dto.RestaurantPartnerDto;
-import com.food.zotatoFoods.entites.DeliveryPartner;
 import com.food.zotatoFoods.entites.*;
 import com.food.zotatoFoods.entites.enums.Role;
 import com.food.zotatoFoods.exceptions.RuntimeConfilictException;
@@ -11,7 +10,6 @@ import com.food.zotatoFoods.services.AdminService;
 import com.food.zotatoFoods.services.DeliveryPartnerService;
 import com.food.zotatoFoods.services.RestaurantPartnerService;
 import com.food.zotatoFoods.services.RestaurantService;
-import com.food.zotatoFoods.services.WalletService;
 
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -46,8 +44,9 @@ public class AdminServiceImpl implements AdminService {
         user.setRole(Set.of(Role.RESTAURENT_PARTNER));
         RestaurantPartner restaurantPartner = modelMapper.map(restaurantPartnerDto, RestaurantPartner.class);
         restaurantPartner.setUser(user);
-        RestaurantPartner savedrestaurantPartner = restaurantPartnerService.createNewRestaurantPartner(restaurantPartner);
-        return modelMapper.map(savedrestaurantPartner, RestaurantPartnerDto.class);        
+        RestaurantPartner savedrestaurantPartner = restaurantPartnerService
+                .createNewRestaurantPartner(restaurantPartner);
+        return modelMapper.map(savedrestaurantPartner, RestaurantPartnerDto.class);
     }
 
     @Override
@@ -87,6 +86,18 @@ public class AdminServiceImpl implements AdminService {
     @Override
     public Boolean removeRestaurant(Long RestaurantId) {
         return restaurantService.removeRestaurant(RestaurantId);
+    }
+
+    @Override
+    public Boolean varifyRestaurant(Long restaurantId) {
+        Restaurant restaurant = restaurantService.getRestaurantById(restaurantId);
+        // check if already varified.
+        if (restaurant.getIsAvailable()) {
+            throw new RuntimeConfilictException("Restaurant is Already Varified with Restaurant Id = " + restaurantId);
+        }
+        restaurant.setIsVarified(true);
+        return restaurantService.save(restaurant);
+
     }
 
 }

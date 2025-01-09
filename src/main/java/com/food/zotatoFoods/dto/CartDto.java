@@ -11,8 +11,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class CartDto {
     private Long id;
-    private ConsumerDto consumerDto;
-    private RestaurantDto restaurantDto;
+    private ConsumerDto consumer;
+    private RestaurantDto restaurant;
     private List<CartItemDto> cartItemsDto = new ArrayList<>();
     private Double totalPrice;
     private Boolean ValidCart;
