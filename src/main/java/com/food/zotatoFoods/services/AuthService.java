@@ -7,7 +7,7 @@ public interface AuthService {
 
     String[] login(String email, String password);
 
-    UserDto consumerSignUp(SignUpDto signupDto);
+    UserDto SignUp(SignUpDto signupDto);
 
     String refreshToken(String refreshToken);
 

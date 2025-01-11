@@ -1,18 +1,20 @@
 package com.food.zotatoFoods.services.impl;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import com.food.zotatoFoods.dto.RestaurantDto;
 import com.food.zotatoFoods.entites.MenuItem;
-import com.food.zotatoFoods.entites.Order;
+import com.food.zotatoFoods.entites.OrderRequests;
 import com.food.zotatoFoods.entites.Restaurant;
 import com.food.zotatoFoods.entites.RestaurantPartner;
-import com.food.zotatoFoods.entites.WalletTransaction;
 import com.food.zotatoFoods.exceptions.ResourceNotFoundException;
 import com.food.zotatoFoods.repositories.RestaurantRepository;
 import com.food.zotatoFoods.services.RestaurantService;
@@ -24,6 +26,7 @@ import lombok.RequiredArgsConstructor;
 public class RestaurantServiceImpl implements RestaurantService {
 
     private final RestaurantRepository restaurantRepository;
+    private final ModelMapper modelMapper;
 
     @Override
     public Restaurant getRestaurantById(Long restaurantId) {
@@ -32,51 +35,9 @@ public class RestaurantServiceImpl implements RestaurantService {
     }
 
     @Override
-    public Page<MenuItem> getMenuFromRestaurant(Long restaurantId, Pageable pageable, String sortBy) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getMenuFromRestaurant'");
-    }
-
-    @Override
-    public Order acceptOrderRequest(Long orderRequestId) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'acceptOrderRequest'");
-    }
-
-    @Override
-    public Order cancelOrderRequest(Long orderRequestId) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'cancelOrderRequest'");
-    }
-
-    @Override
-    public List<Order> getALlOrders(Long restaurantId) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getALlOrders'");
-    }
-
-    @Override
-    public Restaurant getProfile(Long restaurantId) {
+    public Restaurant viewProfile(Long restaurantId) {
         // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'getProfile'");
-    }
-
-    @Override
-    public List<MenuItem> getMenuItems(Long restaurantId) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getMenuItems'");
-    }
-
-    @Override
-    public List<Order> getAllOrderRequest(Long restaurantId) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getAllOrderRequest'");
-    }
-
-    @Override
-    public List<WalletTransaction> getAllWalletTransaction(Long restaurantId) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getAllWalletTransaction'");
     }
 
     @Override
@@ -96,19 +57,17 @@ public class RestaurantServiceImpl implements RestaurantService {
     }
 
     @Override
-    public Boolean AddNewRestaurant(Restaurant restaurant) {
-        Restaurant savedRestaurant = restaurantRepository.save(restaurant);
-        if (!savedRestaurant.equals(null)) {
-            return true;
-        } else {
-            return false;
-        }
-    }
+    public Restaurant AddNewRestaurant(RestaurantPartner restaurantPartner, RestaurantDto restaurantDto) {
+        Restaurant restaurant = modelMapper.map(restaurantDto, Restaurant.class);
+        List<OrderRequests> orderRequest = new ArrayList<>();
+        restaurant.setIsAvailable(true);
+        restaurant.setIsVarified(false);
+        restaurant.setOrderRequests(orderRequest);
+        restaurant.setRating(0.0);
+        restaurant.setRestaurantPartner(restaurantPartner);
+        Restaurant savedRestaurant = save(restaurant);
+        return savedRestaurant;
 
-    @Override
-    public Restaurant getRestaurantByIdAndRestaurantPartner(Long restaurantId, RestaurantPartner restaurantPartner) {
-        return restaurantRepository.findByIdAndRestaurantPartner(restaurantId, restaurantPartner)
-                .orElseThrow(() -> new ResourceNotFoundException("Restaurant Not found"));
     }
 
     @Override
@@ -119,14 +78,20 @@ public class RestaurantServiceImpl implements RestaurantService {
     }
 
     @Override
-    public Boolean save(Restaurant restaurant) {
-        restaurantRepository.save(restaurant);
-        return true;
+    public Restaurant save(Restaurant restaurant) {
+        return restaurantRepository.save(restaurant);
+
     }
 
     @Override
     public Page<Restaurant> getAllVarifiedRestaurant(PageRequest pageRequest) {
         return restaurantRepository.findByIsAvailableAndIsVarified(pageRequest, true, true);
+    }
+
+    @Override
+    public Page<MenuItem> viewMenu(Long restaurantId) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'getMenuFromRestaurant'");
     }
 
 }

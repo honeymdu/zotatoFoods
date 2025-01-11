@@ -1,4 +1,6 @@
 package com.food.zotatoFoods.dto;
+
+import jakarta.annotation.Nonnull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -6,14 +8,13 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class RestaurantDto {
+public class AddNewRestaurantDto {
 
-    private Long id;
+    @Nonnull
     private String name;
+    @Nonnull
     private PointDto restaurantLocation;
+    @Nonnull
     private String gstNumber;
-    private Boolean isAvailable;
-    private Boolean isVarified;
-    private MenuDto menu;
-    private RestaurantPartnerDto restaurantPartner;
+
 }

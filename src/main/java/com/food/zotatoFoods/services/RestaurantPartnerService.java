@@ -1,13 +1,18 @@
 package com.food.zotatoFoods.services;
 
+import java.util.List;
+
+import com.food.zotatoFoods.dto.AddNewRestaurantDto;
 import com.food.zotatoFoods.dto.MenuItemDto;
 import com.food.zotatoFoods.dto.OrderDto;
 import com.food.zotatoFoods.dto.OrderRequestsDto;
 import com.food.zotatoFoods.dto.RestaurantDto;
+import com.food.zotatoFoods.entites.Restaurant;
 import com.food.zotatoFoods.entites.RestaurantPartner;
+import com.food.zotatoFoods.entites.WalletTransaction;
 
 public interface RestaurantPartnerService {
-    RestaurantDto createRestaurant(RestaurantDto restaurantDto);
+    RestaurantDto createRestaurant(AddNewRestaurantDto addNewRestaurantDto);
 
     RestaurantDto updateRestaurantDetails(RestaurantDto restaurantDto, Long restaurantId);
 
@@ -21,6 +26,8 @@ public interface RestaurantPartnerService {
 
     MenuItemDto createMenuItemForMenu(MenuItemDto menuItemDto, Long menuId);
 
+    List<WalletTransaction> getWalletTransactionsByRestaurantId(Long restaurantId);
+
     // RestaurantDto updateRestaurantStatus(RestaurantStatusDto restaurantStatusDto,
     // Long restaurantId);
 
@@ -32,5 +39,9 @@ public interface RestaurantPartnerService {
     // Page<WalletTransactionDto> getWalletTransactions(PageRequest pageRequest);
 
     RestaurantPartner createNewRestaurantPartner(RestaurantPartner restaurantPartner);
+
+    Restaurant ViewMyRestaurantProfile(Long RestaurantId);
+
+    // List<Order> getALlOrders(Long restaurantId);
 
 }

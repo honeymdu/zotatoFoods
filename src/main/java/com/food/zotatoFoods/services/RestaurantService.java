@@ -5,35 +5,20 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 
+import com.food.zotatoFoods.dto.RestaurantDto;
 import com.food.zotatoFoods.entites.MenuItem;
-import com.food.zotatoFoods.entites.Order;
 import com.food.zotatoFoods.entites.Restaurant;
 import com.food.zotatoFoods.entites.RestaurantPartner;
-import com.food.zotatoFoods.entites.WalletTransaction;
 
 public interface RestaurantService {
 
-    Boolean AddNewRestaurant(Restaurant newRestaurant);
+    Restaurant AddNewRestaurant(RestaurantPartner restaurantPartner, RestaurantDto restaurantDto);
 
     Restaurant getRestaurantById(Long restaurantId);
-    
-    Restaurant getRestaurantByIdAndRestaurantPartner(Long restaurantId, RestaurantPartner restaurantPartner);
-    
-    Page<MenuItem> getMenuFromRestaurant(Long restaurantId, Pageable pageable, String sortBy);
 
-    Order acceptOrderRequest(Long orderRequestId);
+    Page<MenuItem> viewMenu(Long restaurantId);
 
-    Order cancelOrderRequest(Long orderRequestId);
-
-    List<Order> getALlOrders(Long restaurantId);
-
-    Restaurant getProfile(Long restaurantId);
-
-    List<MenuItem> getMenuItems(Long restaurantId);
-
-    List<Order> getAllOrderRequest(Long restaurantId);
-
-    List<WalletTransaction> getAllWalletTransaction(Long restaurantId);
+    Restaurant viewProfile(Long restaurantId);
 
     public Page<Restaurant> findAllRestaurant(Pageable pageRequest);
 
@@ -43,7 +28,7 @@ public interface RestaurantService {
 
     Boolean IsRestaurentAlreadyExist(Restaurant newRestaurant);
 
-    Boolean save(Restaurant restaurant);
+    Restaurant save(Restaurant restaurant);
 
     Page<Restaurant> getAllVarifiedRestaurant(PageRequest pageRequest);
 

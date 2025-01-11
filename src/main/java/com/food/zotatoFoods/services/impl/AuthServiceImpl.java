@@ -45,7 +45,7 @@ public class AuthServiceImpl implements AuthService {
 
     @Override
     @Transactional
-    public UserDto consumerSignUp(SignUpDto signupDto) {
+    public UserDto SignUp(SignUpDto signupDto) {
         User user = userService.findUserByEmail(signupDto.getEmail());
         if (user != null)
             throw new RuntimeConfilictException(

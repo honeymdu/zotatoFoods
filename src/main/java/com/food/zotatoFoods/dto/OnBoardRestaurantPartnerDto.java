@@ -11,10 +11,8 @@ import lombok.Setter;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class RestaurantPartnerDto {
+public class OnBoardRestaurantPartnerDto {
 
-    private Long id;
     private Long aadharNo;
-    private UserDto user;
 
 }

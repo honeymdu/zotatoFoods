@@ -29,7 +29,7 @@ public class AuthController {
 
     @PostMapping("/SignUp")
     public ResponseEntity<UserDto> signUp(@RequestBody SignUpDto signupDto) {
-        return new ResponseEntity<>(authService.consumerSignUp(signupDto), HttpStatus.CREATED);
+        return new ResponseEntity<>(authService.SignUp(signupDto), HttpStatus.CREATED);
     }
 
     @PostMapping("/login")

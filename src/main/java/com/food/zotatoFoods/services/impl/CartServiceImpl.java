@@ -8,12 +8,14 @@ import org.springframework.stereotype.Service;
 import com.food.zotatoFoods.entites.Cart;
 import com.food.zotatoFoods.entites.CartItem;
 import com.food.zotatoFoods.entites.Consumer;
+import com.food.zotatoFoods.entites.MenuItem;
 import com.food.zotatoFoods.entites.Restaurant;
 import com.food.zotatoFoods.exceptions.InvalidCartException;
 import com.food.zotatoFoods.exceptions.ResourceNotFoundException;
 import com.food.zotatoFoods.repositories.CartRepository;
+import com.food.zotatoFoods.services.CartItemService;
 import com.food.zotatoFoods.services.CartService;
-import com.food.zotatoFoods.services.ConsumerService;
+import com.food.zotatoFoods.services.MenuService;
 import com.food.zotatoFoods.services.RestaurantService;
 
 import lombok.RequiredArgsConstructor;
@@ -22,14 +24,14 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class CartServiceImpl implements CartService {
 
-    private CartRepository cartRepository;
-    private RestaurantService restaurantService;
-    private ConsumerService consumerService;
+    private final CartRepository cartRepository;
+    private final RestaurantService restaurantService;
+    private final MenuService menuService;
+    private final CartItemService cartItemService;
 
     @Override
-    public Cart createCart(Long ConsumerId, Long restaurantId) {
+    public Cart createCart(Long restaurantId, Consumer consumer) {
         Restaurant restaurant = restaurantService.getRestaurantById(restaurantId);
-        Consumer consumer = consumerService.getConsumerById(ConsumerId);
         Cart cart = Cart.builder()
                 .restaurant(restaurant)
                 .consumer(consumer)
@@ -95,8 +97,8 @@ public class CartServiceImpl implements CartService {
     }
 
     @Override
-    public Boolean isValidCartExist(Long ConsumerId, Long RestaurantId) {
-        Cart cart = getCartByConsumerIdAndRestaurantId(ConsumerId, RestaurantId);
+    public Boolean isValidCartExist(Consumer consumer, Long RestaurantId) {
+        Cart cart = getCartByConsumerIdAndRestaurantId(consumer.getId(), RestaurantId);
         if (!cart.getValidCart()) {
             return false;
         }
@@ -122,6 +124,28 @@ public class CartServiceImpl implements CartService {
         }
 
         inValidCart(cart);
+    }
+
+    @Override
+    public Cart prepareCart(Consumer consumer, Long RestaurantId, Long MenuItemId) {
+        // check cart already exist with current Restaurent Id
+        Boolean isValidCartExist = isValidCartExist(consumer, RestaurantId);
+
+        if (!isValidCartExist) {
+            Cart cart = createCart(RestaurantId, consumer);
+            MenuItem menuItem = menuService.getMenuItemById(RestaurantId, MenuItemId);
+            CartItem cartItem = cartItemService.createNewCartItem(menuItem, cart);
+            return addItemToCart(cart.getId(), cartItem);
+        }
+
+        Cart cart = getCartByConsumerIdAndRestaurantId(RestaurantId, consumer.getId());
+        MenuItem menuItem = menuService.getMenuItemById(RestaurantId, MenuItemId);
+        if (cartItemService.isCartItemExist(menuItem, cart)) {
+            CartItem cartItem = cartItemService.getCartItemByMenuItemAndCart(menuItem, cart);
+            cartItemService.incrementCartItemQuantity(1, cartItem);
+        }
+
+        return cart;
     }
 
 }

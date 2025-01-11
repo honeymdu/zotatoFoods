@@ -4,11 +4,15 @@ import java.util.List;
 
 import org.locationtech.jts.geom.Point;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Index;
+import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
@@ -39,10 +43,12 @@ public class Restaurant {
     private String gstNumber;
     private Double rating;
     private Boolean isAvailable;
-    private Boolean isVarified; 
+    private Boolean isVarified;
     @OneToOne(mappedBy = "restaurant")
     private Menu menu;
-    @ManyToOne
+    @JsonIgnore
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "restaurant_partner_id", nullable = false)
     private RestaurantPartner restaurantPartner;
     @OneToMany(mappedBy = "restaurant")
     private List<Order> Orders;
