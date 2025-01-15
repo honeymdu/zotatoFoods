@@ -1,20 +1,13 @@
 package com.food.zotatoFoods.services;
+import java.util.concurrent.ExecutionException;
 
-import org.locationtech.jts.geom.Point;
-
+import com.food.zotatoFoods.entites.DeliveryRequest;
 import com.food.zotatoFoods.entites.Order;
 
 public interface DeliveryService {
 
-    public void accecptDeliveryRequest(Order order);
+    public void AssignDeliveryPartner() throws InterruptedException, ExecutionException;
 
-    public void cancelDeliveryRequest(Order order);
-
-    public void updateDeliveryStatus(Order order);
-
-    public void viewOrderDetails(Order order);
-
-    public Double CalculateDeliveryFees(Point PickupLocation, Point DropOffLocation);
-    
+    DeliveryRequest createDeliveryRequest(Order order);
 
 }

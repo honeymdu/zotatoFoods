@@ -9,15 +9,20 @@ import org.springframework.validation.annotation.Validated;
 
 import com.food.zotatoFoods.dto.AddNewRestaurantDto;
 import com.food.zotatoFoods.dto.MenuItemDto;
-import com.food.zotatoFoods.dto.OrderDto;
 import com.food.zotatoFoods.dto.OrderRequestsDto;
 import com.food.zotatoFoods.dto.RestaurantDto;
+import com.food.zotatoFoods.entites.Menu;
+import com.food.zotatoFoods.entites.Order;
+import com.food.zotatoFoods.entites.OrderRequests;
 import com.food.zotatoFoods.entites.Restaurant;
 import com.food.zotatoFoods.entites.RestaurantPartner;
 import com.food.zotatoFoods.entites.User;
 import com.food.zotatoFoods.entites.WalletTransaction;
+import com.food.zotatoFoods.entites.enums.OrderRequestStatus;
 import com.food.zotatoFoods.exceptions.ResourceNotFoundException;
 import com.food.zotatoFoods.repositories.RestaurantPartnerRepository;
+import com.food.zotatoFoods.services.OrderRequestService;
+import com.food.zotatoFoods.services.OrderService;
 import com.food.zotatoFoods.services.RestaurantPartnerService;
 import com.food.zotatoFoods.services.RestaurantService;
 
@@ -30,6 +35,8 @@ public class RestaurantPartnerServiceImpl implements RestaurantPartnerService {
     private final RestaurantPartnerRepository restaurantPartnerRepository;
     private final RestaurantService restaurantService;
     private final ModelMapper modelMapper;
+    private final OrderRequestService orderRequestService;
+    private final OrderService orderService;
 
     @Override
     public RestaurantDto createRestaurant(@Validated AddNewRestaurantDto addNewRestaurantDto) {
@@ -45,9 +52,19 @@ public class RestaurantPartnerServiceImpl implements RestaurantPartnerService {
     }
 
     @Override
-    public OrderDto acceptOrderRequest(Long orderRequestId, Integer estimatedPreparationTime) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'acceptOrderRequest'");
+    public Order acceptOrderRequest(Long orderRequestId) {
+        OrderRequests orderRequests = orderRequestService.getOrderRequestById(orderRequestId);
+        // check order status
+        if (orderRequests.getOrderRequestStatus().equals(OrderRequestStatus.PENDING)) {
+            orderRequests.setOrderRequestStatus(OrderRequestStatus.ACCEPTED);
+            OrderRequests saveOrderRequests = orderRequestService.save(orderRequests);
+            return orderService.createOrder(saveOrderRequests);
+        }
+
+        throw new RuntimeException(
+                "Can not accept the order Request as the order Request status ="
+                        + orderRequests.getOrderRequestStatus());
+
     }
 
     @Override
@@ -57,7 +74,7 @@ public class RestaurantPartnerServiceImpl implements RestaurantPartnerService {
     }
 
     @Override
-    public MenuItemDto updateMenuItemOfMenu(MenuItemDto menuItemDto, Long menuItemId) {
+    public Menu updateMenuItemOfMenu(MenuItemDto menuItemDto) {
         // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'updateMenuItemOfMenu'");
     }
@@ -95,6 +112,11 @@ public class RestaurantPartnerServiceImpl implements RestaurantPartnerService {
     public List<WalletTransaction> getWalletTransactionsByRestaurantId(Long restaurantId) {
         // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'getWalletTransactionsByRestaurantId'");
+    }
+
+    @Override
+    public List<OrderRequests> getAllOrderRequestsByRestaurantId(Long RestaurantId) {
+        return orderRequestService.getAllOrderRequestByRestaurantId(RestaurantId);
     }
 
 }

@@ -94,4 +94,9 @@ public class RestaurantServiceImpl implements RestaurantService {
         throw new UnsupportedOperationException("Unimplemented method 'getMenuFromRestaurant'");
     }
 
+    @Override
+    public List<Restaurant> getAllVarifiedAndActiveRestaurant() {
+        return restaurantRepository.findByIsAvailableAndIsVarified(true, true);
+    }
+
 }

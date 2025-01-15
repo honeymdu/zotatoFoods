@@ -22,4 +22,6 @@ public interface RestaurantRepository extends JpaRepository<Restaurant, Long> {
 
     Page<Restaurant> findByIsAvailableAndIsVarified(PageRequest pageRequest, boolean i, boolean b);
 
+    List<Restaurant> findByIsAvailableAndIsVarified(boolean b, boolean c);
+
 }

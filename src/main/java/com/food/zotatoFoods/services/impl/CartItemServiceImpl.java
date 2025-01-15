@@ -82,9 +82,11 @@ public class CartItemServiceImpl implements CartItemService {
 
     @Override
     public CartItem getCartItemByMenuItemAndCart(MenuItem menuItem, Cart cart) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getCartItemByMenuItemAndCart'");
-    }
+        if (!isCartItemExist(menuItem, cart)) {
+            throw new ResourceNotFoundException("MenuItem not Exist with cart Id =" + menuItem.getId());
+        }
+        return cartItemRepository.findByMenuItemAndCartId(menuItem, cart.getId());
 
+    }
 
 }

@@ -83,17 +83,7 @@ public class AdminServiceImpl implements AdminService {
         deliveryPartner.setUser(user);
         deliveryPartner.setAvailable(true);
         deliveryPartner.setRating(0.0);
-        return deliveryPartnerService.AddNewDeliveryPartner(deliveryPartner);
-    }
-
-    @Override
-    public Boolean removeDeliveryPartner(Long UserId) {
-        return deliveryPartnerService.removeDeliveryPartner(UserId);
-    }
-
-    @Override
-    public Boolean removeRestaurant(Long RestaurantId) {
-        return restaurantService.removeRestaurant(RestaurantId);
+        return deliveryPartnerService.save(deliveryPartner);
     }
 
     @Override

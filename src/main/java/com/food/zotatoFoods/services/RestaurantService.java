@@ -32,4 +32,6 @@ public interface RestaurantService {
 
     Page<Restaurant> getAllVarifiedRestaurant(PageRequest pageRequest);
 
+    List<Restaurant> getAllVarifiedAndActiveRestaurant();
+
 }

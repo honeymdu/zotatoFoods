@@ -72,7 +72,7 @@ public class ConsumerServiceImpl implements ConsumerService {
         User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         return consumerRepository.findByUser(user)
                 .orElseThrow(() -> new ResourceNotFoundException(
-                        "Rider Not Found assosicated with user with id =" + user.getId()));
+                        "Consumer Not Found assosicated with user with id =" + user.getId()));
     }
 
     @Override

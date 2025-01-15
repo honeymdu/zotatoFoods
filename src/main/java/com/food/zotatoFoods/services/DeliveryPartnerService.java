@@ -1,29 +1,30 @@
 package com.food.zotatoFoods.services;
+
+import org.locationtech.jts.geom.Point;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 
 import com.food.zotatoFoods.dto.DeliveryPartnerDto;
 import com.food.zotatoFoods.entites.DeliveryPartner;
-import com.food.zotatoFoods.entites.User;
 
 public interface DeliveryPartnerService {
 
-    public User rateDeliveryPartner(Long UserId, Integer rating);
+    public void rateDeliveryPartner(Long UserId, Double rating);
 
-    public void acceptOrder(Long orderId);
+    public void acceptDeliveryRequest(Long deliveryRequestId);
 
-    public void cancelOrder(Long orderId);
+    public void cancelDeliveryRequest(Long deliveryRequestId);
 
-    public void pickupOrderFromRestaurant(Long orderId, String restaurantOTP);
+    public void completeOrderDelivery(Long deliveryRequestId, String consumerOtp);
 
-    public void startOrderRide(Long orderId);
-
-    public void endOrderRide(Long orderId, String otp);
-
-    public DeliveryPartnerDto AddNewDeliveryPartner(DeliveryPartner deliveryPartner);
+    public DeliveryPartnerDto save(DeliveryPartner deliveryPartner);
 
     public Page<DeliveryPartner> getAllDeliveryPartner(PageRequest pageRequest);
 
-    public Boolean removeDeliveryPartner(Long userId);
+    public void pickupOrderFromRestaurant(Long deliveryRequestId, String restaurantOTP);
+
+    public DeliveryPartner getCurrentDeliveryPartner();
+
+    public Point getCurrentLocation();
 
 }

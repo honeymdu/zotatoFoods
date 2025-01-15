@@ -1,7 +1,8 @@
 package com.food.zotatoFoods.entites.enums;
 
-public enum OrderRequestStatus {
+public enum DeliveryRequestStatus {
+
     ACCEPTED,
-    CANCELLED,
+    COMPLETED,
     PENDING
 }

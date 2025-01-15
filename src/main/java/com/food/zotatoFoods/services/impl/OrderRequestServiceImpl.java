@@ -5,16 +5,17 @@ import java.util.List;
 import org.locationtech.jts.geom.Point;
 import org.springframework.stereotype.Service;
 
+import com.food.zotatoFoods.dto.DeliveryFareGetDto;
 import com.food.zotatoFoods.entites.Cart;
-import com.food.zotatoFoods.entites.Order;
 import com.food.zotatoFoods.entites.OrderRequests;
 import com.food.zotatoFoods.entites.enums.OrderRequestStatus;
 import com.food.zotatoFoods.entites.enums.PaymentMethod;
 import com.food.zotatoFoods.exceptions.ResourceNotFoundException;
 import com.food.zotatoFoods.repositories.OrderRequestsRepository;
 import com.food.zotatoFoods.services.CartService;
-import com.food.zotatoFoods.services.DeliveryService;
 import com.food.zotatoFoods.services.OrderRequestService;
+import com.food.zotatoFoods.strategies.DeliveryFareCalculationStrategy;
+import com.food.zotatoFoods.strategies.DeliveryStrategyManager;
 
 import lombok.RequiredArgsConstructor;
 
@@ -24,8 +25,8 @@ public class OrderRequestServiceImpl implements OrderRequestService {
 
     private final OrderRequestsRepository orderRequestsRepository;
     private final CartService cartService;
-    private final DeliveryService deliveryService;
     Double PLATFORM_COMMISSION = 10.5;
+    private final DeliveryStrategyManager deliveryStrategyManager;
 
     @Override
     public OrderRequests save(OrderRequests orderRequests) {
@@ -44,8 +45,11 @@ public class OrderRequestServiceImpl implements OrderRequestService {
     public OrderRequests OrderRequest(Long CartId, PaymentMethod paymentMethod, Point UserLocation) {
         Cart cart = cartService.getCartById(CartId);
         cartService.isValidCart(cart);
-        Double delivery_price = deliveryService.CalculateDeliveryFees(cart.getRestaurant().getRestaurantLocation(),
-                UserLocation);
+        DeliveryFareCalculationStrategy deliveryFareCalculationStrategy = deliveryStrategyManager
+                .deliveryFareCalculationStrategy();
+        DeliveryFareGetDto deliveryFareGetDto = DeliveryFareGetDto.builder().DropLocation(UserLocation)
+                .PickupLocation(cart.getRestaurant().getRestaurantLocation()).build();
+        Double delivery_price = deliveryFareCalculationStrategy.calculateDeliveryFees(deliveryFareGetDto);
         OrderRequests orderRequests = OrderRequests.builder()
                 .cart(cart)
                 .consumer(cart.getConsumer())
@@ -65,9 +69,8 @@ public class OrderRequestServiceImpl implements OrderRequestService {
     }
 
     @Override
-    public List<Order> getAllOrderRequestByRestaurantId(Long restaurantId) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getAllOrderRequestByRestaurantId'");
+    public List<OrderRequests> getAllOrderRequestByRestaurantId(Long restaurantId) {
+        return orderRequestsRepository.findByRestaurantId(restaurantId);
     }
 
 }

@@ -20,10 +20,6 @@ public interface AdminService {
 
     Page<DeliveryPartnerDto> getAllDeliveryPartner(PageRequest pageRequest);
 
-    public Boolean removeDeliveryPartner(Long UserId);
-
-    public Boolean removeRestaurant(Long RestaurantId);
-
     public Boolean varifyRestaurant(Long restaurantId);
 
 }
