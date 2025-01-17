@@ -133,8 +133,7 @@ public class DeliveryPartnerServiceImpl implements DeliveryPartnerService {
 
     @Override
     public Point getCurrentLocation() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getCurrentLocation'");
+        return getCurrentDeliveryPartner().getCurrentLocation();
     }
 
 }

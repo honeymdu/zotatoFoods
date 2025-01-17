@@ -34,6 +34,7 @@ public class WalletTransaction {
     private Order order;
     @ManyToOne(fetch = FetchType.LAZY)
     private Wallet wallet;
+    private String TransactionId;
     @CreationTimestamp
     private LocalDateTime timeStamp;
 }

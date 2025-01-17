@@ -43,8 +43,8 @@ public class DeliveryStrategyManager {
         }
     }
 
-    public DeliveryPartnerMatchingStrategy deliveryPartnerMatchingStrategy(double ConsumerRating) {
-        if (ConsumerRating >= 4.8) {
+    public DeliveryPartnerMatchingStrategy deliveryPartnerMatchingStrategy(double restaurantRating) {
+        if (restaurantRating >= 4.8) {
             return deliveryPartnerMatchingHighestRatingDeliveryPartnerStartegy;
         } else {
             return deliveryPartnerMatchingNearestDeliveryPartnerStartegy;
@@ -53,4 +53,4 @@ public class DeliveryStrategyManager {
 
 }
 
-//if (ConsumerRating >= 4.8)
+// if (ConsumerRating >= 4.8)

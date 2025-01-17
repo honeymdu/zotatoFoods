@@ -21,10 +21,12 @@ import com.food.zotatoFoods.entites.WalletTransaction;
 import com.food.zotatoFoods.entites.enums.OrderRequestStatus;
 import com.food.zotatoFoods.exceptions.ResourceNotFoundException;
 import com.food.zotatoFoods.repositories.RestaurantPartnerRepository;
+import com.food.zotatoFoods.services.MenuService;
 import com.food.zotatoFoods.services.OrderRequestService;
 import com.food.zotatoFoods.services.OrderService;
 import com.food.zotatoFoods.services.RestaurantPartnerService;
 import com.food.zotatoFoods.services.RestaurantService;
+import com.food.zotatoFoods.services.WalletTransactionService;
 
 import lombok.RequiredArgsConstructor;
 
@@ -37,18 +39,14 @@ public class RestaurantPartnerServiceImpl implements RestaurantPartnerService {
     private final ModelMapper modelMapper;
     private final OrderRequestService orderRequestService;
     private final OrderService orderService;
+    private final WalletTransactionService walletTransactionsService;
+    private final MenuService menuService;
 
     @Override
     public RestaurantDto createRestaurant(@Validated AddNewRestaurantDto addNewRestaurantDto) {
         RestaurantDto restaurant = modelMapper.map(addNewRestaurantDto, RestaurantDto.class);
         Restaurant savedRestaurant = restaurantService.AddNewRestaurant(getCurrentRestaurantPartner(), restaurant);
         return modelMapper.map(savedRestaurant, RestaurantDto.class);
-    }
-
-    @Override
-    public RestaurantDto updateRestaurantDetails(RestaurantDto restaurantDto, Long restaurantId) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'updateRestaurantDetails'");
     }
 
     @Override
@@ -88,9 +86,8 @@ public class RestaurantPartnerServiceImpl implements RestaurantPartnerService {
     }
 
     @Override
-    public MenuItemDto createMenuItemForMenu(MenuItemDto menuItemDto, Long menuId) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'createMenuItemForMenu'");
+    public Menu createMenuItemForMenu(MenuItemDto menuItemDto, Long restaurantId) {
+        return menuService.addMenuItem(restaurantId, menuItemDto);
     }
 
     @Override
@@ -109,9 +106,9 @@ public class RestaurantPartnerServiceImpl implements RestaurantPartnerService {
     }
 
     @Override
-    public List<WalletTransaction> getWalletTransactionsByRestaurantId(Long restaurantId) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getWalletTransactionsByRestaurantId'");
+    public List<WalletTransaction> getAllMyWalletTransactions(Long restaurantPartnerId) {
+        RestaurantPartner restaurantPartner = getCurrentRestaurantPartner();
+        return walletTransactionsService.getAllWalletTransactionByUser(restaurantPartner.getUser());
     }
 
     @Override

@@ -8,6 +8,7 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.locationtech.jts.geom.Point;
 
 import com.food.zotatoFoods.entites.enums.OrderStatus;
+import com.food.zotatoFoods.entites.enums.PaymentMethod;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -21,7 +22,6 @@ import jakarta.persistence.Index;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
-import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -60,10 +60,10 @@ public class Order {
     private Point pickupLocation;
     @Column(columnDefinition = "Geometry(Point,4326)")
     private Point dropoffLocation;
-    @OneToOne
-    private Payment payment;
     @Enumerated(EnumType.STRING)
     private OrderStatus orderStatus;
+    @Enumerated(EnumType.STRING)
+    private PaymentMethod paymentMethod;
     @CreationTimestamp
     private LocalDateTime OrderCreationTime;
     @ManyToOne

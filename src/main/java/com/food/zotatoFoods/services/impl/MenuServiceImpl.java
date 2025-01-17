@@ -85,4 +85,10 @@ public class MenuServiceImpl implements MenuService {
         return menuRepository.save(menu);
     }
 
+    @Override
+    public Menu getMenuById(Long MenuId) {
+        return menuRepository.findById(MenuId)
+                .orElseThrow(() -> new ResourceNotFoundException("Menu Not Found With menu Id " + MenuId));
+    }
+
 }

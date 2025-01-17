@@ -8,18 +8,18 @@ import com.food.zotatoFoods.entites.enums.TransactionMethod;
 
 public interface WalletService {
 
-    Wallet addMoneyToWallet(User user, Double amount, String transactionId, Order order,
-            TransactionMethod transactionMethod);
+        WalletDto addMoneyToWallet(User user, Double amount, String transactionId, Order order,
+                        TransactionMethod transactionMethod);
 
-    Wallet deductMoneyFromWallet(User user, Double amount, String transactionId, Order order,
-            TransactionMethod transactionMethod);
+        Wallet deductMoneyFromWallet(User user, Double amount, String transactionId, Order order,
+                        TransactionMethod transactionMethod);
 
-    void withdrawAllMyMoneyFromWallet();
+        void withdrawAllMyMoneyFromWallet();
 
-    Wallet findWalletById(Long WalletId);
+        Wallet findWalletById(Long WalletId);
 
-    WalletDto createNewWallet(User user);
+        WalletDto createNewWallet(User user);
 
-    Wallet findWalletByUser(User user);
+        Wallet findWalletByUser(User user);
 
 }

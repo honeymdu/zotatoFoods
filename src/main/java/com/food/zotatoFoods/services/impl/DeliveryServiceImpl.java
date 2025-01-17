@@ -1,12 +1,12 @@
 package com.food.zotatoFoods.services.impl;
 
 import java.util.List;
-import java.util.PriorityQueue;
-import java.util.Queue;
 import java.util.Random;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.ExecutionException;
-import java.util.concurrent.Future;
+import java.util.concurrent.Executors;
+import java.util.concurrent.PriorityBlockingQueue;
+import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
@@ -21,12 +21,15 @@ import com.food.zotatoFoods.entites.Order;
 import com.food.zotatoFoods.entites.Restaurant;
 import com.food.zotatoFoods.entites.enums.DeliveryRequestStatus;
 import com.food.zotatoFoods.entites.enums.OrderStatus;
+import com.food.zotatoFoods.exceptions.ResourceNotFoundException;
 import com.food.zotatoFoods.repositories.DeliveryRequestRepository;
 import com.food.zotatoFoods.services.DeliveryService;
+import com.food.zotatoFoods.services.OrderService;
 import com.food.zotatoFoods.services.RestaurantService;
 import com.food.zotatoFoods.strategies.DeliveryPartnerMatchingStrategy;
 import com.food.zotatoFoods.strategies.DeliveryStrategyManager;
 
+import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 
 @Service
@@ -36,85 +39,127 @@ public class DeliveryServiceImpl implements DeliveryService {
     private final DeliveryStrategyManager deliveryStrategyManager;
     private final RestaurantService restaurantService;
     private final DeliveryRequestRepository deliveryRequestRepository;
+    private final OrderService orderService;
+    private final PriorityBlockingQueue<OrderPriorityQueue> highPriorityOrderQueue = new PriorityBlockingQueue<>();
+    private final PriorityBlockingQueue<RestaurantPriorityQueue> restaurantPriorityQueue = new PriorityBlockingQueue<>();
+    private static final ThreadPoolExecutor threadPoolExecutor = new ThreadPoolExecutor(3, 10, 2, TimeUnit.SECONDS,
+            new ArrayBlockingQueue<>(10));
+    private final PriorityBlockingQueue<OrderPriorityQueue> waitingQueue = new PriorityBlockingQueue<>();
 
     @Override
     public void AssignDeliveryPartner() throws InterruptedException, ExecutionException {
-        ThreadPoolExecutor threadPoolExecutor = new ThreadPoolExecutor(3, 10, 2, TimeUnit.SECONDS,
-                new ArrayBlockingQueue<>(10));
-        Queue<RestaurantPriorityQueue> pq = new PriorityQueue<>();
+
         List<Restaurant> restaurants = restaurantService.getAllVarifiedAndActiveRestaurant();
-        // Loop through each restaurant
-        for (Restaurant restaurant : restaurants) {
-            int readyForPickupCount = 0;
 
-            for (Order order : restaurant.getOrders()) {
-                if (order.getOrderStatus().equals(OrderStatus.READY_FOR_PICKUP)) {
-                    readyForPickupCount++;
-                }
-            }
+        createRestaurantPriorityQueue(restaurants);
 
-            pq.offer(new RestaurantPriorityQueue(restaurant, readyForPickupCount));
+        if (!restaurantPriorityQueue.isEmpty()) {
+            createOrderPriorityQueue();
         }
 
-        while (!pq.isEmpty()) {
-            RestaurantPriorityQueue restaurantPriorityQueue = pq.poll();
-            Future<RestaurantPriorityQueue> future = threadPoolExecutor.submit(() -> {
+        while (!highPriorityOrderQueue.isEmpty()) {
+
+            threadPoolExecutor.submit(() -> {
                 try {
-                    return sendNotificationToDeliveryPartner(restaurantPriorityQueue);
+                    sendNotificationToDeliveryPartner();
                 } catch (InterruptedException e) {
+                    Thread.currentThread().interrupt();
+                    System.err.println("Order processing thread interrupted: " + e.getMessage());
                     throw new RuntimeException();
                 }
             });
-            pq.offer(future.get());
 
         }
+
     }
 
-    private RestaurantPriorityQueue sendNotificationToDeliveryPartner(RestaurantPriorityQueue restaurantPriorityQueue)
+    private void sendNotificationToDeliveryPartner()
             throws InterruptedException {
-        Restaurant restaurant = restaurantPriorityQueue.getRestaurant();
-        List<Order> orders = restaurant.getOrders();
-        Queue<OrderPriorityQueue> oq = new PriorityQueue<>();
-        for (Order order : orders) {
-            oq.offer(new OrderPriorityQueue(order, order.getPayment().getPaymentMethod()));
-        }
-
-        Double restaurantRating = restaurant.getRating();
+        OrderPriorityQueue orderPriorityQueue = highPriorityOrderQueue.poll();
+        Order order = orderService.getOrderById(orderPriorityQueue.getId());
+        Restaurant restaurant = restaurantService.getRestaurantById(order.getRestaurant().getId());
         DeliveryPartnerMatchingStrategy deliveryPartnerMatchingStrategy = deliveryStrategyManager
-                .deliveryPartnerMatchingStrategy(restaurantRating);
-        OrderPriorityQueue orderPriorityQueue = oq.poll();
+                .deliveryPartnerMatchingStrategy(restaurant.getRating());
+
         DeliveryFareGetDto deliveryFareGetDto = DeliveryFareGetDto.builder()
-                .PickupLocation(restaurant.getRestaurantLocation())
-                .DropLocation(orderPriorityQueue.getOrder().getDropoffLocation()).build();
+                .PickupLocation(orderService.getOrderById(orderPriorityQueue.getId()).getPickupLocation())
+                .DropLocation(order.getDropoffLocation()).build();
         List<DeliveryPartner> deliveryPartner = deliveryPartnerMatchingStrategy
                 .findMatchingDeliveryPartner(deliveryFareGetDto);
+        if (deliveryPartner.isEmpty()) {
+            waitingQueue.offer(orderPriorityQueue);
+        }
         if (!deliveryPartner.isEmpty()) {
-            DeliveryRequest deliveryRequest = createDeliveryRequest(
-                    orderPriorityQueue.getOrder());
+            DeliveryRequest deliveryRequest = createDeliveryRequest(order);
             System.out.println(deliveryRequest);
             // TODO send notification to matching deliveryPartners
             // TODO send OTP notification to restaurant partner
             // TODO send OTP notification to Consumer
         }
 
-        return restaurantPriorityQueue;
     }
 
     @Override
     public DeliveryRequest createDeliveryRequest(Order order) {
-        DeliveryRequest deliveryRequest = DeliveryRequest.builder().deliveryRequestStatus(DeliveryRequestStatus.PENDING)
-                .PickupLocation(order.getPickupLocation()).DropLocation(order.getDropoffLocation())
-                .consumerOtp(generateRandomOtp())
-                .restaurantOtp(generateRandomOtp()).build();
-        DeliveryRequest savedDeliveryRequest = deliveryRequestRepository.save(deliveryRequest);
-        return savedDeliveryRequest;
+        return deliveryRequestRepository.save(
+                DeliveryRequest.builder()
+                        .deliveryRequestStatus(DeliveryRequestStatus.PENDING)
+                        .PickupLocation(order.getPickupLocation())
+                        .DropLocation(order.getDropoffLocation())
+                        .consumerOtp(generateRandomOtp())
+                        .restaurantOtp(generateRandomOtp()).build());
 
     }
 
+    private void createOrderPriorityQueue() {
+        Restaurant restaurant = restaurantPriorityQueue.poll().getRestaurant();
+        if (restaurant == null)
+            return;
+        List<Order> orders = restaurant.getOrders();
+        for (Order order : orders) {
+            highPriorityOrderQueue.offer(new OrderPriorityQueue(
+                    order.getId(), order.getPaymentMethod(),
+                    restaurantPriorityQueue.poll().getPriority(), System.currentTimeMillis()));
+        }
+    }
+
+    private void createRestaurantPriorityQueue(List<Restaurant> restaurants) {
+
+        restaurants.forEach(restaurant -> {
+            long readyForPickupCount = restaurant.getOrders().stream()
+                    .filter(order -> OrderStatus.READY_FOR_PICKUP.equals(order.getOrderStatus()))
+                    .count();
+
+            if (readyForPickupCount > 0) {
+                restaurantPriorityQueue.offer(new RestaurantPriorityQueue(restaurant, (int) readyForPickupCount));
+            }
+        });
+    }
+
+    @PostConstruct
+    public void startEscalationProcess() {
+        ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
+        scheduler.scheduleAtFixedRate(this::escalateOrders, 0, 5, TimeUnit.SECONDS);
+    }
+
+    private void escalateOrders() {
+        while (!waitingQueue.isEmpty()) {
+            OrderPriorityQueue order = waitingQueue.poll();
+            if (order != null) {
+                highPriorityOrderQueue.offer(order);
+                System.out.println("Order escalated to high-priority queue: " + order.getId());
+            }
+        }
+    }
+
     private String generateRandomOtp() {
-        Random random = new Random();
-        int randomnumber = random.nextInt(10000);
-        return String.format("%04d", randomnumber);
+        return String.format("%04d", new Random().nextInt(10000));
+    }
+
+    @Override
+    public DeliveryRequest getDeliveryRequestByOrderId(Long orderId) {
+        return deliveryRequestRepository.findByOrderId(orderId)
+                .orElseThrow(() -> new ResourceNotFoundException("Delivery Request Not found for Order Id" + orderId));
     }
 
 }

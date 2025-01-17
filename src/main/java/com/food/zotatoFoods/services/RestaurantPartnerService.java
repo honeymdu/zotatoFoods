@@ -17,8 +17,6 @@ public interface RestaurantPartnerService {
 
     RestaurantDto createRestaurant(AddNewRestaurantDto addNewRestaurantDto);
 
-    RestaurantDto updateRestaurantDetails(RestaurantDto restaurantDto, Long restaurantId);
-
     Order acceptOrderRequest(Long orderRequestId);
 
     OrderRequestsDto cancelOrderRequest(Long orderRequestId);
@@ -27,9 +25,9 @@ public interface RestaurantPartnerService {
 
     RestaurantPartner getCurrentRestaurantPartner();
 
-    MenuItemDto createMenuItemForMenu(MenuItemDto menuItemDto, Long menuId);
+    Menu createMenuItemForMenu(MenuItemDto menuItemDto, Long menuId);
 
-    List<WalletTransaction> getWalletTransactionsByRestaurantId(Long restaurantId);
+    List<WalletTransaction> getAllMyWalletTransactions(Long restaurantId);
 
     RestaurantPartner createNewRestaurantPartner(RestaurantPartner restaurantPartner);
 

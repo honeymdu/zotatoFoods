@@ -6,7 +6,6 @@ import org.locationtech.jts.geom.Point;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestClient;
 
-import com.food.zotatoFoods.entites.Restaurant;
 import com.food.zotatoFoods.services.DistanceService;
 
 import lombok.Data;
@@ -34,13 +33,6 @@ public class DistanceServiceOSRMImpl implements DistanceService {
             throw new RuntimeException("Error getting data from OSRM " + e.getMessage());
         }
     }
-
-    @Override
-    public List<Restaurant> getNearestRestaurant(Point UserSrc) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getNearestRestaurant'");
-    }
-
     @Data
     class OSRMResponseDto {
         private List<OSRMRoute> routes;

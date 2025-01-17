@@ -18,6 +18,8 @@ public interface MenuService {
 
     public Menu CreateMenu(CreateMenu createMenu);
 
+    public Menu getMenuById(Long MenuItemId);
+
 
 
 }
