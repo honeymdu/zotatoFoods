@@ -22,7 +22,8 @@ public class Address {
     private String city;
     private String state;
     private String postalCode;
-    private Point UserLocation;
+    @Column(columnDefinition = "geometry(Point, 4326)")
+    private Point userLocation;
 
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)

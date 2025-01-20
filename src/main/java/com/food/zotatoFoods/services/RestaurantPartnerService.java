@@ -17,6 +17,8 @@ public interface RestaurantPartnerService {
 
     RestaurantDto createRestaurant(AddNewRestaurantDto addNewRestaurantDto);
 
+    Menu CreateMenu(com.food.zotatoFoods.dto.CreateMenu createMenu);
+
     Order acceptOrderRequest(Long orderRequestId);
 
     OrderRequestsDto cancelOrderRequest(Long orderRequestId);
@@ -25,7 +27,7 @@ public interface RestaurantPartnerService {
 
     RestaurantPartner getCurrentRestaurantPartner();
 
-    Menu createMenuItemForMenu(MenuItemDto menuItemDto, Long menuId);
+    Menu addMenuItemToMenu(MenuItemDto menuItemDto, Long restaurantId);
 
     List<WalletTransaction> getAllMyWalletTransactions(Long restaurantId);
 
@@ -34,6 +36,8 @@ public interface RestaurantPartnerService {
     Restaurant ViewMyRestaurantProfile(Long RestaurantId);
 
     List<OrderRequests> getAllOrderRequestsByRestaurantId(Long RestaurantId);
+
+    
 
     // RestaurantDto updateRestaurantStatus(RestaurantStatusDto restaurantStatusDto,
     // Long restaurantId);

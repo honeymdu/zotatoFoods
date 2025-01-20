@@ -1,5 +1,6 @@
 package com.food.zotatoFoods.controllers;
 
+import org.modelmapper.ModelMapper;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.annotation.Secured;
@@ -11,10 +12,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.food.zotatoFoods.dto.AddNewRestaurantDto;
+import com.food.zotatoFoods.dto.MenuDto;
+import com.food.zotatoFoods.dto.MenuItemDto;
 import com.food.zotatoFoods.dto.RestaurantDto;
 import com.food.zotatoFoods.entites.Restaurant;
 import com.food.zotatoFoods.services.RestaurantPartnerService;
 import lombok.RequiredArgsConstructor;
+import com.food.zotatoFoods.dto.CreateMenu;
 
 @RestController
 @RequestMapping("/restaurant-partner")
@@ -23,6 +27,7 @@ import lombok.RequiredArgsConstructor;
 public class RestaurantPartnerController {
 
     private final RestaurantPartnerService restaurantPartnerService;
+    private final ModelMapper modelMapper;
 
     @PostMapping("/add-my-restaurant")
     public ResponseEntity<RestaurantDto> AddMyRestaurant(@RequestBody AddNewRestaurantDto addNewRestaurantDto) {
@@ -40,6 +45,30 @@ public class RestaurantPartnerController {
 
         Restaurant restaurant = restaurantPartnerService.ViewMyRestaurantProfile(RestaurantId);
         return ResponseEntity.ok(restaurant);
+
+    }
+
+    @PostMapping("/add-my-restaurant-menu-item/{RestaurantId}")
+    public ResponseEntity<MenuDto> AddMenuItemToMenu(@PathVariable Long RestaurantId,
+            @RequestBody MenuItemDto menuItemDto) {
+
+        return new ResponseEntity<>(
+                modelMapper.map(restaurantPartnerService.addMenuItemToMenu(menuItemDto, RestaurantId),
+                        MenuDto.class),
+                HttpStatus.CREATED);
+
+    }
+
+    @PostMapping("/create-restaurant-menu/{RestaurantId}")
+    public ResponseEntity<MenuDto> CreateMenu(@PathVariable Long RestaurantId,
+            @RequestBody CreateMenu createMenu) {
+        Restaurant restaurant = restaurantPartnerService.ViewMyRestaurantProfile(RestaurantId);
+        createMenu.setRestaurant(restaurant);
+
+        return new ResponseEntity<>(
+                modelMapper.map(restaurantPartnerService.CreateMenu(createMenu),
+                        MenuDto.class),
+                HttpStatus.CREATED);
 
     }
 

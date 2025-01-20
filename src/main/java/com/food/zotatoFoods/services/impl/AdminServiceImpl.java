@@ -90,7 +90,7 @@ public class AdminServiceImpl implements AdminService {
     public Boolean varifyRestaurant(Long restaurantId) {
         Restaurant restaurant = restaurantService.getRestaurantById(restaurantId);
         // check if already varified.
-        if (restaurant.getIsAvailable()) {
+        if (restaurant.getIsVarified()) {
             throw new RuntimeConfilictException("Restaurant is Already Varified with Restaurant Id = " + restaurantId);
         }
         restaurant.setIsVarified(true);

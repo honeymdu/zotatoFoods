@@ -6,7 +6,6 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Data
@@ -14,13 +13,12 @@ import java.util.List;
 @NoArgsConstructor
 public class MenuItemDto {
 
-    private Long id;
     private String imageUrl;
     private String name;
     private String dishDescription;
     private Double price;
     private FoodCategory foodCategory;
-    private List<String> ingredients = new ArrayList<>();
+    private List<String> ingredients;
     private Boolean isAvailable;
 
 }

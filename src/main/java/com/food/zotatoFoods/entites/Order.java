@@ -37,9 +37,7 @@ import lombok.Setter;
 @Setter
 @Table(name = "user_order", indexes = {
         @Index(name = "idx_order_user_id", columnList = "consumer_id"),
-        @Index(name = "idx_order_deliverypartner_id", columnList = "deliveryPartner_id"),
         @Index(name = "idx_order_orderstatus", columnList = "orderStatus"),
-        @Index(name = "idx_order_payment_id", columnList = "payment_id"),
         @Index(name = "idx_order_restaurant_id", columnList = "restaurant_id"),
         @Index(name = "idx_order_ordercreationtime", columnList = "OrderCreationTime")
 })

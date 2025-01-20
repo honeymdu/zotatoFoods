@@ -28,6 +28,7 @@ import com.food.zotatoFoods.services.RestaurantPartnerService;
 import com.food.zotatoFoods.services.RestaurantService;
 import com.food.zotatoFoods.services.WalletTransactionService;
 
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 
 @Service
@@ -43,6 +44,7 @@ public class RestaurantPartnerServiceImpl implements RestaurantPartnerService {
     private final MenuService menuService;
 
     @Override
+    @Transactional
     public RestaurantDto createRestaurant(@Validated AddNewRestaurantDto addNewRestaurantDto) {
         RestaurantDto restaurant = modelMapper.map(addNewRestaurantDto, RestaurantDto.class);
         Restaurant savedRestaurant = restaurantService.AddNewRestaurant(getCurrentRestaurantPartner(), restaurant);
@@ -86,7 +88,7 @@ public class RestaurantPartnerServiceImpl implements RestaurantPartnerService {
     }
 
     @Override
-    public Menu createMenuItemForMenu(MenuItemDto menuItemDto, Long restaurantId) {
+    public Menu addMenuItemToMenu(MenuItemDto menuItemDto, Long restaurantId) {
         return menuService.addMenuItem(restaurantId, menuItemDto);
     }
 
@@ -114,6 +116,11 @@ public class RestaurantPartnerServiceImpl implements RestaurantPartnerService {
     @Override
     public List<OrderRequests> getAllOrderRequestsByRestaurantId(Long RestaurantId) {
         return orderRequestService.getAllOrderRequestByRestaurantId(RestaurantId);
+    }
+
+    @Override
+    public Menu CreateMenu(com.food.zotatoFoods.dto.CreateMenu createMenu) {
+        return menuService.CreateMenu(createMenu);
     }
 
 }
