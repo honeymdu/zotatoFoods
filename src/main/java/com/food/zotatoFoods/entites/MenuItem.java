@@ -1,8 +1,8 @@
 package com.food.zotatoFoods.entites;
 
-import java.util.ArrayList;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.food.zotatoFoods.entites.enums.FoodCategory;
 
 import jakarta.persistence.*;
@@ -29,11 +29,13 @@ public class MenuItem {
     private Double price;
     @Enumerated(EnumType.STRING)
     private FoodCategory foodCategory;
-    private List<String> ingredients = new ArrayList<>();
+    private List<String> ingredients;
     private Double rating;
     private Boolean isAvailable;
-    @ManyToOne
+    
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "menu_id", nullable = false)
+    @JsonIgnore
     private Menu menu;
 
 }

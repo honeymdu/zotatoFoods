@@ -14,6 +14,5 @@ public class RestaurantDto {
     private String gstNumber;
     private Boolean isAvailable;
     private Boolean isVarified;
-    private MenuDto menu;
     private RestaurantPartnerDto restaurantPartner;
 }

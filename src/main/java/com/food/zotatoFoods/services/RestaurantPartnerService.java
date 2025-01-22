@@ -37,6 +37,8 @@ public interface RestaurantPartnerService {
 
     List<OrderRequests> getAllOrderRequestsByRestaurantId(Long RestaurantId);
 
+    public Menu viewMenuByRestaurantId(Long RestaurantId);
+
     
 
     // RestaurantDto updateRestaurantStatus(RestaurantStatusDto restaurantStatusDto,

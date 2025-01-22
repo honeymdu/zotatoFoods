@@ -17,7 +17,9 @@ public interface CartItemService {
 
     void removeCartItemFromCart(CartItem cartItem);
 
-    Boolean isCartItemExist(MenuItem menuItem, Cart cart);
+    Boolean isCartItemExist(CartItem cartItem, Cart cart);
     
     CartItem getCartItemByMenuItemAndCart(MenuItem menuItem, Cart cart);
+
+    public Boolean isMenuItemExistInCart(MenuItem MenuItem, Cart cart);
 }

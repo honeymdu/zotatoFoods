@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.food.zotatoFoods.dto.AddressDto;
+import com.food.zotatoFoods.dto.CartDto;
 import com.food.zotatoFoods.dto.CreateOrderRequest;
 import com.food.zotatoFoods.dto.MenuDto;
 import com.food.zotatoFoods.dto.OrderRequestsDto;
@@ -52,13 +53,13 @@ public class ConsumerController {
         }
 
         @PostMapping("/prepareCart/{RestaurantId}/{MenuItemId}")
-        public ResponseEntity<Cart> prepareMyCart(@PathVariable Long RestaurantId, @PathVariable Long MenuItemId) {
+        public ResponseEntity<CartDto> prepareMyCart(@PathVariable Long RestaurantId, @PathVariable Long MenuItemId) {
                 Cart cart = consumerService.PrepareCart(RestaurantId, MenuItemId);
-                return ResponseEntity.ok(cart);
+                return ResponseEntity.ok(modelMapper.map(cart, CartDto.class));
 
         }
 
-        @PostMapping("/prepareCart/{RestaurantId}")
+        @GetMapping("/view-menu/{RestaurantId}")
         public ResponseEntity<MenuDto> viewMenu(@PathVariable Long RestaurantId) {
                 Menu menu = consumerService.viewMenuByRestaurantId(RestaurantId);
                 return ResponseEntity.ok(modelMapper.map(menu, MenuDto.class));
@@ -80,6 +81,24 @@ public class ConsumerController {
                 address.setUser(user);
                 return new ResponseEntity<>(addressRepository.save(address), HttpStatus.CREATED);
 
+        }
+
+        @GetMapping("/view-cart/{RestaurantId}")
+        public ResponseEntity<CartDto> viewCart(@PathVariable Long RestaurantId) {
+                Cart cart = consumerService.viewCart(RestaurantId);
+                return ResponseEntity.ok(modelMapper.map(cart, CartDto.class));
+        }
+
+        @PostMapping("/remove-cartItem/{cartId}/{cartItemId}")
+        public ResponseEntity<CartDto> removeCartItem(@PathVariable Long cartId, @PathVariable Long cartItemId) {
+                Cart cart = consumerService.removeCartItem(cartId, cartItemId);
+                return ResponseEntity.ok(modelMapper.map(cart, CartDto.class));
+        }
+
+        @PostMapping("/clear-cartItems/{RestaurantId}")
+        public ResponseEntity<?> clearCartItem(@PathVariable Long RestaurantId) {
+                consumerService.clearCart(RestaurantId);
+                return ResponseEntity.notFound().build();
         }
 
 }

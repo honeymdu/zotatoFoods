@@ -14,7 +14,5 @@ public class MenuDto {
     private Long id;
     private String menuName;
     private List<MenuItemDto> menuItems;
-    private Boolean isActive;
-    private RestaurantDto restaurant;
 
 }

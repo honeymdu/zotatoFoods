@@ -24,7 +24,7 @@ public interface CartService {
 
     public Cart saveCart(Cart cart);
 
-    public Cart getCartByConsumerIdAndRestaurantId(Long id, Long restaurantId);
+    public Cart getCartByConsumerIdAndRestaurantId(Long ConsumerId, Long restaurantId);
 
     public void deleteAllCartItemByCartId(Long cartId);
 

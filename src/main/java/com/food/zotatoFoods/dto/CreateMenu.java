@@ -2,7 +2,6 @@ package com.food.zotatoFoods.dto;
 
 import java.util.List;
 
-import com.food.zotatoFoods.entites.MenuItem;
 import com.food.zotatoFoods.entites.Restaurant;
 
 import lombok.AllArgsConstructor;
@@ -17,7 +16,7 @@ import lombok.NoArgsConstructor;
 public class CreateMenu {
 
     private String name;
-    private List<MenuItem> menuItem;
+    private List<MenuItemDto> menuItem;
     private Restaurant restaurant;
 
 }

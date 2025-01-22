@@ -13,6 +13,7 @@ import java.util.List;
 @NoArgsConstructor
 public class MenuItemDto {
 
+    private Long id;
     private String imageUrl;
     private String name;
     private String dishDescription;

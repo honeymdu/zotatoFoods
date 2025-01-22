@@ -1,4 +1,5 @@
 package com.food.zotatoFoods.services;
+
 import com.food.zotatoFoods.dto.CreateMenu;
 import com.food.zotatoFoods.dto.MenuItemDto;
 import com.food.zotatoFoods.entites.Menu;
@@ -20,6 +21,6 @@ public interface MenuService {
 
     public Menu getMenuById(Long MenuItemId);
 
-
+    public Boolean checkMenuItemExistByName(Long RestaurantId, MenuItem MenuItem);
 
 }

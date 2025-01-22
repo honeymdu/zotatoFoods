@@ -2,6 +2,8 @@ package com.food.zotatoFoods.entites;
 
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -27,9 +29,10 @@ public class Menu {
     private Long id;
     private String menuName;
     @OneToMany(mappedBy = "menu")
+    @JsonIgnore
     private List<MenuItem> menuItems;
-    private Boolean isActive;
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "restaurant_id")
+    @JsonIgnore
     private Restaurant restaurant;
 }

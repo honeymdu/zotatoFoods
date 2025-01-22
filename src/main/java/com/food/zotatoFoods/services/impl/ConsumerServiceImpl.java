@@ -19,6 +19,7 @@ import com.food.zotatoFoods.entites.User;
 import com.food.zotatoFoods.entites.enums.PaymentMethod;
 import com.food.zotatoFoods.exceptions.ResourceNotFoundException;
 import com.food.zotatoFoods.repositories.ConsumerRepository;
+import com.food.zotatoFoods.services.CartItemService;
 import com.food.zotatoFoods.services.CartService;
 import com.food.zotatoFoods.services.ConsumerService;
 import com.food.zotatoFoods.services.MenuService;
@@ -37,6 +38,7 @@ public class ConsumerServiceImpl implements ConsumerService {
     private final ModelMapper modelMapper;
     private final MenuService menuService;
     private final CartService cartService;
+    private final CartItemService cartItemService;
     Double PLATFORM_COMMISSION = 10.5;
 
     @Override
@@ -82,16 +84,19 @@ public class ConsumerServiceImpl implements ConsumerService {
     }
 
     @Override
-    public Cart removeCartItem(Long CartId, CartItem cartItem) {
+    public Cart removeCartItem(Long CartId, Long cartItemId) {
         Consumer consumer = getCurrentConsumer();
         Cart cart = cartService.getCartById(CartId);
         cartService.isValidCartExist(consumer, cart.getRestaurant().getId());
+        CartItem cartItem = cartItemService.getCartItemById(cartItemId);
         return cartService.removeItemFromCart(CartId, cartItem);
     }
 
     @Override
-    public void clearCart(Long CartId) {
-        cartService.deleteAllCartItemByCartId(CartId);
+    public void clearCart(Long RestaurantId) {
+        Consumer consumer = getCurrentConsumer();
+        Cart cart = cartService.getCartByConsumerIdAndRestaurantId(consumer.getId(), RestaurantId);
+        cartService.deleteAllCartItemByCartId(cart.getId());
     }
 
     @Override
@@ -102,6 +107,13 @@ public class ConsumerServiceImpl implements ConsumerService {
     @Override
     public Page<Restaurant> getAllRestaurant(PageRequest pageRequest) {
         return restaurantService.getAllVarifiedRestaurant(pageRequest);
+    }
+
+    @Override
+    public Cart viewCart(Long RestaurantId) {
+        Consumer consumer = getCurrentConsumer();
+        Cart cart = cartService.getCartByConsumerIdAndRestaurantId(consumer.getId(), RestaurantId);
+        return cartService.viewCart(cart.getId());
     }
 
 }

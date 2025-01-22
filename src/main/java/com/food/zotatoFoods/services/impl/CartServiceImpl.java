@@ -36,7 +36,7 @@ public class CartServiceImpl implements CartService {
                 .restaurant(restaurant)
                 .consumer(consumer)
                 .totalPrice(0.0)
-                .ValidCart(true)
+                .validCart(true)
                 .cartItems(new ArrayList<>())
                 .build();
         return cartRepository.save(cart);
@@ -62,9 +62,21 @@ public class CartServiceImpl implements CartService {
     public Cart removeItemFromCart(Long CartId, CartItem cartItem) {
         Cart cart = getCartById(CartId);
         isValidCart(cart);
-        cart.getCartItems().remove(cartItem);
-        cart.setTotalPrice(cart.getTotalPrice() - (cartItem.getMenuItem().getPrice() * cartItem.getQuantity()));
-        return cartRepository.save(cart);
+        Boolean isExist = cartItemService.isCartItemExist(cartItem, cart);
+        if (!isExist) {
+            throw new RuntimeException("can not remove cartItem as this is not exist in Cart with cart id = " + CartId);
+        }
+        List<CartItem> cartItems = cart.getCartItems();
+        for (CartItem cartItem2 : cartItems) {
+            if (cartItem2.equals(cartItem)) {
+                if (cartItem2.getQuantity() > 1) {
+                    cartItemService.decrementCartItemQuantity(1, cartItem);
+                } else {
+                    cartItemService.removeCartItemFromCart(cartItem2);
+                }
+            }
+        }
+        return getCartById(CartId);
     }
 
     @Override
@@ -97,9 +109,10 @@ public class CartServiceImpl implements CartService {
     }
 
     @Override
-    public Boolean isValidCartExist(Consumer consumer, Long RestaurantId) {
-        Cart cart = getCartByConsumerIdAndRestaurantId(consumer.getId(), RestaurantId);
-        if (!cart.getValidCart()) {
+    public Boolean isValidCartExist(Consumer consumer, Long restaurantId) {
+        Cart cart = cartRepository.findByConsumerIdAndRestaurantIdAndValidCart(consumer.getId(), restaurantId, true)
+                .orElse(null);
+        if (cart == null) {
             return false;
         }
         return true;
@@ -107,7 +120,7 @@ public class CartServiceImpl implements CartService {
 
     @Override
     public Cart getCartByConsumerIdAndRestaurantId(Long id, Long restaurantId) {
-        return cartRepository.findByConsumerIdAndRestaurantId(id, restaurantId)
+        return cartRepository.findByConsumerIdAndRestaurantIdAndValidCart(id, restaurantId, true)
                 .orElseThrow(() -> new RuntimeException(
                         "cart not found with the consume id =" + id + " And Restaurant Id = " + restaurantId));
     }
@@ -138,14 +151,16 @@ public class CartServiceImpl implements CartService {
             return addItemToCart(cart.getId(), cartItem);
         }
 
-        Cart cart = getCartByConsumerIdAndRestaurantId(RestaurantId, consumer.getId());
+        Cart cart = getCartByConsumerIdAndRestaurantId(consumer.getId(), RestaurantId);
         MenuItem menuItem = menuService.getMenuItemById(RestaurantId, MenuItemId);
-        if (cartItemService.isCartItemExist(menuItem, cart)) {
+        if (cartItemService.isMenuItemExistInCart(menuItem, cart)) {
             CartItem cartItem = cartItemService.getCartItemByMenuItemAndCart(menuItem, cart);
             cartItemService.incrementCartItemQuantity(1, cartItem);
+            return getCartByConsumerIdAndRestaurantId(consumer.getId(), RestaurantId);
         }
 
-        return cart;
+        CartItem cartItem = cartItemService.createNewCartItem(menuItem, cart);
+        return addItemToCart(cart.getId(), cartItem);
     }
 
 }

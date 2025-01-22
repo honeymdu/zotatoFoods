@@ -13,7 +13,6 @@ import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
 
-
 @Service
 public class JWTService {
 
@@ -30,7 +29,7 @@ public class JWTService {
                 .claim("UserEmail", user.getEmail())
                 .claim("Roles", user.getRole().toString())
                 .issuedAt(new Date())
-                .expiration(new Date(System.currentTimeMillis() + 1000 * 60 * 10))
+                .expiration(new Date(System.currentTimeMillis() + 1000 * 60 * 40))
                 .signWith(getSecretKey())
                 .compact();
 

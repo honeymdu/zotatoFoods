@@ -1,5 +1,7 @@
 package com.food.zotatoFoods.entites;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -18,7 +20,8 @@ public class Consumer {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @OneToOne(fetch = FetchType.EAGER)
+    @OneToOne(fetch = FetchType.LAZY)
+    @JsonIgnore
     private User user;
     private Double rating;
 }

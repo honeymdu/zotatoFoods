@@ -1,5 +1,7 @@
 package com.food.zotatoFoods.services.impl;
 
+import java.util.List;
+
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
@@ -46,6 +48,7 @@ public class CartItemServiceImpl implements CartItemService {
         cartItem.setQuantity(cartItem.getQuantity() + quantity);
         Cart cart = cartItem.getCart();
         cart.setTotalPrice(cart.getTotalPrice() + cartItem.getMenuItem().getPrice() * quantity);
+        cartItem.setTotalPrice(cartItem.getMenuItem().getPrice() * quantity);
         cartItem.setCart(cart);
         return modelMapper.map(cartItemRepository.save(cartItem), CartItemDto.class);
     }
@@ -61,6 +64,7 @@ public class CartItemServiceImpl implements CartItemService {
         }
         cartItem.setQuantity(cartItem.getQuantity() - quantity);
         Cart cart = cartItem.getCart();
+        cartItem.setTotalPrice(cartItem.getMenuItem().getPrice() * quantity);
         cart.setTotalPrice(cart.getTotalPrice() - cartItem.getMenuItem().getPrice() * quantity);
         cartItem.setCart(cart);
         return modelMapper.map(cartItemRepository.save(cartItem), CartItemDto.class);
@@ -72,9 +76,21 @@ public class CartItemServiceImpl implements CartItemService {
     }
 
     @Override
-    public Boolean isCartItemExist(MenuItem menuItem, Cart cart) {
-        CartItem cartItem = cartItemRepository.findByMenuItemAndCartId(menuItem, cart.getId());
-        if (!cartItem.equals(null)) {
+    public Boolean isCartItemExist(CartItem cartItem, Cart cart) {
+        List<CartItem> cartItems = cart.getCartItems();
+        for (CartItem cartItem2 : cartItems) {
+            if (cartItem2 != null) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    @Override
+    public Boolean isMenuItemExistInCart(MenuItem MenuItem, Cart cart) {
+        CartItem cartItem = cartItemRepository.findByMenuItemIdAndCartId(MenuItem.getId(), cart.getId());
+        if (cartItem != null) {
             return true;
         }
         return false;
@@ -82,10 +98,10 @@ public class CartItemServiceImpl implements CartItemService {
 
     @Override
     public CartItem getCartItemByMenuItemAndCart(MenuItem menuItem, Cart cart) {
-        if (!isCartItemExist(menuItem, cart)) {
+        if (!isMenuItemExistInCart(menuItem, cart)) {
             throw new ResourceNotFoundException("MenuItem not Exist with cart Id =" + menuItem.getId());
         }
-        return cartItemRepository.findByMenuItemAndCartId(menuItem, cart.getId());
+        return cartItemRepository.findByMenuItemIdAndCartId(menuItem.getId(), cart.getId());
 
     }
 

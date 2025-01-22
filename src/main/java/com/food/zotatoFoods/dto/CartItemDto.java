@@ -1,5 +1,4 @@
 package com.food.zotatoFoods.dto;
-
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -10,9 +9,8 @@ import lombok.NoArgsConstructor;
 public class CartItemDto {
 
     private Long id;
-    private MenuItemDto menuItem;
     private Integer quantity;
+    private MenuItemDto menuItem;
     private Double totalPrice;
-    private CartDto cart;
 
 }

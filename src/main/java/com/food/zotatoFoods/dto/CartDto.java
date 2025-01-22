@@ -10,10 +10,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class CartDto {
     private Long id;
-    private ConsumerDto consumer;
-    private RestaurantDto restaurant;
-    private List<CartItemDto> cartItemsDto;
+    private List<CartItemDto> cartItems;
     private Double totalPrice;
-    private Boolean ValidCart;
 
 }

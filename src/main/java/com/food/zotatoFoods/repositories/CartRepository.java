@@ -10,6 +10,6 @@ import com.food.zotatoFoods.entites.Cart;
 @Repository
 public interface CartRepository extends JpaRepository<Cart, Long> {
 
-    Optional<Cart> findByConsumerIdAndRestaurantId(Long id, Long restaurantId);
+    Optional<Cart> findByConsumerIdAndRestaurantIdAndValidCart(Long id, Long restaurantId, boolean b);
 
 }

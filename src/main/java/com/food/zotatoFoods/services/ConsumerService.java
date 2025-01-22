@@ -6,7 +6,6 @@ import org.springframework.data.domain.PageRequest;
 import com.food.zotatoFoods.dto.CreateOrderRequest;
 import com.food.zotatoFoods.dto.OrderRequestsDto;
 import com.food.zotatoFoods.entites.Cart;
-import com.food.zotatoFoods.entites.CartItem;
 import com.food.zotatoFoods.entites.Consumer;
 import com.food.zotatoFoods.entites.Menu;
 import com.food.zotatoFoods.entites.Restaurant;
@@ -26,11 +25,13 @@ public interface ConsumerService {
 
     public Consumer getCurrentConsumer();
 
+    public Cart viewCart(Long RestaurantId);
+
     public Cart PrepareCart(Long RestaurantId, Long MenuItemId);
 
-    public Cart removeCartItem(Long CartId, CartItem cartItem);
+    public Cart removeCartItem(Long CartId, Long cartItemId);
 
-    public void clearCart(Long CartId);
+    public void clearCart(Long RestaurantId);
 
     public Menu viewMenuByRestaurantId(Long RestaurantId);
 

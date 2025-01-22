@@ -7,7 +7,6 @@ import lombok.*;
 
 @Entity
 @Table(name = "Cart", indexes = {
-        @Index(name = "idx_cart_restaurant_id", columnList = "restaurant_id"),
         @Index(name = "idx_cart_validcart", columnList = "ValidCart"),
         @Index(name = "idx_cart_user_id", columnList = "user_id")
 })
@@ -25,11 +24,11 @@ public class Cart {
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
     private Consumer consumer;
-    @OneToOne
+    @ManyToOne
     private Restaurant restaurant;
     @OneToMany(mappedBy = "cart")
     private List<CartItem> cartItems;
     private Double totalPrice;
-    private Boolean ValidCart;
+    private Boolean validCart;
 
 }

@@ -123,4 +123,9 @@ public class RestaurantPartnerServiceImpl implements RestaurantPartnerService {
         return menuService.CreateMenu(createMenu);
     }
 
+    @Override
+    public Menu viewMenuByRestaurantId(Long RestaurantId) {
+        return menuService.getMenuByRestaurant(RestaurantId);
+    }
+
 }

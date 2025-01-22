@@ -12,13 +12,15 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.food.zotatoFoods.dto.AddNewRestaurantDto;
+import com.food.zotatoFoods.dto.CreateMenu;
 import com.food.zotatoFoods.dto.MenuDto;
 import com.food.zotatoFoods.dto.MenuItemDto;
 import com.food.zotatoFoods.dto.RestaurantDto;
+import com.food.zotatoFoods.entites.Menu;
 import com.food.zotatoFoods.entites.Restaurant;
 import com.food.zotatoFoods.services.RestaurantPartnerService;
+
 import lombok.RequiredArgsConstructor;
-import com.food.zotatoFoods.dto.CreateMenu;
 
 @RestController
 @RequestMapping("/restaurant-partner")
@@ -70,6 +72,12 @@ public class RestaurantPartnerController {
                         MenuDto.class),
                 HttpStatus.CREATED);
 
+    }
+
+    @PostMapping("/view-menu/{RestaurantId}")
+    public ResponseEntity<MenuDto> viewMenu(@PathVariable Long RestaurantId) {
+        Menu menu = restaurantPartnerService.viewMenuByRestaurantId(RestaurantId);
+        return ResponseEntity.ok(modelMapper.map(menu, MenuDto.class));
     }
 
 }
