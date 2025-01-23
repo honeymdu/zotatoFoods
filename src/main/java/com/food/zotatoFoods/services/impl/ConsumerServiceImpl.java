@@ -7,6 +7,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
+import com.food.zotatoFoods.dto.CartDto;
 import com.food.zotatoFoods.dto.CreateOrderRequest;
 import com.food.zotatoFoods.dto.OrderRequestsDto;
 import com.food.zotatoFoods.entites.Cart;
@@ -78,13 +79,13 @@ public class ConsumerServiceImpl implements ConsumerService {
     }
 
     @Override
-    public Cart PrepareCart(Long RestaurantId, Long MenuItemId) {
+    public CartDto PrepareCart(Long RestaurantId, Long MenuItemId) {
         Consumer consumer = getCurrentConsumer();
         return cartService.prepareCart(consumer, RestaurantId, MenuItemId);
     }
 
     @Override
-    public Cart removeCartItem(Long CartId, Long cartItemId) {
+    public CartDto removeCartItem(Long CartId, Long cartItemId) {
         Consumer consumer = getCurrentConsumer();
         Cart cart = cartService.getCartById(CartId);
         cartService.isValidCartExist(consumer, cart.getRestaurant().getId());
@@ -110,7 +111,7 @@ public class ConsumerServiceImpl implements ConsumerService {
     }
 
     @Override
-    public Cart viewCart(Long RestaurantId) {
+    public CartDto viewCart(Long RestaurantId) {
         Consumer consumer = getCurrentConsumer();
         Cart cart = cartService.getCartByConsumerIdAndRestaurantId(consumer.getId(), RestaurantId);
         return cartService.viewCart(cart.getId());

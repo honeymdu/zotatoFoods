@@ -1,10 +1,13 @@
 package com.food.zotatoFoods.services.impl;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
+import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
+import com.food.zotatoFoods.dto.CartDto;
+import com.food.zotatoFoods.dto.CartItemDto;
 import com.food.zotatoFoods.entites.Cart;
 import com.food.zotatoFoods.entites.CartItem;
 import com.food.zotatoFoods.entites.Consumer;
@@ -28,6 +31,7 @@ public class CartServiceImpl implements CartService {
     private final RestaurantService restaurantService;
     private final MenuService menuService;
     private final CartItemService cartItemService;
+    private final ModelMapper modelMapper;
 
     @Override
     public Cart createCart(Long restaurantId, Consumer consumer) {
@@ -37,36 +41,45 @@ public class CartServiceImpl implements CartService {
                 .consumer(consumer)
                 .totalPrice(0.0)
                 .validCart(true)
-                .cartItems(new ArrayList<>())
                 .build();
         return cartRepository.save(cart);
 
     }
 
     @Override
-    public Cart addItemToCart(Long CartId, CartItem cartItem) {
+    public CartDto addItemToCart(Long CartId, CartItem cartItem) {
         Cart cart = getCartById(CartId);
         isValidCart(cart);
-        cart.getCartItems().add(cartItem);
+        cartItem.setCart(cart);
         cart.setTotalPrice(cart.getTotalPrice() + (cartItem.getMenuItem().getPrice() * cartItem.getQuantity()));
-        return cartRepository.save(cart);
+        Cart savedCart = cartRepository.save(cart);
+        CartDto cartDto = modelMapper.map(savedCart, CartDto.class);
+        List<CartItemDto> cartItemDtos = cartItemService.getAllCartItemsByCartId(cartDto.getId()).stream()
+                .map(cartIt -> modelMapper.map(cartItem, CartItemDto.class)).collect(Collectors.toList());
+        cartDto.setCartItems(cartItemDtos);
+        return cartDto;
     }
 
     @Override
-    public Cart viewCart(Long CartId) {
+    public CartDto viewCart(Long CartId) {
         Cart cart = getCartById(CartId);
-        return cart;
+        CartDto cartDto = modelMapper.map(cart, CartDto.class);
+        List<CartItemDto> cartItemDtos = cartItemService.getAllCartItemsByCartId(CartId).stream()
+                .map(cartItem -> modelMapper.map(cartItem, CartItemDto.class)).collect(Collectors.toList());
+        cartDto.setCartItems(cartItemDtos);
+        return cartDto;
     }
 
     @Override
-    public Cart removeItemFromCart(Long CartId, CartItem cartItem) {
+    public CartDto removeItemFromCart(Long CartId, CartItem cartItem) {
         Cart cart = getCartById(CartId);
         isValidCart(cart);
         Boolean isExist = cartItemService.isCartItemExist(cartItem, cart);
         if (!isExist) {
             throw new RuntimeException("can not remove cartItem as this is not exist in Cart with cart id = " + CartId);
         }
-        List<CartItem> cartItems = cart.getCartItems();
+        List<CartItem> cartItems = cartItemService.getAllCartItemsByCartId(CartId).stream()
+                .map(CartItemsList -> modelMapper.map(cartItem, CartItem.class)).collect(Collectors.toList());
         for (CartItem cartItem2 : cartItems) {
             if (cartItem2.equals(cartItem)) {
                 if (cartItem2.getQuantity() > 1) {
@@ -76,6 +89,25 @@ public class CartServiceImpl implements CartService {
                 }
             }
         }
+        Cart cart2 = getCartById(CartId);
+        CartDto cartDto = modelMapper.map(cart2, CartDto.class);
+        List<CartItemDto> cartItemDtos = cartItemService.getAllCartItemsByCartId(cartDto.getId()).stream()
+                .map(cartIt -> modelMapper.map(cartItem, CartItemDto.class)).collect(Collectors.toList());
+        cartDto.setCartItems(cartItemDtos);
+        return cartDto;
+    }
+
+    @Override
+    public Cart clearCartItemFromCart(Long CartId) {
+        Cart cart = getCartById(CartId);
+        isValidCart(cart);
+        List<CartItem> cartItems = cartItemService.getAllCartItemsByCartId(CartId);
+        for (CartItem cartItem2 : cartItems) {
+            cartItemService.removeCartItemFromCart(cartItem2);
+        }
+        Cart Updatedcart = getCartById(CartId);
+        Updatedcart.setTotalPrice(0.0);
+        cartRepository.save(Updatedcart);
         return getCartById(CartId);
     }
 
@@ -130,17 +162,13 @@ public class CartServiceImpl implements CartService {
         Cart cart = cartRepository.findById(cartId)
                 .orElseThrow(() -> new RuntimeException("Cart not Found with cart id =" + cartId));
 
-        List<CartItem> cartItems = cart.getCartItems();
-
-        for (CartItem cartItem : cartItems) {
-            removeItemFromCart(cartId, cartItem);
-        }
+        clearCartItemFromCart(cartId);
 
         inValidCart(cart);
     }
 
     @Override
-    public Cart prepareCart(Consumer consumer, Long RestaurantId, Long MenuItemId) {
+    public CartDto prepareCart(Consumer consumer, Long RestaurantId, Long MenuItemId) {
         // check cart already exist with current Restaurent Id
         Boolean isValidCartExist = isValidCartExist(consumer, RestaurantId);
 
@@ -156,7 +184,14 @@ public class CartServiceImpl implements CartService {
         if (cartItemService.isMenuItemExistInCart(menuItem, cart)) {
             CartItem cartItem = cartItemService.getCartItemByMenuItemAndCart(menuItem, cart);
             cartItemService.incrementCartItemQuantity(1, cartItem);
-            return getCartByConsumerIdAndRestaurantId(consumer.getId(), RestaurantId);
+            CartDto cartDto = modelMapper.map(
+                    getCartByConsumerIdAndRestaurantId(consumer.getId(), RestaurantId),
+                    CartDto.class);
+            List<CartItemDto> cartItemDtos = cartItemService.getAllCartItemsByCartId(cartDto.getId()).stream()
+                    .map(cartItems -> modelMapper.map(cartItem, CartItemDto.class)).collect(Collectors.toList());
+
+            cartDto.setCartItems(cartItemDtos);
+            return cartDto;
         }
 
         CartItem cartItem = cartItemService.createNewCartItem(menuItem, cart);

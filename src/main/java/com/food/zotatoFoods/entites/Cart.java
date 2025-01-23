@@ -1,7 +1,5 @@
 package com.food.zotatoFoods.entites;
 
-import java.util.List;
-
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -26,8 +24,6 @@ public class Cart {
     private Consumer consumer;
     @ManyToOne
     private Restaurant restaurant;
-    @OneToMany(mappedBy = "cart")
-    private List<CartItem> cartItems;
     private Double totalPrice;
     private Boolean validCart;
 

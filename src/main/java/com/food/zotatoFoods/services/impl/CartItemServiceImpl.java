@@ -11,6 +11,7 @@ import com.food.zotatoFoods.entites.CartItem;
 import com.food.zotatoFoods.entites.MenuItem;
 import com.food.zotatoFoods.exceptions.ResourceNotFoundException;
 import com.food.zotatoFoods.repositories.CartItemRepository;
+import com.food.zotatoFoods.repositories.CartRepository;
 import com.food.zotatoFoods.services.CartItemService;
 
 import lombok.RequiredArgsConstructor;
@@ -21,6 +22,7 @@ public class CartItemServiceImpl implements CartItemService {
 
     private final CartItemRepository cartItemRepository;
     private final ModelMapper modelMapper;
+    private final CartRepository cartRepository;
 
     @Override
     public CartItem getCartItemById(Long cartItemId) {
@@ -48,13 +50,13 @@ public class CartItemServiceImpl implements CartItemService {
         cartItem.setQuantity(cartItem.getQuantity() + quantity);
         Cart cart = cartItem.getCart();
         cart.setTotalPrice(cart.getTotalPrice() + cartItem.getMenuItem().getPrice() * quantity);
-        cartItem.setTotalPrice(cartItem.getMenuItem().getPrice() * quantity);
+        cartItem.setTotalPrice(cartItem.getMenuItem().getPrice() * cartItem.getQuantity());
         cartItem.setCart(cart);
         return modelMapper.map(cartItemRepository.save(cartItem), CartItemDto.class);
     }
 
     @Override
-    public CartItemDto decrementCartItemQuantity(Integer quantity, CartItem cartItem) {
+    public Cart decrementCartItemQuantity(Integer quantity, CartItem cartItem) {
         if (quantity == 0) {
             throw new RuntimeException("Quantity has to be greater than zero");
         } else if (cartItem.getQuantity() == 0) {
@@ -64,20 +66,24 @@ public class CartItemServiceImpl implements CartItemService {
         }
         cartItem.setQuantity(cartItem.getQuantity() - quantity);
         Cart cart = cartItem.getCart();
-        cartItem.setTotalPrice(cartItem.getMenuItem().getPrice() * quantity);
+        cartItem.setTotalPrice(cartItem.getMenuItem().getPrice() * cartItem.getQuantity());
         cart.setTotalPrice(cart.getTotalPrice() - cartItem.getMenuItem().getPrice() * quantity);
         cartItem.setCart(cart);
-        return modelMapper.map(cartItemRepository.save(cartItem), CartItemDto.class);
+        cartItemRepository.save(cartItem);
+        return cartRepository.save(cartItem.getCart());
     }
 
     @Override
     public void removeCartItemFromCart(CartItem cartItem) {
+        Cart cart = cartItem.getCart();
         cartItemRepository.deleteById(cartItem.getId());
+        cartRepository.save(cart);
+
     }
 
     @Override
     public Boolean isCartItemExist(CartItem cartItem, Cart cart) {
-        List<CartItem> cartItems = cart.getCartItems();
+        List<CartItem> cartItems = getAllCartItemsByCartId(cart.getId());
         for (CartItem cartItem2 : cartItems) {
             if (cartItem2 != null) {
                 return true;
@@ -103,6 +109,17 @@ public class CartItemServiceImpl implements CartItemService {
         }
         return cartItemRepository.findByMenuItemIdAndCartId(menuItem.getId(), cart.getId());
 
+    }
+
+    @Override
+    public List<CartItem> getAllCartItemsByCartId(Long cartId) {
+        return cartItemRepository.findAllByCartId(cartId);
+
+    }
+
+    @Override
+    public CartItem save(CartItem cartItem) {
+        return cartItemRepository.save(cartItem);
     }
 
 }

@@ -21,7 +21,6 @@ import com.food.zotatoFoods.dto.CreateOrderRequest;
 import com.food.zotatoFoods.dto.MenuDto;
 import com.food.zotatoFoods.dto.OrderRequestsDto;
 import com.food.zotatoFoods.entites.Address;
-import com.food.zotatoFoods.entites.Cart;
 import com.food.zotatoFoods.entites.Menu;
 import com.food.zotatoFoods.entites.Restaurant;
 import com.food.zotatoFoods.entites.User;
@@ -54,8 +53,8 @@ public class ConsumerController {
 
         @PostMapping("/prepareCart/{RestaurantId}/{MenuItemId}")
         public ResponseEntity<CartDto> prepareMyCart(@PathVariable Long RestaurantId, @PathVariable Long MenuItemId) {
-                Cart cart = consumerService.PrepareCart(RestaurantId, MenuItemId);
-                return ResponseEntity.ok(modelMapper.map(cart, CartDto.class));
+                CartDto cart = consumerService.PrepareCart(RestaurantId, MenuItemId);
+                return ResponseEntity.ok(cart);
 
         }
 
@@ -85,14 +84,13 @@ public class ConsumerController {
 
         @GetMapping("/view-cart/{RestaurantId}")
         public ResponseEntity<CartDto> viewCart(@PathVariable Long RestaurantId) {
-                Cart cart = consumerService.viewCart(RestaurantId);
-                return ResponseEntity.ok(modelMapper.map(cart, CartDto.class));
+                return ResponseEntity.ok(consumerService.viewCart(RestaurantId));
         }
 
         @PostMapping("/remove-cartItem/{cartId}/{cartItemId}")
         public ResponseEntity<CartDto> removeCartItem(@PathVariable Long cartId, @PathVariable Long cartItemId) {
-                Cart cart = consumerService.removeCartItem(cartId, cartItemId);
-                return ResponseEntity.ok(modelMapper.map(cart, CartDto.class));
+                CartDto cart = consumerService.removeCartItem(cartId, cartItemId);
+                return ResponseEntity.ok(cart);
         }
 
         @PostMapping("/clear-cartItems/{RestaurantId}")
