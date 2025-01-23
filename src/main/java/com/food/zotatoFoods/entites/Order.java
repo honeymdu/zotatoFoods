@@ -1,5 +1,6 @@
 package com.food.zotatoFoods.entites;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -51,9 +52,9 @@ public class Order {
     private Consumer consumer;
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<OrderItem> orderItems = new ArrayList<>();
-    private Double foodAmount;
-    private Double platformFee;
-    private Double totalPrice;
+    private BigDecimal foodAmount;
+    private BigDecimal platformFee;
+    private BigDecimal totalPrice;
     @Column(columnDefinition = "Geometry(Point,4326)")
     private Point pickupLocation;
     @Column(columnDefinition = "Geometry(Point,4326)")

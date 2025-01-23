@@ -1,5 +1,6 @@
 package com.food.zotatoFoods.services.impl;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -39,7 +40,7 @@ public class CartServiceImpl implements CartService {
         Cart cart = Cart.builder()
                 .restaurant(restaurant)
                 .consumer(consumer)
-                .totalPrice(0.0)
+                .totalPrice(new BigDecimal(0))
                 .validCart(true)
                 .build();
         return cartRepository.save(cart);
@@ -47,17 +48,16 @@ public class CartServiceImpl implements CartService {
     }
 
     @Override
-    public CartDto addItemToCart(Long CartId, CartItem cartItem) {
-        Cart cart = getCartById(CartId);
+    public CartDto addItemToCart(Long cartId, CartItem cartItem) {
+        Cart cart = getCartById(cartId);
         isValidCart(cart);
-        cartItem.setCart(cart);
-        cart.setTotalPrice(cart.getTotalPrice() + (cartItem.getMenuItem().getPrice() * cartItem.getQuantity()));
+
+        cart.getCartItems().add(cartItem);
+        cart.setTotalPrice(cart.getTotalPrice().add((cartItem.getMenuItem().getPrice().multiply(new BigDecimal(cartItem.getQuantity())))));
+
         Cart savedCart = cartRepository.save(cart);
-        CartDto cartDto = modelMapper.map(savedCart, CartDto.class);
-        List<CartItemDto> cartItemDtos = cartItemService.getAllCartItemsByCartId(cartDto.getId()).stream()
-                .map(cartIt -> modelMapper.map(cartItem, CartItemDto.class)).collect(Collectors.toList());
-        cartDto.setCartItems(cartItemDtos);
-        return cartDto;
+        return mapCartToDto(savedCart);
+
     }
 
     @Override
@@ -71,44 +71,43 @@ public class CartServiceImpl implements CartService {
     }
 
     @Override
-    public CartDto removeItemFromCart(Long CartId, CartItem cartItem) {
-        Cart cart = getCartById(CartId);
+    public CartDto removeItemFromCart(Long cartId, CartItem cartItem) {
+
+        Cart cart = getCartById(cartId);
         isValidCart(cart);
-        Boolean isExist = cartItemService.isCartItemExist(cartItem, cart);
-        if (!isExist) {
-            throw new RuntimeException("can not remove cartItem as this is not exist in Cart with cart id = " + CartId);
+
+        if (!cartItemService.isCartItemExist(cartItem)) {
+            throw new ResourceNotFoundException("CartItem not found in Cart with ID " + cartId);
         }
-        List<CartItem> cartItems = cartItemService.getAllCartItemsByCartId(CartId).stream()
-                .map(CartItemsList -> modelMapper.map(cartItem, CartItem.class)).collect(Collectors.toList());
-        for (CartItem cartItem2 : cartItems) {
-            if (cartItem2.equals(cartItem)) {
-                if (cartItem2.getQuantity() > 1) {
-                    cartItemService.decrementCartItemQuantity(1, cartItem);
-                } else {
-                    cartItemService.removeCartItemFromCart(cartItem2);
-                }
-            }
+
+        if (cartItem.getQuantity() > 1) {
+            cartItemService.decrementCartItemQuantity(1, cartItem);
+        } else {
+            cartItemService.removeCartItemFromCart(cartItem);
         }
-        Cart cart2 = getCartById(CartId);
-        CartDto cartDto = modelMapper.map(cart2, CartDto.class);
-        List<CartItemDto> cartItemDtos = cartItemService.getAllCartItemsByCartId(cartDto.getId()).stream()
-                .map(cartIt -> modelMapper.map(cartItem, CartItemDto.class)).collect(Collectors.toList());
+
+        cart = getCartById(cartId);
+        List<CartItemDto> cartItemDtos = cartItemService.getAllCartItemsByCartId(cartId)
+                .stream()
+                .map(item -> modelMapper.map(item, CartItemDto.class))
+                .collect(Collectors.toList());
+
+        CartDto cartDto = modelMapper.map(cart, CartDto.class);
         cartDto.setCartItems(cartItemDtos);
         return cartDto;
+
     }
 
     @Override
-    public Cart clearCartItemFromCart(Long CartId) {
-        Cart cart = getCartById(CartId);
+    public Cart clearCartItemFromCart(Long cartId) {
+
+        Cart cart = getCartById(cartId);
         isValidCart(cart);
-        List<CartItem> cartItems = cartItemService.getAllCartItemsByCartId(CartId);
-        for (CartItem cartItem2 : cartItems) {
-            cartItemService.removeCartItemFromCart(cartItem2);
-        }
-        Cart Updatedcart = getCartById(CartId);
-        Updatedcart.setTotalPrice(0.0);
-        cartRepository.save(Updatedcart);
-        return getCartById(CartId);
+
+        cart.getCartItems().clear(); // Orphan removal deletes cart items
+        cart.setTotalPrice(new BigDecimal(0));
+
+        return cartRepository.save(cart);
     }
 
     @Override
@@ -181,21 +180,32 @@ public class CartServiceImpl implements CartService {
 
         Cart cart = getCartByConsumerIdAndRestaurantId(consumer.getId(), RestaurantId);
         MenuItem menuItem = menuService.getMenuItemById(RestaurantId, MenuItemId);
+
         if (cartItemService.isMenuItemExistInCart(menuItem, cart)) {
             CartItem cartItem = cartItemService.getCartItemByMenuItemAndCart(menuItem, cart);
             cartItemService.incrementCartItemQuantity(1, cartItem);
-            CartDto cartDto = modelMapper.map(
-                    getCartByConsumerIdAndRestaurantId(consumer.getId(), RestaurantId),
-                    CartDto.class);
-            List<CartItemDto> cartItemDtos = cartItemService.getAllCartItemsByCartId(cartDto.getId()).stream()
-                    .map(cartItems -> modelMapper.map(cartItem, CartItemDto.class)).collect(Collectors.toList());
-
-            cartDto.setCartItems(cartItemDtos);
-            return cartDto;
+        } else {
+            CartItem cartItem = cartItemService.createNewCartItem(menuItem, cart);
+            return addItemToCart(cart.getId(), cartItem);
         }
 
-        CartItem cartItem = cartItemService.createNewCartItem(menuItem, cart);
-        return addItemToCart(cart.getId(), cartItem);
+        List<CartItemDto> cartItemDtos = cartItemService.getAllCartItemsByCartId(cart.getId())
+                .stream()
+                .map(item -> modelMapper.map(item, CartItemDto.class))
+                .collect(Collectors.toList());
+
+        CartDto cartDto = modelMapper.map(cart, CartDto.class);
+        cartDto.setCartItems(cartItemDtos);
+        return cartDto;
+    }
+
+    private CartDto mapCartToDto(Cart cart) {
+        CartDto cartDto = modelMapper.map(cart, CartDto.class);
+        List<CartItemDto> cartItemDtos = cart.getCartItems().stream()
+                .map(item -> modelMapper.map(item, CartItemDto.class))
+                .collect(Collectors.toList());
+        cartDto.setCartItems(cartItemDtos);
+        return cartDto;
     }
 
 }

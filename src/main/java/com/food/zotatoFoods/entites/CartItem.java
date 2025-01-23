@@ -1,5 +1,7 @@
 package com.food.zotatoFoods.entites;
 
+import java.math.BigDecimal;
+
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -22,8 +24,9 @@ public class CartItem {
     @JoinColumn(name = "menu_item_id", nullable = false)
     private MenuItem menuItem;
     private Integer quantity;
-    private Double totalPrice;
-    @ManyToOne
+    @Column(nullable = false, precision = 10, scale = 2)
+    private BigDecimal totalPrice;
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "cart_id", nullable = false)
     private Cart cart;
 

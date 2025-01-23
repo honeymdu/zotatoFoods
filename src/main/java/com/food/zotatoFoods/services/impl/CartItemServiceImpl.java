@@ -1,17 +1,15 @@
 package com.food.zotatoFoods.services.impl;
 
+import java.math.BigDecimal;
 import java.util.List;
 
-import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
-import com.food.zotatoFoods.dto.CartItemDto;
 import com.food.zotatoFoods.entites.Cart;
 import com.food.zotatoFoods.entites.CartItem;
 import com.food.zotatoFoods.entites.MenuItem;
 import com.food.zotatoFoods.exceptions.ResourceNotFoundException;
 import com.food.zotatoFoods.repositories.CartItemRepository;
-import com.food.zotatoFoods.repositories.CartRepository;
 import com.food.zotatoFoods.services.CartItemService;
 
 import lombok.RequiredArgsConstructor;
@@ -21,8 +19,6 @@ import lombok.RequiredArgsConstructor;
 public class CartItemServiceImpl implements CartItemService {
 
     private final CartItemRepository cartItemRepository;
-    private final ModelMapper modelMapper;
-    private final CartRepository cartRepository;
 
     @Override
     public CartItem getCartItemById(Long cartItemId) {
@@ -32,83 +28,62 @@ public class CartItemServiceImpl implements CartItemService {
 
     @Override
     public CartItem createNewCartItem(MenuItem menuItem, Cart cart) {
-        cart.setTotalPrice(menuItem.getPrice() + cart.getTotalPrice());
         CartItem cartItem = CartItem.builder()
-                .cart(cart)
                 .menuItem(menuItem)
+                .cart(cart)
                 .quantity(1)
                 .totalPrice(menuItem.getPrice())
                 .build();
-        return cartItemRepository.save(cartItem);
+
+        // The cart is responsible for persisting the CartItem due to cascade settings
+        cart.getCartItems().add(cartItem);
+        cart.setTotalPrice(cart.getTotalPrice().add(menuItem.getPrice()));
+        return cartItem;
     }
 
     @Override
-    public CartItemDto incrementCartItemQuantity(Integer quantity, CartItem cartItem) {
+    public void incrementCartItemQuantity(Integer quantity, CartItem cartItem) {
         if (quantity == 0 || quantity < 0) {
             throw new RuntimeException("Quantity has to be greater than zero");
         }
         cartItem.setQuantity(cartItem.getQuantity() + quantity);
-        Cart cart = cartItem.getCart();
-        cart.setTotalPrice(cart.getTotalPrice() + cartItem.getMenuItem().getPrice() * quantity);
-        cartItem.setTotalPrice(cartItem.getMenuItem().getPrice() * cartItem.getQuantity());
-        cartItem.setCart(cart);
-        return modelMapper.map(cartItemRepository.save(cartItem), CartItemDto.class);
+        cartItem.setTotalPrice(cartItem.getMenuItem().getPrice().multiply(new BigDecimal(cartItem.getQuantity())));
     }
 
     @Override
-    public Cart decrementCartItemQuantity(Integer quantity, CartItem cartItem) {
-        if (quantity == 0) {
-            throw new RuntimeException("Quantity has to be greater than zero");
-        } else if (cartItem.getQuantity() == 0) {
-            throw new RuntimeException("Quantity already set to low");
-        } else if (cartItem.getQuantity() - quantity < 0) {
-            throw new RuntimeException("Quantity must be less than or equal to " + cartItem.getQuantity());
+    public void decrementCartItemQuantity(Integer quantity, CartItem cartItem) {
+        if (quantity <= 0) {
+            throw new IllegalArgumentException("Quantity must be greater than zero.");
         }
+        if (cartItem.getQuantity() < quantity) {
+            throw new IllegalArgumentException("Quantity to decrement exceeds current quantity.");
+        }
+
         cartItem.setQuantity(cartItem.getQuantity() - quantity);
-        Cart cart = cartItem.getCart();
-        cartItem.setTotalPrice(cartItem.getMenuItem().getPrice() * cartItem.getQuantity());
-        cart.setTotalPrice(cart.getTotalPrice() - cartItem.getMenuItem().getPrice() * quantity);
-        cartItem.setCart(cart);
-        cartItemRepository.save(cartItem);
-        return cartRepository.save(cartItem.getCart());
+        cartItem.setTotalPrice(cartItem.getMenuItem().getPrice().multiply(new BigDecimal(cartItem.getQuantity())));
+        cartItem.getCart().setTotalPrice(cartItem.getCart().getTotalPrice()
+                .subtract(cartItem.getMenuItem().getPrice().multiply(new BigDecimal(quantity))));
+
     }
 
     @Override
     public void removeCartItemFromCart(CartItem cartItem) {
         Cart cart = cartItem.getCart();
-        cartItemRepository.deleteById(cartItem.getId());
-        cartRepository.save(cart);
-
+        cart.getCartItems().remove(cartItem);
+        cart.setTotalPrice(cart.getTotalPrice().subtract(cartItem.getTotalPrice()));
     }
 
     @Override
-    public Boolean isCartItemExist(CartItem cartItem, Cart cart) {
-        List<CartItem> cartItems = getAllCartItemsByCartId(cart.getId());
-        for (CartItem cartItem2 : cartItems) {
-            if (cartItem2 != null) {
-                return true;
-            }
-        }
-
-        return false;
-    }
-
-    @Override
-    public Boolean isMenuItemExistInCart(MenuItem MenuItem, Cart cart) {
-        CartItem cartItem = cartItemRepository.findByMenuItemIdAndCartId(MenuItem.getId(), cart.getId());
-        if (cartItem != null) {
-            return true;
-        }
-        return false;
+    public Boolean isCartItemExist(CartItem cartItem) {
+        return cartItemRepository.existsById(cartItem.getId());
     }
 
     @Override
     public CartItem getCartItemByMenuItemAndCart(MenuItem menuItem, Cart cart) {
-        if (!isMenuItemExistInCart(menuItem, cart)) {
-            throw new ResourceNotFoundException("MenuItem not Exist with cart Id =" + menuItem.getId());
-        }
-        return cartItemRepository.findByMenuItemIdAndCartId(menuItem.getId(), cart.getId());
-
+        return cart.getCartItems().stream()
+                .filter(cartItem -> cartItem.getMenuItem().getId().equals(menuItem.getId()))
+                .findFirst()
+                .orElseThrow(() -> new ResourceNotFoundException("CartItem not found for given menu item in cart."));
     }
 
     @Override
@@ -118,8 +93,8 @@ public class CartItemServiceImpl implements CartItemService {
     }
 
     @Override
-    public CartItem save(CartItem cartItem) {
-        return cartItemRepository.save(cartItem);
+    public boolean isMenuItemExistInCart(MenuItem menuItem, Cart cart) {
+        return cartItemRepository.findByMenuItemIdAndCartId(menuItem.getId(), cart.getId()).isPresent();
     }
 
 }

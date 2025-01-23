@@ -1,5 +1,6 @@
 package com.food.zotatoFoods.services.impl;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 import org.locationtech.jts.geom.Point;
@@ -53,13 +54,13 @@ public class OrderRequestServiceImpl implements OrderRequestService {
         OrderRequests orderRequests = OrderRequests.builder()
                 .cart(cart)
                 .consumer(cart.getConsumer())
-                .deliveryFee(delivery_price)
-                .platformFee(PLATFORM_COMMISSION)
+                .deliveryFee(new BigDecimal(delivery_price))
+                .platformFee(new BigDecimal(PLATFORM_COMMISSION))
                 .foodAmount(cart.getTotalPrice())
                 .orderRequestStatus(OrderRequestStatus.PENDING)
                 .restaurant(cart.getRestaurant())
                 .paymentMethod(paymentMethod)
-                .totalPrice(cart.getTotalPrice() + delivery_price + PLATFORM_COMMISSION).build();
+                .totalPrice(cart.getTotalPrice().add(new BigDecimal(delivery_price + PLATFORM_COMMISSION))).build();
 
         // Send Notification to Corresponding restaurant
 

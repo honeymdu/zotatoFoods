@@ -1,5 +1,9 @@
 package com.food.zotatoFoods.entites;
 
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
+
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -24,7 +28,11 @@ public class Cart {
     private Consumer consumer;
     @ManyToOne
     private Restaurant restaurant;
-    private Double totalPrice;
+    @OneToMany(mappedBy = "cart", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<CartItem> cartItems = new ArrayList<>(); // Initialize to avoid null issues
+    @Column(nullable = false, precision = 10, scale = 2)
+    private BigDecimal totalPrice;
+    @Column(nullable = false)
     private Boolean validCart;
 
 }

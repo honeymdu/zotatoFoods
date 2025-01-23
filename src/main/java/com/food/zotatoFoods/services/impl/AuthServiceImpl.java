@@ -19,7 +19,7 @@ import com.food.zotatoFoods.entites.User;
 import com.food.zotatoFoods.entites.enums.Role;
 import com.food.zotatoFoods.exceptions.RuntimeConfilictException;
 import com.food.zotatoFoods.repositories.AddressRepository;
-import com.food.zotatoFoods.Security.JWTService;
+import com.food.zotatoFoods.security.JWTService;
 import com.food.zotatoFoods.services.AuthService;
 import com.food.zotatoFoods.services.ConsumerService;
 import com.food.zotatoFoods.services.WalletService;

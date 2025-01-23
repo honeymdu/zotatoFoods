@@ -1,4 +1,4 @@
-package com.food.zotatoFoods.Security;
+package com.food.zotatoFoods.security;
 
 import com.food.zotatoFoods.entites.User;
 import com.food.zotatoFoods.services.impl.UserService;

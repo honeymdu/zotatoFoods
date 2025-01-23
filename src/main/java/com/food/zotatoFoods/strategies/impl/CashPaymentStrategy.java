@@ -1,5 +1,7 @@
 package com.food.zotatoFoods.strategies.impl;
 
+import java.math.BigDecimal;
+
 import org.springframework.stereotype.Service;
 
 import com.food.zotatoFoods.entites.DeliveryPartner;
@@ -26,7 +28,7 @@ public class CashPaymentStrategy implements PaymentStrategy {
         DeliveryPartner deliveryPartner = deliveryService.getDeliveryRequestByOrderId(payment.getOrder().getId())
                 .getDeliveryPartner();
         // Wallet driverwallet = walletService.findWalletById(driver.getId());
-        double platform_commission = payment.getAmount() * PLATFORM_COMMISSION;
+        BigDecimal platform_commission = payment.getAmount().multiply(new BigDecimal(PLATFORM_COMMISSION));
         walletService.deductMoneyFromWallet(deliveryPartner.getUser(), platform_commission, null, payment.getOrder(),
                 TransactionMethod.ORDER);
 

@@ -15,7 +15,6 @@ import lombok.Setter;
 @Entity
 @Table(name = "Menu", indexes = {
         @Index(name = "idx_menu_restaurant_id", columnList = "restaurant_id"),
-        @Index(name = "idx_menu_isactive", columnList = "isActive")
 })
 @Getter
 @Setter

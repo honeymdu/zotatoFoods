@@ -1,5 +1,7 @@
 package com.food.zotatoFoods.services.impl;
 
+import java.math.BigDecimal;
+
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
@@ -28,10 +30,10 @@ public class WalletServiceImpl implements WalletService {
 
     @Override
     @Transactional
-    public WalletDto addMoneyToWallet(User user, Double amount, String transactionId, Order order,
+    public WalletDto addMoneyToWallet(User user, BigDecimal amount, String transactionId, Order order,
             TransactionMethod transactionMethod) {
         Wallet wallet = findWalletByUser(user);
-        wallet.setBalance(wallet.getBalance() + amount);
+        wallet.setBalance(wallet.getBalance().add(amount));
 
         WalletTransaction walletTransaction = WalletTransaction.builder()
                 .TransactionId(transactionId)
@@ -49,10 +51,10 @@ public class WalletServiceImpl implements WalletService {
     }
 
     @Override
-    public Wallet deductMoneyFromWallet(User user, Double amount, String transactionId, Order order,
+    public Wallet deductMoneyFromWallet(User user, BigDecimal amount, String transactionId, Order order,
             TransactionMethod transactionMethod) {
         Wallet wallet = findWalletByUser(user);
-        wallet.setBalance(wallet.getBalance() - amount);
+        wallet.setBalance(wallet.getBalance().subtract(amount));
         WalletTransaction walletTransaction = WalletTransaction.builder()
                 .TransactionId(transactionId)
                 .order(order)
@@ -84,7 +86,7 @@ public class WalletServiceImpl implements WalletService {
     public WalletDto createNewWallet(User user) {
         Wallet wallet = new Wallet();
         wallet.setUser(user);
-        wallet.setBalance(0.0);
+        wallet.setBalance(new BigDecimal(0));
         return modelMapper.map(walletRepository.save(wallet), WalletDto.class);
 
     }

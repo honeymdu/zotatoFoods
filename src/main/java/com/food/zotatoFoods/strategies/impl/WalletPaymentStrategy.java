@@ -1,5 +1,7 @@
 package com.food.zotatoFoods.strategies.impl;
 
+import java.math.BigDecimal;
+
 import org.springframework.stereotype.Service;
 
 import com.food.zotatoFoods.entites.Consumer;
@@ -25,11 +27,11 @@ public class WalletPaymentStrategy implements PaymentStrategy {
                 RestaurantPartner restaurantPartner = payment.getOrder().getRestaurant().getRestaurantPartner();
                 Consumer consumer = payment.getOrder().getConsumer();
                 // Wallet driverwallet = walletService.findWalletById(driver.getId());
-                double platform_commission = payment.getAmount() * PLATFORM_COMMISSION;
+                BigDecimal platform_commission = payment.getAmount().multiply(new BigDecimal(PLATFORM_COMMISSION));
                 walletService.deductMoneyFromWallet(consumer.getUser(), payment.getAmount(), null, payment.getOrder(),
                                 TransactionMethod.ORDER);
 
-                double drivercut = payment.getAmount() - platform_commission;
+                BigDecimal drivercut = payment.getAmount().subtract(platform_commission);
 
                 walletService.addMoneyToWallet(restaurantPartner.getUser(), drivercut, null,
                                 payment.getOrder(),
