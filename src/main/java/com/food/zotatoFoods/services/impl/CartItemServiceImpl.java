@@ -34,10 +34,6 @@ public class CartItemServiceImpl implements CartItemService {
                 .quantity(1)
                 .totalPrice(menuItem.getPrice())
                 .build();
-
-        // The cart is responsible for persisting the CartItem due to cascade settings
-        cart.getCartItems().add(cartItem);
-        cart.setTotalPrice(cart.getTotalPrice().add(menuItem.getPrice()));
         return cartItem;
     }
 

@@ -95,4 +95,16 @@ public class RestaurantServiceImpl implements RestaurantService {
         return restaurantRepository.findTopTenNearestRestaurant(UserSrc);
     }
 
+    @Override
+    public void IsRestaurentActiveOrVarified(Long restaurantId) {
+
+        if (!restaurantRepository.existsById(restaurantId)) {
+            throw new ResourceNotFoundException("Restaurant Not Exist with Id =" + restaurantId);
+        }
+
+        if (!restaurantRepository.existsByIdAndIsAvailableTrueAndIsVarifiedTrue(restaurantId)) {
+            throw new RuntimeException("Restaurant is not available for orders at the moment with Id =" + restaurantId);
+        }
+    }
+
 }

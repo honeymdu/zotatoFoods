@@ -31,6 +31,6 @@ public interface CartService {
 
     public CartDto prepareCart(Consumer consumer, Long RestaurantId, Long MenuItemId);
 
-    public Cart clearCartItemFromCart(Long CartId); 
+    public Cart clearCartItemFromCart(Long CartId);
 
 }

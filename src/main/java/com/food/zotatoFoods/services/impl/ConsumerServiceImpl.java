@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import com.food.zotatoFoods.dto.CartDto;
 import com.food.zotatoFoods.dto.CreateOrderRequest;
 import com.food.zotatoFoods.dto.OrderRequestsDto;
+import com.food.zotatoFoods.dto.PreOrderRequestDto;
 import com.food.zotatoFoods.entites.Cart;
 import com.food.zotatoFoods.entites.CartItem;
 import com.food.zotatoFoods.entites.Consumer;
@@ -25,6 +26,7 @@ import com.food.zotatoFoods.services.CartService;
 import com.food.zotatoFoods.services.ConsumerService;
 import com.food.zotatoFoods.services.MenuService;
 import com.food.zotatoFoods.services.OrderRequestService;
+import com.food.zotatoFoods.services.PreOrderRequestService;
 import com.food.zotatoFoods.services.RestaurantService;
 
 import lombok.RequiredArgsConstructor;
@@ -40,6 +42,7 @@ public class ConsumerServiceImpl implements ConsumerService {
     private final MenuService menuService;
     private final CartService cartService;
     private final CartItemService cartItemService;
+    private final PreOrderRequestService preOrderRequestService;
     Double PLATFORM_COMMISSION = 10.5;
 
     @Override
@@ -63,10 +66,12 @@ public class ConsumerServiceImpl implements ConsumerService {
     }
 
     @Override
-    public OrderRequestsDto createOrderRequest(Long CartId, CreateOrderRequest createOrderRequest) {
+    public OrderRequestsDto createOrderRequest(Long RestaurantId, CreateOrderRequest createOrderRequest) {
         PaymentMethod paymentMethod = createOrderRequest.getPaymentMethod();
         Point UserLocation = createOrderRequest.getUserLocation();
-        OrderRequests orderRequests = orderRequestService.OrderRequest(CartId, paymentMethod, UserLocation);
+        Consumer consumer = getCurrentConsumer();
+        Cart cart = cartService.getCartByConsumerIdAndRestaurantId(consumer.getId(), RestaurantId);
+        OrderRequests orderRequests = orderRequestService.OrderRequest(cart.getId(), paymentMethod, UserLocation);
         return modelMapper.map(orderRequests, OrderRequestsDto.class);
     }
 
@@ -115,6 +120,13 @@ public class ConsumerServiceImpl implements ConsumerService {
         Consumer consumer = getCurrentConsumer();
         Cart cart = cartService.getCartByConsumerIdAndRestaurantId(consumer.getId(), RestaurantId);
         return cartService.viewCart(cart.getId());
+    }
+
+    @Override
+    public PreOrderRequestDto viewPreOrderRequest(Long RestaurantId, Point UserLocation) {
+        Consumer consumer = getCurrentConsumer();
+        Cart cart = cartService.getCartByConsumerIdAndRestaurantId(consumer.getId(), RestaurantId);
+        return preOrderRequestService.createPreOrderRequest(cart, UserLocation);
     }
 
 }

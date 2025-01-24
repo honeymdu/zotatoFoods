@@ -20,6 +20,7 @@ import com.food.zotatoFoods.dto.CartDto;
 import com.food.zotatoFoods.dto.CreateOrderRequest;
 import com.food.zotatoFoods.dto.MenuDto;
 import com.food.zotatoFoods.dto.OrderRequestsDto;
+import com.food.zotatoFoods.dto.PreOrderRequestDto;
 import com.food.zotatoFoods.entites.Address;
 import com.food.zotatoFoods.entites.Menu;
 import com.food.zotatoFoods.entites.Restaurant;
@@ -41,16 +42,6 @@ public class ConsumerController {
         private final UserService userService;
         private final AddressRepository addressRepository;
 
-        @GetMapping("/list/get-available-restaurant")
-        public ResponseEntity<Page<Restaurant>> viewAvailableRestaurant(
-                        @RequestParam(defaultValue = "0") Integer PageOffset,
-                        @RequestParam(defaultValue = "10", required = false) Integer PageSize) {
-                PageRequest pageRequest = PageRequest.of(PageOffset, PageSize,
-                                Sort.by(Sort.Direction.DESC, "id"));
-                Page<Restaurant> restaurants = consumerService.getAllRestaurant(pageRequest);
-                return ResponseEntity.ok(restaurants);
-        }
-
         @PostMapping("/prepareCart/{RestaurantId}/{MenuItemId}")
         public ResponseEntity<CartDto> prepareMyCart(@PathVariable Long RestaurantId, @PathVariable Long MenuItemId) {
                 CartDto cart = consumerService.PrepareCart(RestaurantId, MenuItemId);
@@ -58,16 +49,11 @@ public class ConsumerController {
 
         }
 
-        @GetMapping("/view-menu/{RestaurantId}")
-        public ResponseEntity<MenuDto> viewMenu(@PathVariable Long RestaurantId) {
-                Menu menu = consumerService.viewMenuByRestaurantId(RestaurantId);
-                return ResponseEntity.ok(modelMapper.map(menu, MenuDto.class));
-        }
-
-        @PostMapping("/create-order-request/{cartId}")
-        public ResponseEntity<OrderRequestsDto> createOrderRequest(@PathVariable Long cartId,
+        @PostMapping("/create-order-request/{RestaurantId}")
+        public ResponseEntity<OrderRequestsDto> createOrderRequest(@PathVariable Long RestaurantId,
                         @RequestBody CreateOrderRequest createOrderRequest) {
-                OrderRequestsDto orderRequestsDto = consumerService.createOrderRequest(cartId, createOrderRequest);
+                OrderRequestsDto orderRequestsDto = consumerService.createOrderRequest(RestaurantId,
+                                createOrderRequest);
                 return ResponseEntity.ok(orderRequestsDto);
         }
 
@@ -82,11 +68,6 @@ public class ConsumerController {
 
         }
 
-        @GetMapping("/view-cart/{RestaurantId}")
-        public ResponseEntity<CartDto> viewCart(@PathVariable Long RestaurantId) {
-                return ResponseEntity.ok(consumerService.viewCart(RestaurantId));
-        }
-
         @PostMapping("/remove-cartItem/{cartId}/{cartItemId}")
         public ResponseEntity<CartDto> removeCartItem(@PathVariable Long cartId, @PathVariable Long cartItemId) {
                 CartDto cart = consumerService.removeCartItem(cartId, cartItemId);
@@ -97,6 +78,34 @@ public class ConsumerController {
         public ResponseEntity<?> clearCartItem(@PathVariable Long RestaurantId) {
                 consumerService.clearCart(RestaurantId);
                 return ResponseEntity.notFound().build();
+        }
+
+        @GetMapping("/list/get-available-restaurant")
+        public ResponseEntity<Page<Restaurant>> viewAvailableRestaurant(
+                        @RequestParam(defaultValue = "0") Integer PageOffset,
+                        @RequestParam(defaultValue = "10", required = false) Integer PageSize) {
+                PageRequest pageRequest = PageRequest.of(PageOffset, PageSize,
+                                Sort.by(Sort.Direction.DESC, "id"));
+                Page<Restaurant> restaurants = consumerService.getAllRestaurant(pageRequest);
+                return ResponseEntity.ok(restaurants);
+        }
+
+        @GetMapping("/view-menu/{RestaurantId}")
+        public ResponseEntity<MenuDto> viewMenu(@PathVariable Long RestaurantId) {
+                Menu menu = consumerService.viewMenuByRestaurantId(RestaurantId);
+                return ResponseEntity.ok(modelMapper.map(menu, MenuDto.class));
+        }
+
+        @GetMapping("/view-cart/{RestaurantId}")
+        public ResponseEntity<CartDto> viewCart(@PathVariable Long RestaurantId) {
+                return ResponseEntity.ok(consumerService.viewCart(RestaurantId));
+        }
+
+        @GetMapping("/view-pre-order-request/{RestaurantId}")
+        public ResponseEntity<PreOrderRequestDto> viewPreOrderRequest(@PathVariable Long RestaurantId,
+                        @RequestBody CreateOrderRequest createOrderRequest) {
+                return ResponseEntity.ok(consumerService.viewPreOrderRequest(RestaurantId,
+                                createOrderRequest.getUserLocation()));
         }
 
 }

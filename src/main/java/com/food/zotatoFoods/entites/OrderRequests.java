@@ -40,10 +40,10 @@ public class OrderRequests {
     @Enumerated(EnumType.STRING)
     private OrderRequestStatus orderRequestStatus;
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn( name = "restaurant_id")
+    @JoinColumn(name = "restaurant_id")
     private Restaurant restaurant;
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn( name = "consumer_id")
+    @JoinColumn(name = "consumer_id")
     private Consumer consumer;
     @Enumerated(EnumType.STRING)
     private PaymentMethod paymentMethod;

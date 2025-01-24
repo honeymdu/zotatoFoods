@@ -36,4 +36,6 @@ public interface RestaurantService {
 
     List<Restaurant> getTopTenNearestRestaurants(Point UserSrc);
 
+    public void IsRestaurentActiveOrVarified(Long restaurantId);
+
 }

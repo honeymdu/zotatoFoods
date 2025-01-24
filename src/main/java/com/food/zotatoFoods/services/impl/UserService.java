@@ -43,4 +43,10 @@ public class UserService implements UserDetailsService {
     public User save(User user) {
         return userRepository.save(user);
     }
+
+    public void existsById(Long userId) {
+        if (!userRepository.existsById(userId)) {
+            throw new ResourceNotFoundException("User Not Found with Id =" + userId);
+        }
+    }
 }

@@ -26,8 +26,8 @@ public class OrderRequestServiceImpl implements OrderRequestService {
 
     private final OrderRequestsRepository orderRequestsRepository;
     private final CartService cartService;
-    Double PLATFORM_COMMISSION = 10.5;
     private final DeliveryStrategyManager deliveryStrategyManager;
+    private final BigDecimal PLATFORM_COMMISSION = new BigDecimal(10.5);
 
     @Override
     public OrderRequests save(OrderRequests orderRequests) {
@@ -50,17 +50,17 @@ public class OrderRequestServiceImpl implements OrderRequestService {
                 .deliveryFareCalculationStrategy();
         DeliveryFareGetDto deliveryFareGetDto = DeliveryFareGetDto.builder().DropLocation(UserLocation)
                 .PickupLocation(cart.getRestaurant().getRestaurantLocation()).build();
-        Double delivery_price = deliveryFareCalculationStrategy.calculateDeliveryFees(deliveryFareGetDto);
+        BigDecimal delivery_price = deliveryFareCalculationStrategy.calculateDeliveryFees(deliveryFareGetDto);
         OrderRequests orderRequests = OrderRequests.builder()
                 .cart(cart)
                 .consumer(cart.getConsumer())
-                .deliveryFee(new BigDecimal(delivery_price))
-                .platformFee(new BigDecimal(PLATFORM_COMMISSION))
+                .deliveryFee(delivery_price)
+                .platformFee(PLATFORM_COMMISSION)
                 .foodAmount(cart.getTotalPrice())
                 .orderRequestStatus(OrderRequestStatus.PENDING)
                 .restaurant(cart.getRestaurant())
                 .paymentMethod(paymentMethod)
-                .totalPrice(cart.getTotalPrice().add(new BigDecimal(delivery_price + PLATFORM_COMMISSION))).build();
+                .totalPrice(cart.getTotalPrice().add(delivery_price.add(PLATFORM_COMMISSION))).build();
 
         // Send Notification to Corresponding restaurant
 

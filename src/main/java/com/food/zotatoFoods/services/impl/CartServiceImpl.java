@@ -1,6 +1,7 @@
 package com.food.zotatoFoods.services.impl;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -52,8 +53,13 @@ public class CartServiceImpl implements CartService {
         Cart cart = getCartById(cartId);
         isValidCart(cart);
 
+        if (cart.getCartItems() == null) {
+            cart.setCartItems(new ArrayList<>());
+        }
+
         cart.getCartItems().add(cartItem);
-        cart.setTotalPrice(cart.getTotalPrice().add((cartItem.getMenuItem().getPrice().multiply(new BigDecimal(cartItem.getQuantity())))));
+        cart.setTotalPrice(cart.getTotalPrice()
+                .add((cartItem.getMenuItem().getPrice().multiply(new BigDecimal(cartItem.getQuantity())))));
 
         Cart savedCart = cartRepository.save(cart);
         return mapCartToDto(savedCart);
@@ -85,15 +91,9 @@ public class CartServiceImpl implements CartService {
         } else {
             cartItemService.removeCartItemFromCart(cartItem);
         }
-
+        refreshCartTotalPrice(cart);
         cart = getCartById(cartId);
-        List<CartItemDto> cartItemDtos = cartItemService.getAllCartItemsByCartId(cartId)
-                .stream()
-                .map(item -> modelMapper.map(item, CartItemDto.class))
-                .collect(Collectors.toList());
-
         CartDto cartDto = modelMapper.map(cart, CartDto.class);
-        cartDto.setCartItems(cartItemDtos);
         return cartDto;
 
     }
@@ -104,7 +104,7 @@ public class CartServiceImpl implements CartService {
         Cart cart = getCartById(cartId);
         isValidCart(cart);
 
-        cart.getCartItems().clear(); // Orphan removal deletes cart items
+        cart.getCartItems().clear();
         cart.setTotalPrice(new BigDecimal(0));
 
         return cartRepository.save(cart);
@@ -127,7 +127,7 @@ public class CartServiceImpl implements CartService {
             throw new InvalidCartException("Cart is not valid with cartId " + cart.getId());
         }
         // check is the restaurent is active or not if not invalid the cart
-        if (!cart.getRestaurant().getIsAvailable()) {
+        if (!restaurantService.getRestaurantById(cart.getRestaurant().getId()).getIsAvailable()) {
             inValidCart(cart);
             throw new InvalidCartException("Cart is not valid with cartId " + cart.getId());
         }
@@ -184,19 +184,14 @@ public class CartServiceImpl implements CartService {
         if (cartItemService.isMenuItemExistInCart(menuItem, cart)) {
             CartItem cartItem = cartItemService.getCartItemByMenuItemAndCart(menuItem, cart);
             cartItemService.incrementCartItemQuantity(1, cartItem);
+            Cart updatedCart = refreshCartTotalPrice(cart);
+            CartDto cartDto = modelMapper.map(updatedCart, CartDto.class);
+            return cartDto;
         } else {
             CartItem cartItem = cartItemService.createNewCartItem(menuItem, cart);
             return addItemToCart(cart.getId(), cartItem);
         }
 
-        List<CartItemDto> cartItemDtos = cartItemService.getAllCartItemsByCartId(cart.getId())
-                .stream()
-                .map(item -> modelMapper.map(item, CartItemDto.class))
-                .collect(Collectors.toList());
-
-        CartDto cartDto = modelMapper.map(cart, CartDto.class);
-        cartDto.setCartItems(cartItemDtos);
-        return cartDto;
     }
 
     private CartDto mapCartToDto(Cart cart) {
@@ -206,6 +201,14 @@ public class CartServiceImpl implements CartService {
                 .collect(Collectors.toList());
         cartDto.setCartItems(cartItemDtos);
         return cartDto;
+    }
+
+    private Cart refreshCartTotalPrice(Cart cart) {
+        cart.setTotalPrice(cart.getCartItems().stream()
+                .map(item -> item.getTotalPrice())
+                .reduce(BigDecimal.ZERO, BigDecimal::add));
+
+        return cartRepository.save(cart);
     }
 
 }
