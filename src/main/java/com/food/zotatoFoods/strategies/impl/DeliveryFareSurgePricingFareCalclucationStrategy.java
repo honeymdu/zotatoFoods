@@ -1,7 +1,5 @@
 package com.food.zotatoFoods.strategies.impl;
 
-import java.math.BigDecimal;
-
 import org.springframework.stereotype.Service;
 
 import com.food.zotatoFoods.dto.DeliveryFareGetDto;
@@ -14,14 +12,14 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class DeliveryFareSurgePricingFareCalclucationStrategy implements DeliveryFareCalculationStrategy {
 
-    private static final BigDecimal SURGE_FACTOR = new BigDecimal(2);
+    private static final Double SURGE_FACTOR = 2.0;
     private final DistanceService distanceService;
 
     @Override
-    public BigDecimal calculateDeliveryFees(DeliveryFareGetDto deliveryFareGetDto) {
+    public Double calculateDeliveryFees(DeliveryFareGetDto deliveryFareGetDto) {
         double distance = distanceService.CalculateDistance(deliveryFareGetDto.getPickupLocation(),
                 deliveryFareGetDto.getDropLocation());
-        return RIDE_FARE_MULTIPLYIER.multiply(SURGE_FACTOR).multiply(new BigDecimal(distance));
+        return RIDE_FARE_MULTIPLYIER * SURGE_FACTOR * distance;
     }
 
 }

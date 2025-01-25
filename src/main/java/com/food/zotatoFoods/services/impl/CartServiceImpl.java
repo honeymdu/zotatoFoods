@@ -1,6 +1,5 @@
 package com.food.zotatoFoods.services.impl;
 
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -41,7 +40,7 @@ public class CartServiceImpl implements CartService {
         Cart cart = Cart.builder()
                 .restaurant(restaurant)
                 .consumer(consumer)
-                .totalPrice(new BigDecimal(0))
+                .totalPrice(0.0)
                 .validCart(true)
                 .build();
         return cartRepository.save(cart);
@@ -59,7 +58,7 @@ public class CartServiceImpl implements CartService {
 
         cart.getCartItems().add(cartItem);
         cart.setTotalPrice(cart.getTotalPrice()
-                .add((cartItem.getMenuItem().getPrice().multiply(new BigDecimal(cartItem.getQuantity())))));
+                + ((cartItem.getMenuItem().getPrice() * cartItem.getQuantity())));
 
         Cart savedCart = cartRepository.save(cart);
         return mapCartToDto(savedCart);
@@ -105,7 +104,7 @@ public class CartServiceImpl implements CartService {
         isValidCart(cart);
 
         cart.getCartItems().clear();
-        cart.setTotalPrice(new BigDecimal(0));
+        cart.setTotalPrice(0.0);
 
         return cartRepository.save(cart);
     }
@@ -205,9 +204,8 @@ public class CartServiceImpl implements CartService {
 
     private Cart refreshCartTotalPrice(Cart cart) {
         cart.setTotalPrice(cart.getCartItems().stream()
-                .map(item -> item.getTotalPrice())
-                .reduce(BigDecimal.ZERO, BigDecimal::add));
-
+                .mapToDouble(item -> item.getTotalPrice())
+                .sum());
         return cartRepository.save(cart);
     }
 

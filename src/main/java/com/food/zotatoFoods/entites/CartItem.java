@@ -1,6 +1,7 @@
 package com.food.zotatoFoods.entites;
 
-import java.math.BigDecimal;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import jakarta.persistence.*;
 import lombok.*;
@@ -24,10 +25,11 @@ public class CartItem {
     @JoinColumn(name = "menu_item_id", nullable = false)
     private MenuItem menuItem;
     private Integer quantity;
-    @Column(nullable = false, precision = 10, scale = 2)
-    private BigDecimal totalPrice;
+    @Column(nullable = false)
+    private Double totalPrice;
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "cart_id", nullable = false)
+    @JsonIgnore
     private Cart cart;
 
 }

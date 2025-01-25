@@ -4,7 +4,6 @@ import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 
-import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 import com.food.zotatoFoods.entites.enums.PaymentMethod;
@@ -30,7 +29,7 @@ public class Payment {
     private PaymentMethod paymentMethod;
     @OneToOne
     private Order order;
-    private BigDecimal amount;
+    private Double amount;
     @Enumerated(EnumType.STRING)
     private PaymentStatus paymentStatus;
     @CreationTimestamp

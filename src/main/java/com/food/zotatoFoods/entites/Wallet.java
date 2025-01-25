@@ -1,6 +1,5 @@
 package com.food.zotatoFoods.entites;
 
-import java.math.BigDecimal;
 import java.util.List;
 
 import jakarta.persistence.*;
@@ -20,7 +19,7 @@ public class Wallet {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private BigDecimal Balance;
+    private Double Balance;
     @OneToOne(fetch = FetchType.LAZY, optional = false)
     private User user;
     @OneToMany(mappedBy = "wallet", fetch = FetchType.LAZY)

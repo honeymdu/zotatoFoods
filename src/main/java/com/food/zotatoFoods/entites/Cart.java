@@ -1,7 +1,8 @@
 package com.food.zotatoFoods.entites;
 
-import java.math.BigDecimal;
 import java.util.List;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import jakarta.persistence.*;
 import lombok.*;
@@ -26,11 +27,12 @@ public class Cart {
     @JoinColumn(name = "user_id", nullable = false)
     private Consumer consumer;
     @ManyToOne
+    @JsonIgnore
     private Restaurant restaurant;
     @OneToMany(mappedBy = "cart", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<CartItem> cartItems;
-    @Column(nullable = false, precision = 10, scale = 2)
-    private BigDecimal totalPrice;
+    @Column(nullable = false)
+    private Double totalPrice;
     @Column(nullable = false)
     private Boolean validCart;
 

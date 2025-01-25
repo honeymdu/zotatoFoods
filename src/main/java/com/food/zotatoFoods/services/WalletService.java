@@ -1,7 +1,5 @@
 package com.food.zotatoFoods.services;
 
-import java.math.BigDecimal;
-
 import com.food.zotatoFoods.dto.WalletDto;
 import com.food.zotatoFoods.entites.Order;
 import com.food.zotatoFoods.entites.User;
@@ -10,10 +8,10 @@ import com.food.zotatoFoods.entites.enums.TransactionMethod;
 
 public interface WalletService {
 
-        WalletDto addMoneyToWallet(User user, BigDecimal drivercut, String transactionId, Order order,
+        WalletDto addMoneyToWallet(User user, Double drivercut, String transactionId, Order order,
                         TransactionMethod transactionMethod);
 
-        Wallet deductMoneyFromWallet(User user, BigDecimal platform_commission, String transactionId, Order order,
+        Wallet deductMoneyFromWallet(User user, Double platform_commission, String transactionId, Order order,
                         TransactionMethod transactionMethod);
 
         void withdrawAllMyMoneyFromWallet();

@@ -1,6 +1,5 @@
 package com.food.zotatoFoods.services.impl;
 
-import java.math.BigDecimal;
 import java.util.List;
 
 import org.springframework.stereotype.Service;
@@ -43,7 +42,7 @@ public class CartItemServiceImpl implements CartItemService {
             throw new RuntimeException("Quantity has to be greater than zero");
         }
         cartItem.setQuantity(cartItem.getQuantity() + quantity);
-        cartItem.setTotalPrice(cartItem.getMenuItem().getPrice().multiply(new BigDecimal(cartItem.getQuantity())));
+        cartItem.setTotalPrice(cartItem.getMenuItem().getPrice() * cartItem.getQuantity());
     }
 
     @Override
@@ -56,9 +55,9 @@ public class CartItemServiceImpl implements CartItemService {
         }
 
         cartItem.setQuantity(cartItem.getQuantity() - quantity);
-        cartItem.setTotalPrice(cartItem.getMenuItem().getPrice().multiply(new BigDecimal(cartItem.getQuantity())));
+        cartItem.setTotalPrice(cartItem.getMenuItem().getPrice() * cartItem.getQuantity());
         cartItem.getCart().setTotalPrice(cartItem.getCart().getTotalPrice()
-                .subtract(cartItem.getMenuItem().getPrice().multiply(new BigDecimal(quantity))));
+                - (cartItem.getMenuItem().getPrice() * quantity));
 
     }
 
@@ -66,7 +65,7 @@ public class CartItemServiceImpl implements CartItemService {
     public void removeCartItemFromCart(CartItem cartItem) {
         Cart cart = cartItem.getCart();
         cart.getCartItems().remove(cartItem);
-        cart.setTotalPrice(cart.getTotalPrice().subtract(cartItem.getTotalPrice()));
+        cart.setTotalPrice(cart.getTotalPrice() - cartItem.getTotalPrice());
     }
 
     @Override

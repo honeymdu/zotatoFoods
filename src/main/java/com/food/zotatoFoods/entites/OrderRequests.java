@@ -1,7 +1,6 @@
 package com.food.zotatoFoods.entites;
 
-import java.math.BigDecimal;
-
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.food.zotatoFoods.entites.enums.OrderRequestStatus;
 import com.food.zotatoFoods.entites.enums.PaymentMethod;
 
@@ -33,14 +32,15 @@ public class OrderRequests {
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "cart_id")
     private Cart cart;
-    private BigDecimal foodAmount;
-    private BigDecimal platformFee;
-    private BigDecimal totalPrice;
-    private BigDecimal deliveryFee;
+    private Double foodAmount;
+    private Double platformFee;
+    private Double totalPrice;
+    private Double deliveryFee;
     @Enumerated(EnumType.STRING)
     private OrderRequestStatus orderRequestStatus;
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "restaurant_id")
+    @JsonIgnore
     private Restaurant restaurant;
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "consumer_id")

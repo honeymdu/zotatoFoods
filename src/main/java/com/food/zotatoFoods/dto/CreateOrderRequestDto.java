@@ -1,7 +1,5 @@
 package com.food.zotatoFoods.dto;
 
-import org.locationtech.jts.geom.Point;
-
 import com.food.zotatoFoods.entites.enums.PaymentMethod;
 
 import lombok.AllArgsConstructor;
@@ -11,9 +9,9 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class CreateOrderRequest {
+public class CreateOrderRequestDto {
 
-    private Point userLocation;
+    private PointDto userLocation;
 
     private PaymentMethod paymentMethod;
 

@@ -1,11 +1,5 @@
 package com.food.zotatoFoods.dto;
 
-import java.math.BigDecimal;
-
-import org.locationtech.jts.geom.Point;
-
-import com.food.zotatoFoods.entites.Cart;
-
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -23,11 +17,11 @@ public class PreOrderRequestDto {
 
     private Long consumerId;
     private Long restaurantId;
-    private Cart cart;
-    private BigDecimal foodAmount;
-    private BigDecimal platformFee;
-    private BigDecimal totalPrice;
-    private BigDecimal deliveryFee;
-    private Point currentLocation;
+    private CartDto cart;
+    private Double foodAmount;
+    private Double platformFee;
+    private Double deliveryFee;
+    private Double totalPrice;
+    private PointDto currentLocation;
 
 }

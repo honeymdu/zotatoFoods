@@ -101,8 +101,8 @@ public class RestaurantServiceImpl implements RestaurantService {
         if (!restaurantRepository.existsById(restaurantId)) {
             throw new ResourceNotFoundException("Restaurant Not Exist with Id =" + restaurantId);
         }
-
-        if (!restaurantRepository.existsByIdAndIsAvailableTrueAndIsVarifiedTrue(restaurantId)) {
+        
+        if (!restaurantRepository.existsByIdAndIsAvailableAndIsVarified(restaurantId, true, true)) {
             throw new RuntimeException("Restaurant is not available for orders at the moment with Id =" + restaurantId);
         }
     }

@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.food.zotatoFoods.dto.AddressDto;
 import com.food.zotatoFoods.dto.CartDto;
 import com.food.zotatoFoods.dto.CreateOrderRequest;
+import com.food.zotatoFoods.dto.CreateOrderRequestDto;
 import com.food.zotatoFoods.dto.MenuDto;
 import com.food.zotatoFoods.dto.OrderRequestsDto;
 import com.food.zotatoFoods.dto.PreOrderRequestDto;
@@ -49,14 +50,6 @@ public class ConsumerController {
 
         }
 
-        @PostMapping("/create-order-request/{RestaurantId}")
-        public ResponseEntity<OrderRequestsDto> createOrderRequest(@PathVariable Long RestaurantId,
-                        @RequestBody CreateOrderRequest createOrderRequest) {
-                OrderRequestsDto orderRequestsDto = consumerService.createOrderRequest(RestaurantId,
-                                createOrderRequest);
-                return ResponseEntity.ok(orderRequestsDto);
-        }
-
         @PostMapping("/update-address/{UserId}")
         public ResponseEntity<?> addNewAddress(@PathVariable Long UserId,
                         @RequestBody AddressDto addressDto) {
@@ -80,6 +73,25 @@ public class ConsumerController {
                 return ResponseEntity.notFound().build();
         }
 
+        @PostMapping("/view-pre-order-request/{RestaurantId}")
+        public ResponseEntity<PreOrderRequestDto> viewPreOrderRequest(@PathVariable Long RestaurantId,
+                        @RequestBody CreateOrderRequestDto createOrderRequestDto) {
+                CreateOrderRequest createOrderRequest = modelMapper.map(createOrderRequestDto,
+                                CreateOrderRequest.class);
+                return ResponseEntity.ok(consumerService.viewPreOrderRequest(RestaurantId,
+                                createOrderRequest.getUserLocation()));
+        }
+
+        @PostMapping("/create-order-request/{RestaurantId}")
+        public ResponseEntity<OrderRequestsDto> createOrderRequest(@PathVariable Long RestaurantId,
+                        @RequestBody CreateOrderRequestDto createOrderRequestDto) {
+                CreateOrderRequest createOrderRequest = modelMapper.map(createOrderRequestDto,
+                                CreateOrderRequest.class);
+                OrderRequestsDto orderRequestsDto = consumerService.createOrderRequest(RestaurantId,
+                                createOrderRequest);
+                return ResponseEntity.ok(orderRequestsDto);
+        }
+
         @GetMapping("/list/get-available-restaurant")
         public ResponseEntity<Page<Restaurant>> viewAvailableRestaurant(
                         @RequestParam(defaultValue = "0") Integer PageOffset,
@@ -99,13 +111,6 @@ public class ConsumerController {
         @GetMapping("/view-cart/{RestaurantId}")
         public ResponseEntity<CartDto> viewCart(@PathVariable Long RestaurantId) {
                 return ResponseEntity.ok(consumerService.viewCart(RestaurantId));
-        }
-
-        @GetMapping("/view-pre-order-request/{RestaurantId}")
-        public ResponseEntity<PreOrderRequestDto> viewPreOrderRequest(@PathVariable Long RestaurantId,
-                        @RequestBody CreateOrderRequest createOrderRequest) {
-                return ResponseEntity.ok(consumerService.viewPreOrderRequest(RestaurantId,
-                                createOrderRequest.getUserLocation()));
         }
 
 }

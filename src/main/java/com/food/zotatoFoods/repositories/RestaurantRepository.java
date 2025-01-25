@@ -32,6 +32,6 @@ public interface RestaurantRepository extends JpaRepository<Restaurant, Long> {
             + "LIMIT 10", nativeQuery = true)
     List<Restaurant> findTopTenNearestRestaurant(Point userLocation);
 
-    boolean existsByIdAndIsAvailableTrueAndIsVarifiedTrue(Long restaurantId);
+    boolean existsByIdAndIsAvailableAndIsVarified(Long restaurantId, boolean b, boolean c);
 
 }

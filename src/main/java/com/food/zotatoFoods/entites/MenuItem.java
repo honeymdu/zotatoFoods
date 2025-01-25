@@ -1,6 +1,5 @@
 package com.food.zotatoFoods.entites;
 
-import java.math.BigDecimal;
 import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -27,7 +26,8 @@ public class MenuItem {
     private String imageUrl;
     private String name;
     private String dishDescription;
-    private BigDecimal price;
+    @Column(nullable = false)
+    private Double price;
     @Enumerated(EnumType.STRING)
     private FoodCategory foodCategory;
     private List<String> ingredients;

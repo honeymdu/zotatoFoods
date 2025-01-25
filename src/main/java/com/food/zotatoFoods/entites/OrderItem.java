@@ -1,6 +1,5 @@
 package com.food.zotatoFoods.entites;
 
-import java.math.BigDecimal;
 
 import jakarta.persistence.*;
 import lombok.*;
@@ -23,7 +22,7 @@ public class OrderItem {
     @JoinColumn(name = "menu_item_id", nullable = false)
     private MenuItem menuItem;
     private Integer quantity;
-    private BigDecimal totalPrice;
+    private Double totalPrice;
     @ManyToOne
     @JoinColumn(name = "order_id")
     private Order order;
