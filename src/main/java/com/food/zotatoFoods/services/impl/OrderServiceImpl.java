@@ -1,9 +1,13 @@
 package com.food.zotatoFoods.services.impl;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
 import com.food.zotatoFoods.entites.Order;
+import com.food.zotatoFoods.entites.OrderItem;
 import com.food.zotatoFoods.entites.OrderRequests;
 import com.food.zotatoFoods.entites.enums.OrderRequestStatus;
 import com.food.zotatoFoods.entites.enums.OrderStatus;
@@ -38,6 +42,16 @@ public class OrderServiceImpl implements OrderService {
         // check orderRequest status
         if (orderRequests.getOrderRequestStatus().equals(OrderRequestStatus.ACCEPTED)) {
             Order order = modelMapper.map(orderRequests, Order.class);
+            order.setPickupLocation(orderRequests.getRestaurant().getRestaurantLocation());
+            order.setDropoffLocation(orderRequests.getDropLocation());
+            List<OrderItem> orderItems = orderRequests.getCart().getCartItems().stream()
+                    .map(item -> {
+                        OrderItem orderItem = modelMapper.map(item, OrderItem.class);
+                        orderItem.setId(null);
+                        orderItem.setOrder(order);
+                        return orderItem;
+                    }).collect(Collectors.toList());
+            order.setOrderItems(orderItems);
             order.setOrderStatus(OrderStatus.ACCEPTED);
             return orderRepository.save(order);
 

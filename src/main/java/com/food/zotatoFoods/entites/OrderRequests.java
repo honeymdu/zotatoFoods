@@ -1,5 +1,7 @@
 package com.food.zotatoFoods.entites;
 
+import org.locationtech.jts.geom.Point;
+
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.food.zotatoFoods.entites.enums.OrderRequestStatus;
 import com.food.zotatoFoods.entites.enums.PaymentMethod;
@@ -45,6 +47,7 @@ public class OrderRequests {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "consumer_id")
     private Consumer consumer;
+    private Point DropLocation;
     @Enumerated(EnumType.STRING)
     private PaymentMethod paymentMethod;
 

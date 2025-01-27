@@ -79,7 +79,9 @@ public class AdminServiceImpl implements AdminService {
         }
         // Set User Role
         user.setRole(Set.of(Role.DELIVERY_PARTNER));
-        DeliveryPartner deliveryPartner = modelMapper.map(onBoardDeliveryPartnerDto, DeliveryPartner.class);
+
+        DeliveryPartner deliveryPartner = modelMapper.map(onBoardDeliveryPartnerDto,
+                DeliveryPartner.class);
         deliveryPartner.setUser(user);
         deliveryPartner.setAvailable(true);
         deliveryPartner.setRating(0.0);

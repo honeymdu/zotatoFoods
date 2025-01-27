@@ -1,5 +1,6 @@
 package com.food.zotatoFoods.entites;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import jakarta.persistence.*;
 import lombok.*;
@@ -25,6 +26,7 @@ public class OrderItem {
     private Double totalPrice;
     @ManyToOne
     @JoinColumn(name = "order_id")
+    @JsonIgnore
     private Order order;
 
 }

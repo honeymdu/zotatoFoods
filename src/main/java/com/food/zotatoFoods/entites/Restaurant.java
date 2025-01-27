@@ -49,7 +49,7 @@ public class Restaurant {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "restaurant_partner_id", nullable = false)
     private RestaurantPartner restaurantPartner;
-    @OneToMany(mappedBy = "restaurant")
+    @OneToMany(mappedBy = "restaurant", fetch = FetchType.EAGER)
     private List<Order> Orders;
     @OneToMany(mappedBy = "restaurant")
     private List<OrderRequests> orderRequests;

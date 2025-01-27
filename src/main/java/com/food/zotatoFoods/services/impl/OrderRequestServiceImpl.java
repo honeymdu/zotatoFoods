@@ -59,6 +59,7 @@ public class OrderRequestServiceImpl implements OrderRequestService {
                 .orderRequestStatus(OrderRequestStatus.PENDING)
                 .restaurant(cart.getRestaurant())
                 .paymentMethod(paymentMethod)
+                .DropLocation(UserLocation)
                 .totalPrice(cart.getTotalPrice() + (delivery_price + (PLATFORM_COMMISSION))).build();
 
         // Send Notification to Corresponding restaurant

@@ -1,12 +1,12 @@
 package com.food.zotatoFoods.entites;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 
 import org.hibernate.annotations.CreationTimestamp;
 import org.locationtech.jts.geom.Point;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.food.zotatoFoods.entites.enums.OrderStatus;
 import com.food.zotatoFoods.entites.enums.PaymentMethod;
 
@@ -50,7 +50,7 @@ public class Order {
     @JoinColumn(name = "consumer_id", nullable = false)
     private Consumer consumer;
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<OrderItem> orderItems = new ArrayList<>();
+    private List<OrderItem> orderItems;
     private Double foodAmount;
     private Double platformFee;
     private Double totalPrice;
@@ -66,6 +66,7 @@ public class Order {
     private LocalDateTime OrderCreationTime;
     @ManyToOne
     @JoinColumn(name = "restaurant_id")
+    @JsonIgnore
     private Restaurant restaurant;
 
 }

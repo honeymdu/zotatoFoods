@@ -114,7 +114,7 @@ public class RestaurantPartnerServiceImpl implements RestaurantPartnerService {
     }
 
     @Override
-    public List<OrderRequests> getAllOrderRequestsByRestaurantId(Long RestaurantId) {
+    public List<OrderRequests> viewOrderRequestsByRestaurantId(Long RestaurantId) {
         return orderRequestService.getAllOrderRequestByRestaurantId(RestaurantId);
     }
 

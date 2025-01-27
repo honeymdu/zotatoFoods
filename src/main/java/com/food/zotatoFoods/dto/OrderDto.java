@@ -29,8 +29,4 @@ public class OrderDto {
     private LocalDateTime OrderCreationTime;
     private RestaurantDto restaurant;
     private DeliveryPartnerDto deliveryPartner;
-    private LocalDateTime DeliveryTime;
-    private String otp;
-
-
 }

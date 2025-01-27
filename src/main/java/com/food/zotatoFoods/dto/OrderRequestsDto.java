@@ -16,14 +16,13 @@ import lombok.Setter;
 @Setter
 public class OrderRequestsDto {
 
+    private Long id;
     private CartDto cart;
     private Double foodAmount;
     private Double platformFee;
     private Double totalPrice;
     private Double deliveryFee;
     private OrderRequestStatus orderRequestStatus;
-    private RestaurantDto restaurant;
-    private ConsumerDto consumer;
     private PaymentMethod paymentMethod;
 
 }

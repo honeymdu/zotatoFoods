@@ -1,5 +1,8 @@
 package com.food.zotatoFoods.controllers;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 import org.modelmapper.ModelMapper;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -15,8 +18,10 @@ import com.food.zotatoFoods.dto.AddNewRestaurantDto;
 import com.food.zotatoFoods.dto.CreateMenu;
 import com.food.zotatoFoods.dto.MenuDto;
 import com.food.zotatoFoods.dto.MenuItemDto;
+import com.food.zotatoFoods.dto.OrderRequestsDto;
 import com.food.zotatoFoods.dto.RestaurantDto;
 import com.food.zotatoFoods.entites.Menu;
+import com.food.zotatoFoods.entites.Order;
 import com.food.zotatoFoods.entites.Restaurant;
 import com.food.zotatoFoods.services.RestaurantPartnerService;
 
@@ -34,20 +39,6 @@ public class RestaurantPartnerController {
     @PostMapping("/add-my-restaurant")
     public ResponseEntity<RestaurantDto> AddMyRestaurant(@RequestBody AddNewRestaurantDto addNewRestaurantDto) {
         return new ResponseEntity<>(restaurantPartnerService.createRestaurant(addNewRestaurantDto), HttpStatus.CREATED);
-    }
-
-    @GetMapping("/check-my-Restaurant-active-status/{RestaurantId}")
-    public ResponseEntity<Boolean> checkRestaurantStatus(@PathVariable Long RestaurantId) {
-        Restaurant restaurant = restaurantPartnerService.ViewMyRestaurantProfile(RestaurantId);
-        return ResponseEntity.ok(restaurant.getIsAvailable());
-    }
-
-    @GetMapping("/view-my-restaurant-profile/{RestaurantId}")
-    public ResponseEntity<Restaurant> ViewMyRestaurantProfile(@PathVariable Long RestaurantId) {
-
-        Restaurant restaurant = restaurantPartnerService.ViewMyRestaurantProfile(RestaurantId);
-        return ResponseEntity.ok(restaurant);
-
     }
 
     @PostMapping("/add-my-restaurant-menu-item/{RestaurantId}")
@@ -74,10 +65,40 @@ public class RestaurantPartnerController {
 
     }
 
-    @PostMapping("/view-menu/{RestaurantId}")
+    @PostMapping("/accept-order-Request/{OrderRequestId}")
+    public ResponseEntity<Order> acceptOrderRequest(@PathVariable Long OrderRequestId) {
+        Order order = restaurantPartnerService.acceptOrderRequest(OrderRequestId);
+        return new ResponseEntity<>(order, HttpStatus.CREATED);
+    }
+
+    @GetMapping("/view-menu/{RestaurantId}")
     public ResponseEntity<MenuDto> viewMenu(@PathVariable Long RestaurantId) {
         Menu menu = restaurantPartnerService.viewMenuByRestaurantId(RestaurantId);
         return ResponseEntity.ok(modelMapper.map(menu, MenuDto.class));
+    }
+
+    @GetMapping("/view-Order-Requests/{RestaurantId}")
+    public ResponseEntity<List<OrderRequestsDto>> viewOrderRequests(@PathVariable Long RestaurantId) {
+        List<OrderRequestsDto> orderRequestsDtos = restaurantPartnerService
+                .viewOrderRequestsByRestaurantId(RestaurantId)
+                .stream()
+                .map(item -> modelMapper.map(item, OrderRequestsDto.class))
+                .collect(Collectors.toList());
+        return ResponseEntity.ok(orderRequestsDtos);
+    }
+
+    @GetMapping("/check-my-Restaurant-active-status/{RestaurantId}")
+    public ResponseEntity<Boolean> checkRestaurantStatus(@PathVariable Long RestaurantId) {
+        Restaurant restaurant = restaurantPartnerService.ViewMyRestaurantProfile(RestaurantId);
+        return ResponseEntity.ok(restaurant.getIsAvailable());
+    }
+
+    @GetMapping("/view-my-restaurant-profile/{RestaurantId}")
+    public ResponseEntity<Restaurant> ViewMyRestaurantProfile(@PathVariable Long RestaurantId) {
+
+        Restaurant restaurant = restaurantPartnerService.ViewMyRestaurantProfile(RestaurantId);
+        return ResponseEntity.ok(restaurant);
+
     }
 
 }
