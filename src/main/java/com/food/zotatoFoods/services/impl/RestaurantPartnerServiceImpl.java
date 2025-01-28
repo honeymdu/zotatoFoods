@@ -19,6 +19,7 @@ import com.food.zotatoFoods.entites.RestaurantPartner;
 import com.food.zotatoFoods.entites.User;
 import com.food.zotatoFoods.entites.WalletTransaction;
 import com.food.zotatoFoods.entites.enums.OrderRequestStatus;
+import com.food.zotatoFoods.entites.enums.OrderStatus;
 import com.food.zotatoFoods.exceptions.ResourceNotFoundException;
 import com.food.zotatoFoods.repositories.RestaurantPartnerRepository;
 import com.food.zotatoFoods.services.MenuService;
@@ -126,6 +127,13 @@ public class RestaurantPartnerServiceImpl implements RestaurantPartnerService {
     @Override
     public Menu viewMenuByRestaurantId(Long RestaurantId) {
         return menuService.getMenuByRestaurant(RestaurantId);
+    }
+
+    @Override
+    public Order updateOrderStatus(Long OrderId, OrderStatus orderStatus) {
+        Order order = orderService.getOrderById(OrderId);
+        order.setOrderStatus(orderStatus);
+        return orderService.saveOrder(order);
     }
 
 }

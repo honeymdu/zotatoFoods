@@ -18,8 +18,10 @@ import com.food.zotatoFoods.dto.AddNewRestaurantDto;
 import com.food.zotatoFoods.dto.CreateMenu;
 import com.food.zotatoFoods.dto.MenuDto;
 import com.food.zotatoFoods.dto.MenuItemDto;
+import com.food.zotatoFoods.dto.OrderDto;
 import com.food.zotatoFoods.dto.OrderRequestsDto;
 import com.food.zotatoFoods.dto.RestaurantDto;
+import com.food.zotatoFoods.dto.SetOrderStatusDto;
 import com.food.zotatoFoods.entites.Menu;
 import com.food.zotatoFoods.entites.Order;
 import com.food.zotatoFoods.entites.Restaurant;
@@ -63,6 +65,13 @@ public class RestaurantPartnerController {
                         MenuDto.class),
                 HttpStatus.CREATED);
 
+    }
+
+    @PostMapping("/update-order-status/{OrderId}")
+    public ResponseEntity<OrderDto> updateOrderStatus(@PathVariable Long OrderId,
+            @RequestBody SetOrderStatusDto setOrderStatusDto) {
+        Order order = restaurantPartnerService.updateOrderStatus(OrderId, setOrderStatusDto.getOrderStatus());
+        return new ResponseEntity<>(modelMapper.map(order, OrderDto.class), HttpStatus.CREATED);
     }
 
     @PostMapping("/accept-order-Request/{OrderRequestId}")

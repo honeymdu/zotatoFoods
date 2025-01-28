@@ -13,6 +13,5 @@ public class OrderItemDto {
     private MenuItemDto menuItem;
     private Integer quantity;
     private Double totalPrice;
-    private OrderDto order;
 
 }

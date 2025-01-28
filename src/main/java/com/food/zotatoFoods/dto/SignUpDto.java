@@ -1,7 +1,5 @@
 package com.food.zotatoFoods.dto;
 
-
-
 import lombok.Data;
 
 @Data

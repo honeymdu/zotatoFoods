@@ -15,28 +15,28 @@ import com.food.zotatoFoods.entites.User;
 
 public interface ConsumerService {
 
-    public OrderRequestsDto createOrderRequest(Long RestaurantId, CreateOrderRequest createOrderRequest);
+    OrderRequestsDto createOrderRequest(Long RestaurantId, CreateOrderRequest createOrderRequest);
 
-    public Boolean rateRestaurant(Long RestaurantId, Double rating);
+    Boolean rateRestaurant(Long RestaurantId, Double rating);
 
-    public Consumer createNewConsumer(User user);
+    Consumer createNewConsumer(User user);
 
-    public Consumer getConsumerById(Long consumerId);
+    Consumer getConsumerById(Long consumerId);
 
-    public Page<Restaurant> getAllRestaurant(PageRequest pageRequest);
+    Page<Restaurant> getAllRestaurant(PageRequest pageRequest);
 
-    public Consumer getCurrentConsumer();
+    Consumer getCurrentConsumer();
 
-    public CartDto viewCart(Long RestaurantId);
+    CartDto viewCart(Long RestaurantId);
 
-    public CartDto PrepareCart(Long RestaurantId, Long MenuItemId);
+    CartDto PrepareCart(Long RestaurantId, Long MenuItemId);
 
-    public CartDto removeCartItem(Long CartId, Long cartItemId);
+    CartDto removeCartItem(Long CartId, Long cartItemId);
 
-    public void clearCart(Long RestaurantId);
+    void clearCart(Long RestaurantId);
 
-    public Menu viewMenuByRestaurantId(Long RestaurantId);
+    Menu viewMenuByRestaurantId(Long RestaurantId);
 
-    public PreOrderRequestDto viewPreOrderRequest(Long RestaurantId, Point UserLocation);
+    PreOrderRequestDto viewPreOrderRequest(Long RestaurantId, Point UserLocation);
 
 }

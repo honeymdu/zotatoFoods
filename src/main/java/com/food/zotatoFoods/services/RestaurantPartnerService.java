@@ -12,6 +12,7 @@ import com.food.zotatoFoods.entites.OrderRequests;
 import com.food.zotatoFoods.entites.Restaurant;
 import com.food.zotatoFoods.entites.RestaurantPartner;
 import com.food.zotatoFoods.entites.WalletTransaction;
+import com.food.zotatoFoods.entites.enums.OrderStatus;
 
 public interface RestaurantPartnerService {
 
@@ -37,7 +38,9 @@ public interface RestaurantPartnerService {
 
     List<OrderRequests> viewOrderRequestsByRestaurantId(Long RestaurantId);
 
-    public Menu viewMenuByRestaurantId(Long RestaurantId);
+    Menu viewMenuByRestaurantId(Long RestaurantId);
+
+    Order updateOrderStatus(Long OrderId, OrderStatus orderStatus);
 
     // RestaurantDto updateRestaurantStatus(RestaurantStatusDto restaurantStatusDto,
     // Long restaurantId);

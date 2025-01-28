@@ -20,4 +20,12 @@ public class RestaurantPriorityQueue implements Comparable<RestaurantPriorityQue
         return Integer.compare(o.priority, this.priority);
     }
 
+    @Override
+    public String toString() {
+        return "RestaurantPriorityQueue{" +
+                "restaurant=" + (restaurant != null ? restaurant.getName() : "null") +
+                ", priority=" + priority +
+                '}';
+    }
+
 }

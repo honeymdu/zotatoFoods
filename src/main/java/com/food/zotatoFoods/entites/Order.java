@@ -49,6 +49,7 @@ public class Order {
     @ManyToOne
     @JoinColumn(name = "consumer_id", nullable = false)
     private Consumer consumer;
+    @JsonIgnore
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<OrderItem> orderItems;
     private Double foodAmount;

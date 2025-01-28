@@ -31,6 +31,7 @@ import com.food.zotatoFoods.strategies.DeliveryPartnerMatchingStrategy;
 import com.food.zotatoFoods.strategies.DeliveryStrategyManager;
 
 import jakarta.annotation.PostConstruct;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -49,7 +50,7 @@ public class DeliveryServiceImpl implements DeliveryService {
             new ArrayBlockingQueue<>(10));
     private final PriorityBlockingQueue<OrderPriorityQueue> waitingQueue = new PriorityBlockingQueue<>();
 
-    @Scheduled(fixedRate = 20000)
+   // @Scheduled(fixedRate = 180000)
     public void monitorThreadPool() throws InterruptedException, ExecutionException {
         int activeThreads = threadPoolExecutor.getActiveCount();
         int corePoolSize = threadPoolExecutor.getCorePoolSize();
@@ -142,12 +143,16 @@ public class DeliveryServiceImpl implements DeliveryService {
     }
 
     @Override
+    @Transactional
     public DeliveryRequest createDeliveryRequest(Order order) {
+        order.setOrderStatus(OrderStatus.DELIVERY_REQUEST_CREATED);
+        orderService.saveOrder(order);
         return deliveryRequestRepository.save(
                 DeliveryRequest.builder()
                         .deliveryRequestStatus(DeliveryRequestStatus.PENDING)
                         .PickupLocation(order.getPickupLocation())
                         .DropLocation(order.getDropoffLocation())
+                        .order(order)
                         .consumerOtp(generateRandomOtp())
                         .restaurantOtp(generateRandomOtp()).build());
 
@@ -155,7 +160,14 @@ public class DeliveryServiceImpl implements DeliveryService {
 
     private void createOrderPriorityQueue() {
         log.info("Create Order Priority Queue function Called");
-        Restaurant restaurant = restaurantPriorityQueue.poll().getRestaurant();
+        if (restaurantPriorityQueue == null) {
+            log.warn("Restaurant priority queue is empty, cannot create order priority queue.");
+            return;
+        }
+        // log.info("Polled RestaurantPriorityQueue object: {}",
+        // restaurantPriorityQueue.poll());
+        RestaurantPriorityQueue restaurantPriorityQueueEntry = restaurantPriorityQueue.poll();
+        Restaurant restaurant = restaurantPriorityQueueEntry.getRestaurant();
         if (restaurant == null)
             return;
         List<Order> orders = restaurant.getOrders();
@@ -164,7 +176,7 @@ public class DeliveryServiceImpl implements DeliveryService {
         for (Order order : orders) {
             highPriorityOrderQueue.offer(new OrderPriorityQueue(
                     order.getId(), order.getPaymentMethod(),
-                    restaurantPriorityQueue.poll().getPriority(), System.currentTimeMillis()));
+                    restaurantPriorityQueueEntry.getPriority(), System.currentTimeMillis()));
         }
         log.info("Order Priority Queue has been created");
     }

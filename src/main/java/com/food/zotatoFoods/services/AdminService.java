@@ -11,15 +11,15 @@ import com.food.zotatoFoods.dto.RestaurantPartnerDto;
 
 public interface AdminService {
 
-    public RestaurantPartnerDto onBoardNewRestaurantPartner(Long UserId,
+    RestaurantPartnerDto onBoardNewRestaurantPartner(Long UserId,
             OnBoardRestaurantPartnerDto onBoardRestaurantPartnerDto);
 
-    public DeliveryPartnerDto onBoardDeliveryPartner(Long UserId, OnBoardDeliveryPartnerDto onBoardDeliveryPartnerDto);
+    DeliveryPartnerDto onBoardDeliveryPartner(Long UserId, OnBoardDeliveryPartnerDto onBoardDeliveryPartnerDto);
 
     Page<RestaurantDto> getAllRestaurant(PageRequest pageRequest);
 
     Page<DeliveryPartnerDto> getAllDeliveryPartner(PageRequest pageRequest);
 
-    public Boolean varifyRestaurant(Long restaurantId);
+    Boolean varifyRestaurant(Long restaurantId);
 
 }

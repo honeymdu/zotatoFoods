@@ -9,22 +9,22 @@ import com.food.zotatoFoods.entites.DeliveryPartner;
 
 public interface DeliveryPartnerService {
 
-    public void rateDeliveryPartner(Long UserId, Double rating);
+    void rateDeliveryPartner(Long UserId, Double rating);
 
-    public void acceptDeliveryRequest(Long deliveryRequestId);
+    void acceptDeliveryRequest(Long deliveryRequestId);
 
-    public void cancelDeliveryRequest(Long deliveryRequestId);
+    void cancelDeliveryRequest(Long deliveryRequestId);
 
-    public void completeOrderDelivery(Long deliveryRequestId, String consumerOtp);
+    void completeOrderDelivery(Long deliveryRequestId, String consumerOtp);
 
-    public DeliveryPartnerDto save(DeliveryPartner deliveryPartner);
+    DeliveryPartnerDto save(DeliveryPartner deliveryPartner);
 
-    public Page<DeliveryPartner> getAllDeliveryPartner(PageRequest pageRequest);
+    Page<DeliveryPartner> getAllDeliveryPartner(PageRequest pageRequest);
 
-    public void pickupOrderFromRestaurant(Long deliveryRequestId, String restaurantOTP);
+    void pickupOrderFromRestaurant(Long deliveryRequestId, String restaurantOTP);
 
-    public DeliveryPartner getCurrentDeliveryPartner();
+    DeliveryPartner getCurrentDeliveryPartner();
 
-    public Point getCurrentLocation();
+    Point getCurrentLocation();
 
 }

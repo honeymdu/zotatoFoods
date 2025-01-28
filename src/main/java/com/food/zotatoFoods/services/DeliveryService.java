@@ -7,7 +7,7 @@ import com.food.zotatoFoods.entites.Order;
 
 public interface DeliveryService {
 
-    public void AssignDeliveryPartner() throws InterruptedException, ExecutionException;
+    void AssignDeliveryPartner() throws InterruptedException, ExecutionException;
 
     DeliveryRequest createDeliveryRequest(Order order);
 

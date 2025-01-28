@@ -4,7 +4,7 @@ import com.food.zotatoFoods.dto.SmtpEmailDetailsDto;
 
 public interface EmailSenderService {
 
-    public String sendSimpleMail(SmtpEmailDetailsDto SmtpEmailDetails);
+    String sendSimpleMail(SmtpEmailDetailsDto SmtpEmailDetails);
 
-    public String sendMailWithAttachment(SmtpEmailDetailsDto SmtpEmailDetails);
+    String sendMailWithAttachment(SmtpEmailDetailsDto SmtpEmailDetails);
 }

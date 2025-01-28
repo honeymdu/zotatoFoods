@@ -7,20 +7,20 @@ import com.food.zotatoFoods.entites.MenuItem;
 
 public interface MenuService {
 
-    public Menu addMenuItem(Long RestaurantId, MenuItemDto menuItem);
+    Menu addMenuItem(Long RestaurantId, MenuItemDto menuItem);
 
-    public Boolean setMenuItemStatus(Long RestaurantId, long menuItemId, Boolean isAvailable);
+    Boolean setMenuItemStatus(Long RestaurantId, long menuItemId, Boolean isAvailable);
 
-    public Boolean removeMenuItem(Long RestaurantId, Long MenuItemId);
+    Boolean removeMenuItem(Long RestaurantId, Long MenuItemId);
 
-    public MenuItem getMenuItemById(Long RestaurantId, Long MenuItemId);
+    MenuItem getMenuItemById(Long RestaurantId, Long MenuItemId);
 
-    public Menu getMenuByRestaurant(Long RestaurantId);
+    Menu getMenuByRestaurant(Long RestaurantId);
 
-    public Menu CreateMenu(CreateMenu createMenu);
+    Menu CreateMenu(CreateMenu createMenu);
 
-    public Menu getMenuById(Long MenuItemId);
+    Menu getMenuById(Long MenuItemId);
 
-    public Boolean checkMenuItemExistByName(Long RestaurantId, MenuItem MenuItem);
+    Boolean checkMenuItemExistByName(Long RestaurantId, MenuItem MenuItem);
 
 }

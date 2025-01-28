@@ -70,4 +70,9 @@ public class OrderServiceImpl implements OrderService {
         throw new RuntimeException("Can not cancel order as OrderRequest status is not Accepted earlier");
     }
 
+    @Override
+    public Order saveOrder(Order order) {
+        return orderRepository.save(order);
+    }
+
 }

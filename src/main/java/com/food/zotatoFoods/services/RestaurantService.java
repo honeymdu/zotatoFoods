@@ -22,9 +22,9 @@ public interface RestaurantService {
 
     Restaurant viewProfile(Long restaurantId);
 
-    public Page<Restaurant> findAllRestaurant(Pageable pageRequest);
+    Page<Restaurant> findAllRestaurant(Pageable pageRequest);
 
-    public List<Restaurant> getRestaurantByRestaurantPartner(RestaurantPartner restaurantPartner);
+    List<Restaurant> getRestaurantByRestaurantPartner(RestaurantPartner restaurantPartner);
 
     Boolean IsRestaurentAlreadyExist(Restaurant newRestaurant);
 
@@ -36,6 +36,6 @@ public interface RestaurantService {
 
     List<Restaurant> getTopTenNearestRestaurants(Point UserSrc);
 
-    public void IsRestaurentActiveOrVarified(Long restaurantId);
+    void IsRestaurentActiveOrVarified(Long restaurantId);
 
 }

@@ -7,30 +7,30 @@ import com.food.zotatoFoods.entites.Consumer;
 
 public interface CartService {
 
-    public Cart createCart(Long restaurantId, Consumer consumer);
+    Cart createCart(Long restaurantId, Consumer consumer);
 
-    public CartDto addItemToCart(Long CartId, CartItem cartItem);
+    CartDto addItemToCart(Long CartId, CartItem cartItem);
 
-    public CartDto viewCart(Long CartId);
+    CartDto viewCart(Long CartId);
 
-    public CartDto removeItemFromCart(Long CartId, CartItem cartItem);
+    CartDto removeItemFromCart(Long CartId, CartItem cartItem);
 
-    public void isValidCart(Cart cart);
+    void isValidCart(Cart cart);
 
-    public Boolean isValidCartExist(Consumer consumer, Long RestaurantId);
+    Boolean isValidCartExist(Consumer consumer, Long RestaurantId);
 
-    public void inValidCart(Cart cart);
+    void inValidCart(Cart cart);
 
-    public Cart getCartById(Long CartId);
+    Cart getCartById(Long CartId);
 
-    public Cart saveCart(Cart cart);
+    Cart saveCart(Cart cart);
 
-    public Cart getCartByConsumerIdAndRestaurantId(Long ConsumerId, Long restaurantId);
+    Cart getCartByConsumerIdAndRestaurantId(Long ConsumerId, Long restaurantId);
 
-    public void deleteAllCartItemByCartId(Long cartId);
+    void deleteAllCartItemByCartId(Long cartId);
 
-    public CartDto prepareCart(Consumer consumer, Long RestaurantId, Long MenuItemId);
+    CartDto prepareCart(Consumer consumer, Long RestaurantId, Long MenuItemId);
 
-    public Cart clearCartItemFromCart(Long CartId);
+    Cart clearCartItemFromCart(Long CartId);
 
 }

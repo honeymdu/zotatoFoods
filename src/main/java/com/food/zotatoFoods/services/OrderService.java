@@ -6,12 +6,14 @@ import com.food.zotatoFoods.entites.enums.OrderStatus;
 
 public interface OrderService {
 
-    public Order updateOrderStatus(Long OrderId, OrderStatus orderStatus);
+    Order updateOrderStatus(Long OrderId, OrderStatus orderStatus);
 
-    public Order getOrderById(Long OrderId);
+    Order getOrderById(Long OrderId);
 
-    public Order createOrder(OrderRequests orderRequests);
+    Order createOrder(OrderRequests orderRequests);
 
-    public Order cancelOrder(Long OrderId);
+    Order cancelOrder(Long OrderId);
+
+    Order saveOrder(Order order);
 
 }

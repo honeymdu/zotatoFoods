@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 public class ConsumerDto {
 
     private Long id;
-    private UserDto userDto;
+    private UserDto user;
     private Double rating;
 
 }

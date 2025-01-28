@@ -15,14 +15,14 @@ import com.food.zotatoFoods.entites.User;
 public interface DeliveryPartnerRepository extends JpaRepository<DeliveryPartner, Long> {
 
         @Query(value = "SELECT d.* "
-                        + "FROM DeliveryPartner d " +
+                        + "FROM delivery_partner d " +
                         "WHERE d.available = true AND ST_DWithin(d.current_location , :pickupLocation, 15000) "
                         + "ORDER BY  d.rating DESC "
                         + "LIMIT 10", nativeQuery = true)
         List<DeliveryPartner> findTenNearByTopRatedDeliveryPartner(Point pickupLocation);
 
         @Query(value = "SELECT d.* "
-                        + "FROM DeliveryPartner d " +
+                        + "FROM delivery_partner d " +
                         "WHERE d.available = true AND ST_DWithin(d.current_location , :pickupLocation, 15000) "
                         + "LIMIT 10", nativeQuery = true)
         List<DeliveryPartner> findTenNearByDeliveryPartner(Point pickupLocation);

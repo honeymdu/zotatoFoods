@@ -6,6 +6,8 @@ import org.locationtech.jts.geom.Point;
 import com.food.zotatoFoods.entites.enums.DeliveryRequestStatus;
 
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -33,6 +35,7 @@ public class DeliveryRequest {
     private Point PickupLocation;
     private Point DropLocation;
     private LocalDateTime deliveryTime;
+    @Enumerated(EnumType.STRING)
     private DeliveryRequestStatus deliveryRequestStatus;
     @OneToOne
     @JoinColumn(name = "order_id")
