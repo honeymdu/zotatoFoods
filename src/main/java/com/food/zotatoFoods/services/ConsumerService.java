@@ -8,6 +8,7 @@ import com.food.zotatoFoods.dto.CartDto;
 import com.food.zotatoFoods.dto.CreateOrderRequest;
 import com.food.zotatoFoods.dto.OrderRequestsDto;
 import com.food.zotatoFoods.dto.PreOrderRequestDto;
+import com.food.zotatoFoods.dto.PrePaidOrderRequestsDto;
 import com.food.zotatoFoods.entites.Consumer;
 import com.food.zotatoFoods.entites.Menu;
 import com.food.zotatoFoods.entites.Restaurant;
@@ -16,6 +17,8 @@ import com.food.zotatoFoods.entites.User;
 public interface ConsumerService {
 
     OrderRequestsDto createOrderRequest(Long RestaurantId, CreateOrderRequest createOrderRequest);
+
+    PrePaidOrderRequestsDto createPrePaidOrderRequest(Long RestaurantId, CreateOrderRequest createOrderRequest);
 
     Boolean rateRestaurant(Long RestaurantId, Double rating);
 
@@ -38,5 +41,7 @@ public interface ConsumerService {
     Menu viewMenuByRestaurantId(Long RestaurantId);
 
     PreOrderRequestDto viewPreOrderRequest(Long RestaurantId, Point UserLocation);
+
+    Boolean PreProcessPayment();
 
 }

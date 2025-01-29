@@ -46,11 +46,11 @@ public class DeliveryServiceImpl implements DeliveryService {
     private final OrderService orderService;
     private final PriorityBlockingQueue<OrderPriorityQueue> highPriorityOrderQueue = new PriorityBlockingQueue<>();
     private final PriorityBlockingQueue<RestaurantPriorityQueue> restaurantPriorityQueue = new PriorityBlockingQueue<>();
-    private static final ThreadPoolExecutor threadPoolExecutor = new ThreadPoolExecutor(3, 10, 2, TimeUnit.SECONDS,
+    private static final ThreadPoolExecutor threadPoolExecutor = new ThreadPoolExecutor(5, 10, 2, TimeUnit.SECONDS,
             new ArrayBlockingQueue<>(10));
     private final PriorityBlockingQueue<OrderPriorityQueue> waitingQueue = new PriorityBlockingQueue<>();
 
-   // @Scheduled(fixedRate = 180000)
+    @Scheduled(fixedRate = 180000)
     public void monitorThreadPool() throws InterruptedException, ExecutionException {
         int activeThreads = threadPoolExecutor.getActiveCount();
         int corePoolSize = threadPoolExecutor.getCorePoolSize();
@@ -170,7 +170,9 @@ public class DeliveryServiceImpl implements DeliveryService {
         Restaurant restaurant = restaurantPriorityQueueEntry.getRestaurant();
         if (restaurant == null)
             return;
-        List<Order> orders = restaurant.getOrders();
+        // List<Order> orders = restaurant.getOrders();
+        List<Order> orders = restaurant.getOrders().stream()
+                .filter(order -> OrderStatus.READY_FOR_PICKUP.equals(order.getOrderStatus())).toList();
         log.info("Polled Restaurant From Restaurant Priority Queue = " + restaurant.getName());
         log.info("Number of Orders = " + orders.size());
         for (Order order : orders) {

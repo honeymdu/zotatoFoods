@@ -35,6 +35,9 @@ public class PaymentServiceImpl implements PaymentService {
                 .amount(order.getTotalPrice())
                 .paymentStatus(PaymentStatus.PENDING)
                 .build();
+        if (order.getPaymentStatus().equals(PaymentStatus.CONFIRMED)) {
+            payment.setPaymentStatus(PaymentStatus.CONFIRMED);
+        }
         return paymentRepository.save(payment);
     }
 

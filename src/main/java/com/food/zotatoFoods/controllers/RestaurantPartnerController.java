@@ -75,9 +75,9 @@ public class RestaurantPartnerController {
     }
 
     @PostMapping("/accept-order-Request/{OrderRequestId}")
-    public ResponseEntity<Order> acceptOrderRequest(@PathVariable Long OrderRequestId) {
+    public ResponseEntity<OrderDto> acceptOrderRequest(@PathVariable Long OrderRequestId) {
         Order order = restaurantPartnerService.acceptOrderRequest(OrderRequestId);
-        return new ResponseEntity<>(order, HttpStatus.CREATED);
+        return new ResponseEntity<>(modelMapper.map(order, OrderDto.class), HttpStatus.CREATED);
     }
 
     @GetMapping("/view-menu/{RestaurantId}")

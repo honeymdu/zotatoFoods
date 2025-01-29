@@ -15,7 +15,7 @@ import lombok.Setter;
 @NoArgsConstructor
 @Getter
 @Setter
-public class OrderRequestsDto {
+public class PrePaidOrderRequestsDto {
 
     private Long id;
     private CartDto cart;

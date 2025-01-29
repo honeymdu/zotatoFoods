@@ -16,4 +16,6 @@ public interface OrderRequestService {
     List<OrderRequests> getAllOrderRequestByRestaurantId(Long restaurantId);
 
     OrderRequests OrderRequest(Long CartId, PaymentMethod paymentMethod, Point UserLocation);
+
+    OrderRequests prePaidOrderRequest(Long CartId, PaymentMethod paymentMethod, Point UserLocation);
 }

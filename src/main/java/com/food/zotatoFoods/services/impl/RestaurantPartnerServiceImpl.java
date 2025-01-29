@@ -25,6 +25,7 @@ import com.food.zotatoFoods.repositories.RestaurantPartnerRepository;
 import com.food.zotatoFoods.services.MenuService;
 import com.food.zotatoFoods.services.OrderRequestService;
 import com.food.zotatoFoods.services.OrderService;
+import com.food.zotatoFoods.services.PaymentService;
 import com.food.zotatoFoods.services.RestaurantPartnerService;
 import com.food.zotatoFoods.services.RestaurantService;
 import com.food.zotatoFoods.services.WalletTransactionService;
@@ -43,6 +44,7 @@ public class RestaurantPartnerServiceImpl implements RestaurantPartnerService {
     private final OrderService orderService;
     private final WalletTransactionService walletTransactionsService;
     private final MenuService menuService;
+    private final PaymentService paymentService;
 
     @Override
     @Transactional
@@ -53,13 +55,17 @@ public class RestaurantPartnerServiceImpl implements RestaurantPartnerService {
     }
 
     @Override
+    @Transactional
     public Order acceptOrderRequest(Long orderRequestId) {
         OrderRequests orderRequests = orderRequestService.getOrderRequestById(orderRequestId);
         // check order status
         if (orderRequests.getOrderRequestStatus().equals(OrderRequestStatus.PENDING)) {
             orderRequests.setOrderRequestStatus(OrderRequestStatus.ACCEPTED);
             OrderRequests saveOrderRequests = orderRequestService.save(orderRequests);
-            return orderService.createOrder(saveOrderRequests);
+            Order order = orderService.createOrder(saveOrderRequests);
+            paymentService.CreateNewPayment(order);
+            return order;
+
         }
 
         throw new RuntimeException(

@@ -5,6 +5,7 @@ import org.locationtech.jts.geom.Point;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.food.zotatoFoods.entites.enums.OrderRequestStatus;
 import com.food.zotatoFoods.entites.enums.PaymentMethod;
+import com.food.zotatoFoods.entites.enums.PaymentStatus;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -50,5 +51,7 @@ public class OrderRequests {
     private Point DropLocation;
     @Enumerated(EnumType.STRING)
     private PaymentMethod paymentMethod;
+    @Enumerated(EnumType.STRING)
+    private PaymentStatus paymentStatus;
 
 }

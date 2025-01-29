@@ -11,6 +11,7 @@ import com.food.zotatoFoods.dto.CartDto;
 import com.food.zotatoFoods.dto.CreateOrderRequest;
 import com.food.zotatoFoods.dto.OrderRequestsDto;
 import com.food.zotatoFoods.dto.PreOrderRequestDto;
+import com.food.zotatoFoods.dto.PrePaidOrderRequestsDto;
 import com.food.zotatoFoods.entites.Cart;
 import com.food.zotatoFoods.entites.CartItem;
 import com.food.zotatoFoods.entites.Consumer;
@@ -127,6 +128,24 @@ public class ConsumerServiceImpl implements ConsumerService {
         Consumer consumer = getCurrentConsumer();
         Cart cart = cartService.getCartByConsumerIdAndRestaurantId(consumer.getId(), RestaurantId);
         return preOrderRequestService.createPreOrderRequest(cart, UserLocation);
+    }
+
+    @Override
+    public PrePaidOrderRequestsDto createPrePaidOrderRequest(Long RestaurantId, CreateOrderRequest createOrderRequest) {
+        PaymentMethod paymentMethod = createOrderRequest.getPaymentMethod();
+        Point UserLocation = createOrderRequest.getUserLocation();
+        Consumer consumer = getCurrentConsumer();
+        Cart cart = cartService.getCartByConsumerIdAndRestaurantId(consumer.getId(), RestaurantId);
+        OrderRequests orderRequests = orderRequestService.prePaidOrderRequest(cart.getId(), paymentMethod,
+                UserLocation);
+        PrePaidOrderRequestsDto prePaidOrderRequestsDto = modelMapper.map(orderRequests, PrePaidOrderRequestsDto.class);
+        return prePaidOrderRequestsDto;
+    }
+
+    @Override
+    public Boolean PreProcessPayment() {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'PreProcessPayment'");
     }
 
 }

@@ -9,6 +9,7 @@ import org.locationtech.jts.geom.Point;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.food.zotatoFoods.entites.enums.OrderStatus;
 import com.food.zotatoFoods.entites.enums.PaymentMethod;
+import com.food.zotatoFoods.entites.enums.PaymentStatus;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -63,6 +64,8 @@ public class Order {
     private OrderStatus orderStatus;
     @Enumerated(EnumType.STRING)
     private PaymentMethod paymentMethod;
+    @Enumerated(EnumType.STRING)
+    private PaymentStatus paymentStatus;
     @CreationTimestamp
     private LocalDateTime OrderCreationTime;
     @ManyToOne
