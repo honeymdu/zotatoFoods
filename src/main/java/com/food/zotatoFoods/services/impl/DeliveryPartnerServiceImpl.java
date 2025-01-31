@@ -20,18 +20,22 @@ import com.food.zotatoFoods.repositories.DeliveryPartnerRepository;
 import com.food.zotatoFoods.repositories.DeliveryRequestRepository;
 import com.food.zotatoFoods.services.DeliveryPartnerService;
 import com.food.zotatoFoods.services.DistanceService;
+import com.food.zotatoFoods.services.PaymentService;
 
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class DeliveryPartnerServiceImpl implements DeliveryPartnerService {
 
     private final DeliveryPartnerRepository deliveryPartnerRepository;
     private final ModelMapper modelMapper;
     private final DeliveryRequestRepository deliveryRequestRepository;
     private final DistanceService distanceService;
+    private final PaymentService paymentService;
 
     @Override
     public DeliveryPartnerDto save(DeliveryPartner deliveryPartner) {
@@ -49,18 +53,19 @@ public class DeliveryPartnerServiceImpl implements DeliveryPartnerService {
     public void completeOrderDelivery(Long deliveryRequestId, String consumerOtp) {
         DeliveryRequest deliveryRequest = deliveryRequestRepository.findById(deliveryRequestId)
                 .orElseThrow(() -> new RuntimeException("DeliveryRequest Not Found =" + deliveryRequestId));
-        if (deliveryRequest.getDeliveryRequestStatus().equals(DeliveryRequestStatus.ACCEPTED)
+        if (!deliveryRequest.getDeliveryRequestStatus().equals(DeliveryRequestStatus.ACCEPTED)
                 && deliveryRequest.getDeliveryPartner().equals(getCurrentDeliveryPartner())) {
             throw new RuntimeException(
                     "Can not Complete the order as this Delivery Request is assosiated with current partner, DeliverRequestStatus = "
                             + deliveryRequest.getDeliveryRequestStatus());
         }
 
-        if (deliveryRequest.getConsumerOtp().equals(consumerOtp)) {
+        if (!deliveryRequest.getConsumerOtp().equals(consumerOtp)) {
             throw new RuntimeException("OTP NOT ACCEPTED");
         }
         deliveryRequest.setDeliveryRequestStatus(DeliveryRequestStatus.COMPLETED);
         deliveryRequest.getOrder().setOrderStatus(OrderStatus.DELIVERED);
+        paymentService.processPayment(deliveryRequest.getOrder());
         deliveryRequestRepository.save(deliveryRequest);
     }
 
@@ -73,20 +78,20 @@ public class DeliveryPartnerServiceImpl implements DeliveryPartnerService {
     public void pickupOrderFromRestaurant(Long deliveryRequestId, String restaurantOTP) {
         DeliveryRequest deliveryRequest = deliveryRequestRepository.findById(deliveryRequestId)
                 .orElseThrow(() -> new RuntimeException("DeliveryRequest Not Found =" + deliveryRequestId));
-        if (deliveryRequest.getDeliveryRequestStatus().equals(DeliveryRequestStatus.ACCEPTED)
+        if (!deliveryRequest.getDeliveryRequestStatus().equals(DeliveryRequestStatus.ACCEPTED)
                 && deliveryRequest.getDeliveryPartner().equals(getCurrentDeliveryPartner())) {
             throw new RuntimeException(
                     "Can not Picked the order as this Delivery Request is assosiated with current partner, DeliverRequestStatus = "
                             + deliveryRequest.getDeliveryRequestStatus());
         }
 
-        if (deliveryRequest.getRestaurantOtp().equals(restaurantOTP)) {
+        if (!deliveryRequest.getRestaurantOtp().equals(restaurantOTP)) {
             throw new RuntimeException("OTP NOT ACCEPTED");
         }
         deliveryRequest.getOrder().setOrderStatus(OrderStatus.OUT_FOR_DELIVERY);
         Long distance = (long) distanceService.CalculateDistance(deliveryRequest.getPickupLocation(),
                 deliveryRequest.getDropLocation());
-        deliveryRequest.setDeliveryTime(LocalDateTime.now().plusMinutes(2 * distance));
+        deliveryRequest.setDeliveryTime(LocalDateTime.now().plusMinutes(10 * distance));
         deliveryRequestRepository.save(deliveryRequest);
     }
 
@@ -96,7 +101,10 @@ public class DeliveryPartnerServiceImpl implements DeliveryPartnerService {
         DeliveryRequest deliveryRequest = deliveryRequestRepository.findById(deliveryRequestId)
                 .orElseThrow(() -> new RuntimeException("DeliveryRequest Not Found =" + deliveryRequestId));
 
-        if (deliveryRequest.getDeliveryRequestStatus().equals(DeliveryRequestStatus.ACCEPTED)) {
+        if (!getCurrentDeliveryPartner().getAvailable().equals(true)) {
+            throw new RuntimeException("Can not accept delivery Request as Delivery Partner Not Available");
+        }
+        if (!deliveryRequest.getDeliveryRequestStatus().equals(DeliveryRequestStatus.ACCEPTED)) {
             throw new RuntimeException("Can not accept delivery Request as Delivery Request Status ="
                     + deliveryRequest.getDeliveryRequestStatus());
         }
@@ -117,7 +125,7 @@ public class DeliveryPartnerServiceImpl implements DeliveryPartnerService {
                     + deliveryRequest.getDeliveryRequestStatus());
         }
         deliveryRequest.setDeliveryRequestStatus(DeliveryRequestStatus.PENDING);
-        deliveryRequest.getOrder().setOrderStatus(OrderStatus.READY_FOR_PICKUP);
+        deliveryRequest.getOrder().setOrderStatus(OrderStatus.DELIVERY_REQUEST_CREATED);
         getCurrentDeliveryPartner().setAvailable(true);
         deliveryRequestRepository.save(deliveryRequest);
 

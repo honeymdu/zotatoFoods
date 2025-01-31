@@ -8,6 +8,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import com.food.zotatoFoods.dto.CartDto;
+import com.food.zotatoFoods.dto.ConsumerOTP;
 import com.food.zotatoFoods.dto.CreateOrderRequest;
 import com.food.zotatoFoods.dto.OrderRequestsDto;
 import com.food.zotatoFoods.dto.PreOrderRequestDto;
@@ -15,6 +16,7 @@ import com.food.zotatoFoods.dto.PrePaidOrderRequestsDto;
 import com.food.zotatoFoods.entites.Cart;
 import com.food.zotatoFoods.entites.CartItem;
 import com.food.zotatoFoods.entites.Consumer;
+import com.food.zotatoFoods.entites.DeliveryRequest;
 import com.food.zotatoFoods.entites.Menu;
 import com.food.zotatoFoods.entites.OrderRequests;
 import com.food.zotatoFoods.entites.Restaurant;
@@ -25,6 +27,7 @@ import com.food.zotatoFoods.repositories.ConsumerRepository;
 import com.food.zotatoFoods.services.CartItemService;
 import com.food.zotatoFoods.services.CartService;
 import com.food.zotatoFoods.services.ConsumerService;
+import com.food.zotatoFoods.services.DeliveryService;
 import com.food.zotatoFoods.services.MenuService;
 import com.food.zotatoFoods.services.OrderRequestService;
 import com.food.zotatoFoods.services.PreOrderRequestService;
@@ -44,6 +47,8 @@ public class ConsumerServiceImpl implements ConsumerService {
     private final CartService cartService;
     private final CartItemService cartItemService;
     private final PreOrderRequestService preOrderRequestService;
+    private final DeliveryService deliveryService;
+
     Double PLATFORM_COMMISSION = 10.5;
 
     @Override
@@ -146,6 +151,13 @@ public class ConsumerServiceImpl implements ConsumerService {
     public Boolean PreProcessPayment() {
         // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'PreProcessPayment'");
+    }
+
+    @Override
+    public ConsumerOTP getOtpByOrderId(Long OrderId) {
+        DeliveryRequest deliveryRequest = deliveryService.getDeliveryRequestByOrderId(OrderId);
+        return ConsumerOTP.builder().consumerOTP(deliveryRequest.getConsumerOtp()).build();
+
     }
 
 }

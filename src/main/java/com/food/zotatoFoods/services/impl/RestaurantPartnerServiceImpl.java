@@ -11,6 +11,7 @@ import com.food.zotatoFoods.dto.AddNewRestaurantDto;
 import com.food.zotatoFoods.dto.MenuItemDto;
 import com.food.zotatoFoods.dto.OrderRequestsDto;
 import com.food.zotatoFoods.dto.RestaurantDto;
+import com.food.zotatoFoods.dto.RestaurantOTP;
 import com.food.zotatoFoods.entites.Menu;
 import com.food.zotatoFoods.entites.Order;
 import com.food.zotatoFoods.entites.OrderRequests;
@@ -22,6 +23,7 @@ import com.food.zotatoFoods.entites.enums.OrderRequestStatus;
 import com.food.zotatoFoods.entites.enums.OrderStatus;
 import com.food.zotatoFoods.exceptions.ResourceNotFoundException;
 import com.food.zotatoFoods.repositories.RestaurantPartnerRepository;
+import com.food.zotatoFoods.services.DeliveryService;
 import com.food.zotatoFoods.services.MenuService;
 import com.food.zotatoFoods.services.OrderRequestService;
 import com.food.zotatoFoods.services.OrderService;
@@ -45,6 +47,7 @@ public class RestaurantPartnerServiceImpl implements RestaurantPartnerService {
     private final WalletTransactionService walletTransactionsService;
     private final MenuService menuService;
     private final PaymentService paymentService;
+    private final DeliveryService deliveryService;
 
     @Override
     @Transactional
@@ -140,6 +143,12 @@ public class RestaurantPartnerServiceImpl implements RestaurantPartnerService {
         Order order = orderService.getOrderById(OrderId);
         order.setOrderStatus(orderStatus);
         return orderService.saveOrder(order);
+    }
+
+    @Override
+    public RestaurantOTP getRestaurantOTPByOrderId(Long OrderId) {
+        return RestaurantOTP.builder()
+                .restaurantOTP(deliveryService.getDeliveryRequestByOrderId(OrderId).getRestaurantOtp()).build();
     }
 
 }

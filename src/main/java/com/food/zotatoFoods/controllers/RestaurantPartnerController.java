@@ -21,6 +21,7 @@ import com.food.zotatoFoods.dto.MenuItemDto;
 import com.food.zotatoFoods.dto.OrderDto;
 import com.food.zotatoFoods.dto.OrderRequestsDto;
 import com.food.zotatoFoods.dto.RestaurantDto;
+import com.food.zotatoFoods.dto.RestaurantOTP;
 import com.food.zotatoFoods.dto.SetOrderStatusDto;
 import com.food.zotatoFoods.entites.Menu;
 import com.food.zotatoFoods.entites.Order;
@@ -108,6 +109,11 @@ public class RestaurantPartnerController {
         Restaurant restaurant = restaurantPartnerService.ViewMyRestaurantProfile(RestaurantId);
         return ResponseEntity.ok(restaurant);
 
+    }
+
+    @GetMapping("/get-Restaurant-otp/{OrderId}")
+    public ResponseEntity<RestaurantOTP> getConsumerOtp(@PathVariable Long OrderId) {
+        return ResponseEntity.ok(restaurantPartnerService.getRestaurantOTPByOrderId(OrderId));
     }
 
 }

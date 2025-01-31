@@ -5,6 +5,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 
 import com.food.zotatoFoods.dto.CartDto;
+import com.food.zotatoFoods.dto.ConsumerOTP;
 import com.food.zotatoFoods.dto.CreateOrderRequest;
 import com.food.zotatoFoods.dto.OrderRequestsDto;
 import com.food.zotatoFoods.dto.PreOrderRequestDto;
@@ -43,5 +44,7 @@ public interface ConsumerService {
     PreOrderRequestDto viewPreOrderRequest(Long RestaurantId, Point UserLocation);
 
     Boolean PreProcessPayment();
+
+    ConsumerOTP getOtpByOrderId(Long OrderId);
 
 }

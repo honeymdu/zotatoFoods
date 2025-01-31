@@ -6,6 +6,7 @@ import com.food.zotatoFoods.dto.AddNewRestaurantDto;
 import com.food.zotatoFoods.dto.MenuItemDto;
 import com.food.zotatoFoods.dto.OrderRequestsDto;
 import com.food.zotatoFoods.dto.RestaurantDto;
+import com.food.zotatoFoods.dto.RestaurantOTP;
 import com.food.zotatoFoods.entites.Menu;
 import com.food.zotatoFoods.entites.Order;
 import com.food.zotatoFoods.entites.OrderRequests;
@@ -54,4 +55,5 @@ public interface RestaurantPartnerService {
 
     // List<Order> getALlOrders(Long restaurantId);
 
+    RestaurantOTP getRestaurantOTPByOrderId(Long OrderId);
 }

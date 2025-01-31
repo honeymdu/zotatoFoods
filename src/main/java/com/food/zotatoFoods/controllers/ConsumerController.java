@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.food.zotatoFoods.dto.AddressDto;
 import com.food.zotatoFoods.dto.CartDto;
+import com.food.zotatoFoods.dto.ConsumerOTP;
 import com.food.zotatoFoods.dto.CreateOrderRequest;
 import com.food.zotatoFoods.dto.CreateOrderRequestDto;
 import com.food.zotatoFoods.dto.MenuDto;
@@ -111,6 +112,11 @@ public class ConsumerController {
         @GetMapping("/view-cart/{RestaurantId}")
         public ResponseEntity<CartDto> viewCart(@PathVariable Long RestaurantId) {
                 return ResponseEntity.ok(consumerService.viewCart(RestaurantId));
+        }
+
+        @GetMapping("/get-consumer-otp/{OrderId}")
+        public ResponseEntity<ConsumerOTP> getConsumerOtp(@PathVariable Long OrderId) {
+                return ResponseEntity.ok(consumerService.getOtpByOrderId(OrderId));
         }
 
 }

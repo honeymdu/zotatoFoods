@@ -6,6 +6,7 @@ import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Executors;
 import java.util.concurrent.PriorityBlockingQueue;
+import java.util.concurrent.RejectedExecutionException;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
@@ -47,7 +48,7 @@ public class DeliveryServiceImpl implements DeliveryService {
     private final PriorityBlockingQueue<OrderPriorityQueue> highPriorityOrderQueue = new PriorityBlockingQueue<>();
     private final PriorityBlockingQueue<RestaurantPriorityQueue> restaurantPriorityQueue = new PriorityBlockingQueue<>();
     private static final ThreadPoolExecutor threadPoolExecutor = new ThreadPoolExecutor(5, 10, 2, TimeUnit.SECONDS,
-            new ArrayBlockingQueue<>(10));
+            new ArrayBlockingQueue<>(10), new ThreadPoolExecutor.CallerRunsPolicy());
     private final PriorityBlockingQueue<OrderPriorityQueue> waitingQueue = new PriorityBlockingQueue<>();
 
     @Scheduled(fixedRate = 180000)
@@ -95,9 +96,10 @@ public class DeliveryServiceImpl implements DeliveryService {
                     sendNotificationToDeliveryPartner();
                     log.info("Thread {} (ID: {}) finished processing order", currentThread.getName(),
                             currentThread.getId());
-                } catch (InterruptedException e) {
+                } catch (InterruptedException | RejectedExecutionException e) {
                     Thread.currentThread().interrupt();
                     log.error("Order processing thread interrupted: " + e.getMessage());
+                   // waitingQueue.offer(highPriorityOrderQueue.poll());
                     throw new RuntimeException();
                 }
             });
