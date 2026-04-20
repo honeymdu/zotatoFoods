@@ -1,5 +1,6 @@
 package com.food.zotatoFoods.controllers;
 
+import jakarta.validation.Valid;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
@@ -33,14 +34,14 @@ public class AdminController {
 
     @PostMapping("/onBoard-Restaurant-Partner/{UserId}")
     public ResponseEntity<RestaurantPartnerDto> onBoardNewRestaurantPartner(@PathVariable Long UserId,
-            @RequestBody OnBoardRestaurantPartnerDto onBoardRestaurantPartnerDto) {
+            @Valid @RequestBody OnBoardRestaurantPartnerDto onBoardRestaurantPartnerDto) {
         return new ResponseEntity<>(adminService.onBoardNewRestaurantPartner(UserId, onBoardRestaurantPartnerDto),
                 HttpStatus.CREATED);
     }
 
     @PostMapping("/onBoard-Delivery-Partner/{UserId}")
     public ResponseEntity<DeliveryPartnerDto> onBoardNewDeliveryPartner(@PathVariable Long UserId,
-            @RequestBody OnBoardDeliveryPartnerDto onBoardDeliveryPartnerDto) {
+            @Valid @RequestBody OnBoardDeliveryPartnerDto onBoardDeliveryPartnerDto) {
         return new ResponseEntity<>(adminService.onBoardDeliveryPartner(UserId, onBoardDeliveryPartnerDto),
                 HttpStatus.CREATED);
     }
@@ -49,7 +50,7 @@ public class AdminController {
     public ResponseEntity<Page<RestaurantDto>> getAllRestaurant(@RequestParam(defaultValue = "0") Integer PageOffset,
             @RequestParam(defaultValue = "10", required = false) Integer PageSize) {
         PageRequest pageRequest = PageRequest.of(PageOffset, PageSize,
-                Sort.by(Sort.Direction.DESC, "createdTime", "id"));
+                Sort.by(Sort.Direction.DESC, "id"));
         return ResponseEntity.ok(adminService.getAllRestaurant(pageRequest));
     }
 
@@ -66,7 +67,6 @@ public class AdminController {
     public ResponseEntity<Boolean> VarifyRestaurant(@PathVariable Long RestaurantId) {
         Boolean IsVarified = adminService.varifyRestaurant(RestaurantId);
         return ResponseEntity.ok(IsVarified);
-
     }
 
 }

@@ -33,6 +33,7 @@ import com.food.zotatoFoods.services.OrderRequestService;
 import com.food.zotatoFoods.services.PreOrderRequestService;
 import com.food.zotatoFoods.services.RestaurantService;
 
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 
 @Service
@@ -72,6 +73,7 @@ public class ConsumerServiceImpl implements ConsumerService {
     }
 
     @Override
+    @Transactional
     public OrderRequestsDto createOrderRequest(Long RestaurantId, CreateOrderRequest createOrderRequest) {
         PaymentMethod paymentMethod = createOrderRequest.getPaymentMethod();
         Point UserLocation = createOrderRequest.getUserLocation();
@@ -90,12 +92,14 @@ public class ConsumerServiceImpl implements ConsumerService {
     }
 
     @Override
+    @Transactional
     public CartDto PrepareCart(Long RestaurantId, Long MenuItemId) {
         Consumer consumer = getCurrentConsumer();
         return cartService.prepareCart(consumer, RestaurantId, MenuItemId);
     }
 
     @Override
+    @Transactional
     public CartDto removeCartItem(Long CartId, Long cartItemId) {
         Consumer consumer = getCurrentConsumer();
         Cart cart = cartService.getCartById(CartId);
@@ -105,6 +109,7 @@ public class ConsumerServiceImpl implements ConsumerService {
     }
 
     @Override
+    @Transactional
     public void clearCart(Long RestaurantId) {
         Consumer consumer = getCurrentConsumer();
         Cart cart = cartService.getCartByConsumerIdAndRestaurantId(consumer.getId(), RestaurantId);
@@ -136,6 +141,7 @@ public class ConsumerServiceImpl implements ConsumerService {
     }
 
     @Override
+    @Transactional
     public PrePaidOrderRequestsDto createPrePaidOrderRequest(Long RestaurantId, CreateOrderRequest createOrderRequest) {
         PaymentMethod paymentMethod = createOrderRequest.getPaymentMethod();
         Point UserLocation = createOrderRequest.getUserLocation();

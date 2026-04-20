@@ -7,6 +7,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.annotation.Secured;
+import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -23,9 +24,9 @@ import com.food.zotatoFoods.dto.CreateOrderRequestDto;
 import com.food.zotatoFoods.dto.MenuDto;
 import com.food.zotatoFoods.dto.OrderRequestsDto;
 import com.food.zotatoFoods.dto.PreOrderRequestDto;
+import com.food.zotatoFoods.dto.RestaurantDto;
 import com.food.zotatoFoods.entites.Address;
 import com.food.zotatoFoods.entites.Menu;
-import com.food.zotatoFoods.entites.Restaurant;
 import com.food.zotatoFoods.entites.User;
 import com.food.zotatoFoods.repositories.AddressRepository;
 import com.food.zotatoFoods.services.ConsumerService;
@@ -53,7 +54,7 @@ public class ConsumerController {
 
         @PostMapping("/update-address/{UserId}")
         public ResponseEntity<?> addNewAddress(@PathVariable Long UserId,
-                        @RequestBody AddressDto addressDto) {
+                        @Valid @RequestBody AddressDto addressDto) {
                 // check user exist
                 User user = userService.findUserById(UserId);
                 Address address = modelMapper.map(addressDto, Address.class);
@@ -76,7 +77,7 @@ public class ConsumerController {
 
         @PostMapping("/view-pre-order-request/{RestaurantId}")
         public ResponseEntity<PreOrderRequestDto> viewPreOrderRequest(@PathVariable Long RestaurantId,
-                        @RequestBody CreateOrderRequestDto createOrderRequestDto) {
+                        @Valid @RequestBody CreateOrderRequestDto createOrderRequestDto) {
                 CreateOrderRequest createOrderRequest = modelMapper.map(createOrderRequestDto,
                                 CreateOrderRequest.class);
                 return ResponseEntity.ok(consumerService.viewPreOrderRequest(RestaurantId,
@@ -85,7 +86,7 @@ public class ConsumerController {
 
         @PostMapping("/create-order-request/{RestaurantId}")
         public ResponseEntity<OrderRequestsDto> createOrderRequest(@PathVariable Long RestaurantId,
-                        @RequestBody CreateOrderRequestDto createOrderRequestDto) {
+                        @Valid @RequestBody CreateOrderRequestDto createOrderRequestDto) {
                 CreateOrderRequest createOrderRequest = modelMapper.map(createOrderRequestDto,
                                 CreateOrderRequest.class);
                 OrderRequestsDto orderRequestsDto = consumerService.createOrderRequest(RestaurantId,
@@ -94,12 +95,13 @@ public class ConsumerController {
         }
 
         @GetMapping("/list/get-available-restaurant")
-        public ResponseEntity<Page<Restaurant>> viewAvailableRestaurant(
+        public ResponseEntity<Page<RestaurantDto>> viewAvailableRestaurant(
                         @RequestParam(defaultValue = "0") Integer PageOffset,
                         @RequestParam(defaultValue = "10", required = false) Integer PageSize) {
                 PageRequest pageRequest = PageRequest.of(PageOffset, PageSize,
                                 Sort.by(Sort.Direction.DESC, "id"));
-                Page<Restaurant> restaurants = consumerService.getAllRestaurant(pageRequest);
+                Page<RestaurantDto> restaurants = consumerService.getAllRestaurant(pageRequest)
+                        .map(r -> modelMapper.map(r, RestaurantDto.class));
                 return ResponseEntity.ok(restaurants);
         }
 

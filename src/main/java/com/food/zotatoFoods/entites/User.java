@@ -52,6 +52,11 @@ public class User implements UserDetails  {
     private List<Address> addresses;
 
     @Override
+    public String getPassword() {
+        return this.password;
+    }
+
+    @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return role.stream().map(role -> new SimpleGrantedAuthority("ROLE_" + role.name().toString()))
                 .collect(Collectors.toSet());

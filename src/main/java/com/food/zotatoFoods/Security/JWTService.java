@@ -1,4 +1,4 @@
-package com.food.zotatoFoods.security;
+package com.food.zotatoFoods.Security;
 
 import java.nio.charset.StandardCharsets;
 import java.util.Date;

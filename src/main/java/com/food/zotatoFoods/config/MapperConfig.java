@@ -25,23 +25,25 @@ public class MapperConfig {
                 try {
                     return Long.parseLong(context.getSource());
                 } catch (NumberFormatException e) {
-                    return null; 
+                    return null;
                 }
             }
         });
 
-        modelMapper.typeMap(PointDto.class, Point.class).setConverter(Context -> {
-            PointDto pointDto = Context.getSource();
-            return GeomatryUtil.CreatePoint(pointDto);
+        modelMapper.addConverter(new Converter<PointDto, Point>() {
+            @Override
+            public Point convert(MappingContext<PointDto, Point> context) {
+                return GeomatryUtil.CreatePoint(context.getSource());
+            }
         });
 
-        modelMapper.typeMap(Point.class, PointDto.class).setConverter(context -> {
-            Point point = context.getSource();
-            double[] coordianates = {
-                    point.getX(),
-                    point.getY()
-            };
-            return new PointDto(coordianates);
+        modelMapper.addConverter(new Converter<Point, PointDto>() {
+            @Override
+            public PointDto convert(MappingContext<Point, PointDto> context) {
+                Point point = context.getSource();
+                if (point == null) return null;
+                return new PointDto(new double[]{point.getX(), point.getY()});
+            }
         });
 
         return modelMapper;

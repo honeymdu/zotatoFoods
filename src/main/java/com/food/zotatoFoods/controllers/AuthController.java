@@ -8,6 +8,7 @@ import com.food.zotatoFoods.services.AuthService;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import java.util.Arrays;
 
@@ -27,12 +28,12 @@ public class AuthController {
     private final AuthService authService;
 
     @PostMapping("/SignUp")
-    public ResponseEntity<UserDto> signUp(@RequestBody SignUpDto signupDto) {
+    public ResponseEntity<UserDto> signUp(@Valid @RequestBody SignUpDto signupDto) {
         return new ResponseEntity<>(authService.SignUp(signupDto), HttpStatus.CREATED);
     }
 
     @PostMapping("/login")
-    public ResponseEntity<LoginResponceDto> login(@RequestBody LoginRequestDto LoginRequestDto,
+    public ResponseEntity<LoginResponceDto> login(@Valid @RequestBody LoginRequestDto LoginRequestDto,
             HttpServletResponse response) {
         String token[] = authService.login(LoginRequestDto.getEmail(), LoginRequestDto.getPassword());
 
@@ -45,7 +46,11 @@ public class AuthController {
 
     @PostMapping("/refresh")
     public ResponseEntity<?> refresh(HttpServletRequest request) {
-        String refreshToken = Arrays.stream(request.getCookies())
+        Cookie[] cookies = request.getCookies();
+        if (cookies == null || cookies.length == 0) {
+            throw new AuthenticationServiceException("Refresh token not found inside the cookies");
+        }
+        String refreshToken = Arrays.stream(cookies)
                 .filter(cookie -> "refreshToken".equals(cookie.getName()))
                 .findFirst()
                 .map(Cookie::getValue)

@@ -96,10 +96,11 @@ public class MenuServiceImpl implements MenuService {
         // createMenu.getName());
         // }
 
-        List<MenuItem> menuItems = createMenu.getMenuItem()
-                .stream()
-                .map(menuItemDto -> modelMapper.map(menuItemDto, MenuItem.class))
-                .collect(Collectors.toList());
+        List<MenuItemDto> rawItems = createMenu.getMenuItem();
+        List<MenuItem> menuItems = rawItems == null ? List.of() :
+                rawItems.stream()
+                        .map(menuItemDto -> modelMapper.map(menuItemDto, MenuItem.class))
+                        .collect(Collectors.toList());
 
         Menu menu = Menu.builder().menuItems(menuItems).menuName(createMenu.getName())
                 .restaurant(createMenu.getRestaurant()).build();

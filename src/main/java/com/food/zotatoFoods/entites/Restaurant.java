@@ -39,6 +39,7 @@ public class Restaurant {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String name;
+    @JsonIgnore
     @Column(columnDefinition = "geometry(Point, 4326)")
     private Point restaurantLocation;
     private String gstNumber;
